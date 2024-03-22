@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 
 public class customerService {
-    private static CustomerRepository custRepo = null;
+    private static CustomerRepository custRepo;
 
     @Autowired
     public customerService(CustomerRepository custRepo) {
@@ -26,7 +26,7 @@ public class customerService {
     public static void addNewCustomer(Customer customer) {
         Optional<Customer> findBycustid=custRepo.findCustomerByCustID(customer.getCustID());
         if(findBycustid.isPresent()){
-            throw new IllegalStateException("Email Taken");
+            throw new IllegalStateException("Email Taken from Customer ");
         }
         else {
             custRepo.save(customer);

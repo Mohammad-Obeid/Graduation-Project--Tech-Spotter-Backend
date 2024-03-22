@@ -1,5 +1,6 @@
 package com.example.GradProJM.Services;
 
+import com.example.GradProJM.Model.Customer;
 import com.example.GradProJM.Model.User;
 import com.example.GradProJM.Repos.CustomerRepository;
 import com.example.GradProJM.Repos.userRepository;
@@ -22,15 +23,13 @@ public class userService {
         return userRepo.findAll();
     }
 
-
     public void addNewUser(User user) {
         Optional<User> findByuserEmail=userRepo.findByuserEmail(user.getUserEmail());
         if(findByuserEmail.isPresent()){
             throw new IllegalStateException("Email Taken");
         }
         else {
-            userRepo.save(user);
-
+            userRepo.saveAndFlush(user);
         }
     }
 

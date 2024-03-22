@@ -14,12 +14,13 @@ public class User {
 
     private int status;
 
-    @OneToOne(mappedBy = "user")
+
+    @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
     private ShopOwner shopowner;
 
 
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
     private Customer customer;
 
 
@@ -35,13 +36,14 @@ public class User {
         this.userAddID = userAddID;
         this.status=status;
     }
-    public User(String userName, String userPNum, String userEmail, String userPass, String userAddID,int status) {
+    public User(String userName, String userPNum, String userEmail, String userPass, String userAddID,int status , Customer customer) {
         this.userName = userName;
         this.userPNum = userPNum;
         this.userEmail = userEmail;
         this.userPass = userPass;
         this.userAddID = userAddID;
         this.status=status;
+        this.customer = customer ;
     }
 
 
@@ -99,6 +101,22 @@ public class User {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public ShopOwner getShopowner() {
+        return shopowner;
+    }
+
+    public void setShopowner(ShopOwner shopowner) {
+        this.shopowner = shopowner;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override

@@ -13,28 +13,31 @@ public class Customer{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int custID;
     private String FName,LName;
-    private String BDate;
-    private int CartID;
+    private int cartid;
 
-    @OneToOne
+    private String BDate;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     public Customer() {
     }
 
-    public Customer(int custID, String FName, String LName, String BDate, int cartID, int usrID) {
+    public Customer(int custID, String FName, String LName, String BDate, int cartid) {
         this.custID = custID;
         this.FName = FName;
         this.LName = LName;
         this.BDate = BDate;
-        this.CartID = cartID;
+        this.cartid = cartid;
+//        this.user=user;
     }
 
-    public Customer(String FName, String LName, String BDate, int cartID) {
+    public Customer(String FName, String LName, String BDate, int cartid,User user) {
         this.FName = FName;
         this.LName = LName;
         this.BDate = BDate;
-        this.CartID = cartID;
+        this.cartid = cartid;
+        this.user=user;
     }
 
 
@@ -71,12 +74,20 @@ public class Customer{
         this.BDate = BDate;
     }
 
-    public int getCartID() {
-        return CartID;
+    public int getcartid() {
+        return cartid;
     }
 
-    public void setCartID(int cartID) {
-        this.CartID = cartID;
+    public void setcartid(int cartid) {
+        this.cartid = cartid;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -86,7 +97,7 @@ public class Customer{
                 ", FName='" + FName + '\'' +
                 ", LName='" + LName + '\'' +
                 ", BDate=" + BDate +
-                ", CartID=" + CartID +
+                ", cartid=" + cartid +
                 '}';
     }
 }

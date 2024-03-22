@@ -41,13 +41,53 @@ public class ShopOwner{
         ShopRate = shopRate;
     }
 
-//    public ShopOwner(String shopName, LocalDate subStartDate, LocalDate subEndDate, double shopRate, String userName, String userPNum, String userEmail, String userPass, String userAddID) {
-//        super(userName, userPNum, userEmail, userPass, userAddID);
-//        ShopName = shopName;
-//        SubStartDate = subStartDate;
-//        SubEndDate = subEndDate;
-//        ShopRate = shopRate;
-//    }
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
+    }
+
+    public String getShopName() {
+        return ShopName;
+    }
+
+    public void setShopName(String shopName) {
+        ShopName = shopName;
+    }
+
+    public LocalDate getSubStartDate() {
+        return SubStartDate;
+    }
+
+    public void setSubStartDate(LocalDate subStartDate) {
+        SubStartDate = subStartDate;
+    }
+
+    public LocalDate getSubEndDate() {
+        return SubEndDate;
+    }
+
+    public void setSubEndDate(LocalDate subEndDate) {
+        SubEndDate = subEndDate;
+    }
+
+    public double getShopRate() {
+        return ShopRate;
+    }
+
+    public void setShopRate(double shopRate) {
+        ShopRate = shopRate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public String toString() {
