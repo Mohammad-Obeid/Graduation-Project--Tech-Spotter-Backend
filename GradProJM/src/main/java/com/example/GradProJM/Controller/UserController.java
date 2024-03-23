@@ -5,6 +5,7 @@ import com.example.GradProJM.Model.Customer;
 import com.example.GradProJM.Model.ShopOwner;
 import com.example.GradProJM.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,8 @@ public class UserController {
 
     private final userService userService;
     private final customerService custService;
+    private static String code="";
+    private static User user1=new User();
 //    private final ShopOwnerService shopOwnerService;
 
     @Autowired
@@ -36,15 +39,9 @@ public class UserController {
     @PostMapping("addnewuser")
     public ResponseEntity<Void> addNewUser(@RequestBody User user) {
         System.out.println("User Object : " + user.toString());
-        if(user.getStatus()==0) {
-            Customer customer = user.getCustomer();
-            customer.setUser(user);
-        } else if (user.getStatus()==1) {
-            ShopOwner shop=user.getShopowner();
-            shop.setUser(user);
-            System.out.println(shop.toString());
-        }
-        userService.addNewUser(user);
+        user1=user;
+
+        userService.SendEmailVerification(user);
         return ResponseEntity.ok().build();
     }
 
