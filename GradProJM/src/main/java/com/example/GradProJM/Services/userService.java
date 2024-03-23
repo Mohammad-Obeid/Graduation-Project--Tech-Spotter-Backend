@@ -45,9 +45,9 @@ public class userService {
         return userOptional.orElse(null);    }
 
 
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
     public void sendMail(){
-        emailService.sendEmail("isleimeyyeh.lith@gmail.com", "Testing", "Testinggg");
+        emailService.sendEmail("riyadjannah2023@gmail.com", "lklka", "areUKidding?");
     }
 }
 

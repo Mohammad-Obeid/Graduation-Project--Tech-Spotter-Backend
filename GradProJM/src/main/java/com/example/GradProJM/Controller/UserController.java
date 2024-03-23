@@ -45,7 +45,7 @@ public class UserController {
             System.out.println(shop.toString());
         }
         userService.addNewUser(user);
-            return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
 
