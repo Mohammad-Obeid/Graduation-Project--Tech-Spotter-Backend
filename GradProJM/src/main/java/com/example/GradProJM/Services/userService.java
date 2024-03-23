@@ -5,6 +5,8 @@ import com.example.GradProJM.Model.User;
 import com.example.GradProJM.Repos.CustomerRepository;
 import com.example.GradProJM.Repos.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,10 @@ public class userService {
         this.userRepo = userRepo;
     }
 
+
+    @Autowired
+    private EmailService emailService;
+
     public List<User> getUsers(){
         return userRepo.findAll();
     }
@@ -29,6 +35,7 @@ public class userService {
             throw new IllegalStateException("Email Taken");
         }
         else {
+            sendMail();
             userRepo.saveAndFlush(user);
         }
     }
@@ -36,4 +43,12 @@ public class userService {
     public User getUserbyId(int userid) {
         Optional<User> userOptional=userRepo.findByuserid(userid);
         return userOptional.orElse(null);    }
+
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void sendMail(){
+        emailService.sendEmail("isleimeyyeh.lith@gmail.com", "Testing", "Testinggg");
+    }
 }
+
+

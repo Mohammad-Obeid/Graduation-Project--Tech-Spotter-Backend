@@ -16,10 +16,13 @@ import com.example.GradProJM.Services.*;
 public class UserController {
 
     private final userService userService;
+    private final customerService custService;
+//    private final ShopOwnerService shopOwnerService;
 
     @Autowired
-    public UserController(userService userService) {
+    public UserController(userService userService, customerService custService) {
         this.userService = userService;
+        this.custService = custService;
     }
 
 
@@ -39,9 +42,10 @@ public class UserController {
         } else if (user.getStatus()==1) {
             ShopOwner shop=user.getShopowner();
             shop.setUser(user);
+            System.out.println(shop.toString());
         }
         userService.addNewUser(user);
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
     }
 
 

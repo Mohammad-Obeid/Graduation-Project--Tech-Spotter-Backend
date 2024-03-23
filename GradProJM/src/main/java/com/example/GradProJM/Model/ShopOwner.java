@@ -17,28 +17,29 @@ public class ShopOwner{
 
     private int shopID;
     private String ShopName;
-    private LocalDate SubStartDate,SubEndDate;
-    private double ShopRate;
+    private String subStartDate,subEndDate;
+    private double shopRate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
+
 
     public ShopOwner() {
     }
 
-    public ShopOwner(int shopID, String shopName, LocalDate subStartDate, LocalDate subEndDate, double shopRate) {
+    public ShopOwner(int shopID, String shopName, String subStartDate, String subEndDate, double shopRate) {
         this.shopID = shopID;
         ShopName = shopName;
-        SubStartDate = subStartDate;
-        SubEndDate = subEndDate;
-        ShopRate = shopRate;
+        this.subStartDate = subStartDate;
+        this.subEndDate = subEndDate;
+        this.shopRate = shopRate;
     }
 
-    public ShopOwner(String shopName, LocalDate subStartDate, LocalDate subEndDate, double shopRate) {
+    public ShopOwner(String shopName, String subStartDate, String subEndDate, double shopRate) {
         ShopName = shopName;
-        SubStartDate = subStartDate;
-        SubEndDate = subEndDate;
-        ShopRate = shopRate;
+        this.subStartDate = subStartDate;
+        this.subEndDate = subEndDate;
+        this.shopRate = shopRate;
     }
 
     public int getShopID() {
@@ -54,31 +55,31 @@ public class ShopOwner{
     }
 
     public void setShopName(String shopName) {
-        ShopName = shopName;
+        this.ShopName = shopName;
     }
 
-    public LocalDate getSubStartDate() {
-        return SubStartDate;
+    public String getsubStartDate() {
+        return subStartDate;
     }
 
-    public void setSubStartDate(LocalDate subStartDate) {
-        SubStartDate = subStartDate;
+    public void setsubStartDate(String subStartDate) {
+        this.subStartDate = subStartDate;
     }
 
-    public LocalDate getSubEndDate() {
-        return SubEndDate;
+    public String getsubEndDate() {
+        return subEndDate;
     }
 
-    public void setSubEndDate(LocalDate subEndDate) {
-        SubEndDate = subEndDate;
+    public void setsubEndDate(String subEndDate) {
+        this.subEndDate = subEndDate;
     }
 
-    public double getShopRate() {
-        return ShopRate;
+    public double getshopRate() {
+        return shopRate;
     }
 
-    public void setShopRate(double shopRate) {
-        ShopRate = shopRate;
+    public void setshopRate(double shopRate) {
+        this.shopRate = shopRate;
     }
 
     public User getUser() {
@@ -94,9 +95,9 @@ public class ShopOwner{
         return "ShopOwner{" +
                 "shopID=" + shopID +
                 ", ShopName='" + ShopName + '\'' +
-                ", SubStartDate=" + SubStartDate +
-                ", SubEndDate=" + SubEndDate +
-                ", ShopRate=" + ShopRate +
+                ", subStartDate=" + subStartDate +
+                ", subEndDate=" + subEndDate +
+                ", shopRate=" + shopRate +
                 '}';
     }
 }
