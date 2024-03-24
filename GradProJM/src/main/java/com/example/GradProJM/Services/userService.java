@@ -40,7 +40,7 @@ public class userService {
         }
         else {
             randomCodeGenerator();
-            sendMail();
+            sendVerificationCodeMail();
 //            if()
             user1=user;
         }
@@ -67,8 +67,8 @@ public class userService {
 
 
 //    @EventListener(ApplicationReadyEvent.class)
-    public void sendMail(){
-        emailService.sendEmail("riyadjannah2023@gmail.com", "Verify you Account", "Your Account Code is: "+g+"\n don't Share this Code with anyone");
+    public void sendVerificationCodeMail(){
+        emailService.sendVerificationCodeEmail("riyadjannah2023@gmail.com", g);
     }
     public String randomCodeGenerator(){
         g=randomCode.GenerateCode();
