@@ -1,4 +1,5 @@
 package com.example.GradProJM.Model;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -22,6 +23,10 @@ public class User {
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
     private Customer customer;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Address> address;
 
 
     public User() {
@@ -117,6 +122,14 @@ public class User {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public List<Address> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<Address> address) {
+        this.address = address;
     }
 
     @Override

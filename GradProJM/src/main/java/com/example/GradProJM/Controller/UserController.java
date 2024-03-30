@@ -1,6 +1,7 @@
 package com.example.GradProJM.Controller;
 
 
+import com.example.GradProJM.Model.Address;
 import com.example.GradProJM.Model.Customer;
 import com.example.GradProJM.Model.ShopOwner;
 import com.example.GradProJM.Model.User;
@@ -18,27 +19,21 @@ import com.example.GradProJM.Services.*;
 @RequestMapping(path="user")
 public class UserController {
     private final userService userService;
-    private final customerService custService;
     private static String code = "";
     private static User user1 = new User();
     private static LocalDateTime loctime;
     @Autowired
-    public UserController(userService userService, customerService custService) {
+    public UserController(userService userService) {
         this.userService = userService;
-        this.custService = custService;
     }
     @GetMapping
     public List<User> std() {
         return userService.getUsers();
     }
-
-
-
     @PostMapping("addnewuser")
     public ResponseEntity<Void> addNewUser(@RequestBody User user) {
         System.out.println("User Object : " + user.toString());
         user1 = user;
-
         userService.SendEmailVerification(user);
         loctime = LocalDateTime.now().plusMinutes(10);
         return ResponseEntity.ok().build();
@@ -49,4 +44,56 @@ public class UserController {
         return user;
     }
 
+    @GetMapping("/getcode")
+    public String getCode() {
+        code = userService.getCode();
+        return code;
+    }
+    @PostMapping("/verifycode")
+    public ResponseEntity<Void> verifyCode(@RequestBody String code1) {
+        getCode();
+        LocalDateTime timeNow = LocalDateTime.now();
+        if (loctime.isAfter(timeNow)) {
+            if (code1.replace("\"", "").equals(code)) {
+                List<Address> address = user1.getAddress();
+                if (user1.getStatus() == 0) {
+                    Customer customer = user1.getCustomer();
+                    customer.setUser(user1);
+
+                } else if (user1.getStatus() == 1) {
+                    ShopOwner shop = user1.getShopowner();
+                    shop.setUser(user1);
+                    System.out.println(shop.toString());
+                }
+                for(int i=0;i<address.size();i++){
+                    address.get(i).setUser(user1);
+                }
+                userService.addUser(user1);
+                return ResponseEntity.ok().build();
+            } else {
+                throw new IllegalStateException("Code Doesn't Match");
+//                return ResponseEntity.badRequest().build();
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//            return ResponseEntity.notFound().build();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//          Search which response is the suitable for this case.......
+            }
+        }
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        throw new IllegalStateException("Verification Code has been Expired...");
+
+    }
+
+
+    @DeleteMapping("deleteuser/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") int userID){
+        if(userService.getUserbyId(userID)!=null){
+        userService.DeleteUser(userID);
+        return ResponseEntity.ok().build();
+        }
+        else
+//            return ResponseEntity.notFound().build();
+            throw new IllegalStateException("User with ID: "+userID+" Wasn't Found");
+    }
 }

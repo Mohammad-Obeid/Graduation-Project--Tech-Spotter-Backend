@@ -18,6 +18,7 @@ public class userService {
     private static String g="";
     private static User user1=new User();
 
+
     @Autowired
     public userService(userRepository userRepo) {
         this.userRepo = userRepo;
@@ -39,10 +40,10 @@ public class userService {
             throw new IllegalStateException("Email Taken");
         }
         else {
+            user1=user;
             randomCodeGenerator();
             sendVerificationCodeMail();
 //            if()
-            user1=user;
         }
     }
 //    public void addUser(String code){
@@ -68,7 +69,8 @@ public class userService {
 
 //    @EventListener(ApplicationReadyEvent.class)
     public void sendVerificationCodeMail(){
-        emailService.sendVerificationCodeEmail("riyadjannah2023@gmail.com", g);
+        emailService.sendVerificationCodeEmail("mohammadkadoumi77@yahoo.com", g,user1.getUserName());//riyadjannah2023@gmail.com
+//        1200644@student.birzeit.edu
     }
     public String randomCodeGenerator(){
         g=randomCode.GenerateCode();
@@ -77,6 +79,13 @@ public class userService {
 
     public String getCode() {
         return g;
+    }
+
+    public void DeleteUser(int userID) {
+        User user=getUserbyId(userID);
+        if(user!=null){
+            userRepo.deleteById(userID);
+        }
     }
 }
 
