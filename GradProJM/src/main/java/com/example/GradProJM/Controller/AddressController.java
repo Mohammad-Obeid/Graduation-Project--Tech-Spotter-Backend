@@ -23,17 +23,17 @@ public class AddressController {
         return addservice.getAddresses(userid);
     }
 
-    @PostMapping("addnewadd/{id}")
-    public ResponseEntity<Void> addNewAddress(@PathVariable("id") int userID, @RequestBody Address address){
-        addservice.AddnewAddress(userID, address);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("addnewadd/{id}")
+//    public ResponseEntity<Void> addNewAddress(@PathVariable("id") int userID, @RequestBody Address address){
+//        addservice.AddnewAddress(userID, address);
+//        return ResponseEntity.ok().build();
+//    }
 
-    @DeleteMapping("deleteadd/{userid}/{addid}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable("userid") int userID, @PathVariable("addid") int addID){
-        addservice.deleteAddress(userID, addID);
-        return ResponseEntity.ok().build();
-    }
+//    @DeleteMapping("deleteadd/{userid}/{addid}")
+//    public ResponseEntity<Void> deleteAddress(@PathVariable("userid") int userID, @PathVariable("addid") int addID){
+//        addservice.deleteAddress(userID, addID);
+//        return ResponseEntity.ok().build();
+//    }
 
 
 }

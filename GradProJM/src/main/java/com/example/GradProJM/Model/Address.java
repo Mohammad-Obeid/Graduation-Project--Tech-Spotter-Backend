@@ -1,6 +1,7 @@
 package com.example.GradProJM.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,7 @@ public class Address {
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JsonBackReference
+    @JsonIgnore
     User user;
     public Address() {
     }
@@ -80,7 +82,7 @@ public class Address {
     public void setCountry(String country) {
         this.country = country;
     }
-
+    @JsonIgnore
     public User getUser() {
         return user;
     }
@@ -97,8 +99,6 @@ public class Address {
                 ", city='" + city + '\'' +
                 ", state='" + state + '\'' +
                 ", postalCode='" + postalCode + '\'' +
-                ", country='" + country + '\'' +
-                ", user=" + user +
-                '}';
+                ", country='" + country + '}';
     }
 }

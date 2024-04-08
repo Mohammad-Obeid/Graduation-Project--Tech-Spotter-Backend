@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
+
 import com.example.GradProJM.Services.*;
 
 @RestController
 @RequestMapping(path="user")
 public class UserController {
     private final userService userService;
+
     private static String code = "";
     private static User user1 = new User();
     private static LocalDateTime loctime;
@@ -27,8 +30,12 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping
-    public List<User> std() {
-        return userService.getUsers();
+    public ResponseEntity<List> std() {
+        Optional<List> users= Optional.ofNullable(userService.getUsers());
+        return users.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+
     }
     @PostMapping("addnewuser")
     public ResponseEntity<Void> addNewUser(@RequestBody User user) {
@@ -39,9 +46,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/{id}")
-    public User getUser(@PathVariable("id") int userid) {
-        User user = userService.getUserbyId(userid);
-        return user;
+    public ResponseEntity<User> getUser(@PathVariable("id") int userid) {
+        Optional<User> user = Optional.ofNullable(userService.getUserbyId(userid));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
     }
 
     @GetMapping("/getcode")
@@ -96,4 +105,43 @@ public class UserController {
 //            return ResponseEntity.notFound().build();
             throw new IllegalStateException("User with ID: "+userID+" Wasn't Found");
     }
+    @PostMapping("addNewAddress/{userID}")
+    public ResponseEntity<User> addNewAddress(@PathVariable("userID") int userID, @RequestBody Address address){
+        Optional<User> user= Optional.ofNullable(userService.AddNewUser(userID, address));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @DeleteMapping("deleteAddress/{userID}/{addressName}")
+    public ResponseEntity<User> deleteAddress(@PathVariable("userID") int userID, @PathVariable("addressName") String addName){
+        Optional<User> user=Optional.ofNullable(userService.RemoveAddress(userID,addName));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+    @PatchMapping("updateAddress/{userID}/{addID}")
+    public ResponseEntity<User> updateAddress(@PathVariable("userID") int userID, @PathVariable("addID") int addID, @RequestBody Address add){
+        Optional<User> user= Optional.ofNullable(userService.updateAddress(userID, addID,add));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @PatchMapping("updateCustomer/{userID}")
+    public ResponseEntity<User> updateCustomerInformation(@PathVariable("userID") int userID, @RequestBody User userr){
+        Optional<User> user= Optional.ofNullable(userService.updateCustomerInformation(userID, userr));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @PatchMapping("updateShopOwner/{userID}")
+    public ResponseEntity<User> updateShopOwnerInformation(@PathVariable("userID") int userID, @RequestBody User userr){
+        Optional<User> user= Optional.ofNullable(userService.updateShopOwnerInformation(userID, userr));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
 }
