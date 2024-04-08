@@ -22,6 +22,11 @@ import com.example.GradProJM.Services.*;
 public class UserController {
     private final userService userService;
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                       User Work// customer, ShopIwner, Registration, Login, Verification, Deletion, update.
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private static String code = "";
     private static User user1 = new User();
     private static LocalDateTime loctime;
@@ -29,7 +34,7 @@ public class UserController {
     public UserController(userService userService) {
         this.userService = userService;
     }
-    @GetMapping
+    @GetMapping("users")
     public ResponseEntity<List> std() {
         Optional<List> users= Optional.ofNullable(userService.getUsers());
         return users.map(ResponseEntity::ok)
@@ -53,14 +58,15 @@ public class UserController {
                         .body(null));
     }
 
-    @GetMapping("/getcode")
-    public String getCode() {
-        code = userService.getCode();
-        return code;
-    }
+//    @GetMapping("/getcode")
+//    public String getCode() {
+//        code = userService.getCode();
+//        return code;
+//    }
     @PostMapping("/verifycode")
     public ResponseEntity<Void> verifyCode(@RequestBody String code1) {
-        getCode();
+//        getCode();
+        code = userService.getCode();
         LocalDateTime timeNow = LocalDateTime.now();
         if (loctime.isAfter(timeNow)) {
             if (code1.replace("\"", "").equals(code)) {
@@ -95,19 +101,20 @@ public class UserController {
     }
 
 
-    @DeleteMapping("deleteuser/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") int userID){
-        if(userService.getUserbyId(userID)!=null){
-        userService.DeleteUser(userID);
-        return ResponseEntity.ok().build();
-        }
-        else
-//            return ResponseEntity.notFound().build();
-            throw new IllegalStateException("User with ID: "+userID+" Wasn't Found");
+    @DeleteMapping("deleteuser/{userID}")
+    public ResponseEntity<User> deleteUser(@PathVariable("userID") int userID){
+        Optional<User> user = userService.DeleteUser(userID);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                          Addresses Work, insertion, Deletion, update, get
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @PostMapping("addNewAddress/{userID}")
     public ResponseEntity<User> addNewAddress(@PathVariable("userID") int userID, @RequestBody Address address){
-        Optional<User> user= Optional.ofNullable(userService.AddNewUser(userID, address));
+        Optional<User> user= Optional.ofNullable(userService.AddNewAddress(userID, address));
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
@@ -128,6 +135,11 @@ public class UserController {
                         .body(null));
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                  Customer and ShopOwner Information Update
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @PatchMapping("updateCustomer/{userID}")
     public ResponseEntity<User> updateCustomerInformation(@PathVariable("userID") int userID, @RequestBody User userr){
         Optional<User> user= Optional.ofNullable(userService.updateCustomerInformation(userID, userr));
@@ -144,4 +156,35 @@ public class UserController {
                         .body(null));
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                     Payment Methods Work, addition, deletion, update, get ...
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    @PostMapping("AddPaymentMethod/{userID}")
+    public ResponseEntity<User> AddNewPaymentMethod(@PathVariable("userID") int userID, @RequestBody PaymentMethods paymentMethod){
+        Optional<User> user= Optional.ofNullable(userService.AddNewPaymentMethod(userID,paymentMethod));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+    @PatchMapping("UpdatePayment/{userID}/{paymentName}")
+    public ResponseEntity<User> UpdatePaymentByPayNameForAUser(@PathVariable("userID") int userID, @PathVariable("paymentName") String paymentName,@RequestBody PaymentMethods paymentMethod){
+        Optional<User> user= Optional.ofNullable(userService.UpdatePaymentByPayNameForAUser(userID,paymentName,paymentMethod));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @PatchMapping("UpdatePaymentbyid/{userID}/{paymentID}")
+    public ResponseEntity<User> UpdatePaymentByPayIDForAUser(@PathVariable("userID") int userID, @PathVariable("paymentID") int paymentID,@RequestBody PaymentMethods paymentMethod){
+        Optional<User> user= Optional.ofNullable(userService.UpdatePaymentByPayIDForAUser(userID,paymentID,paymentMethod));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
 }

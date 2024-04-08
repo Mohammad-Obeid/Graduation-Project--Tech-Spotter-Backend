@@ -1,5 +1,6 @@
 package com.example.GradProJM.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class ShopOwner{
     private double shopRate;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private User user;
 
 

@@ -1,11 +1,14 @@
 package com.example.GradProJM.Model;
+import com.example.GradProJM.Controller.PaymentMethods;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name="user")
+@JsonSerialize(using = UserSerializer.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -18,19 +21,21 @@ public class User {
 
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
-//    @JsonIgnore
+//    @JsonManagedReference
     private ShopOwner shopowner;
 
 
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
-//    @JsonIgnore
+//    @JsonManagedReference
     private Customer customer;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 //    @JsonManagedReference
     private List<Address> address;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<PaymentMethods> paymentMethods;
 
     public User() {
     }
@@ -134,6 +139,14 @@ public class User {
 //    @JsonIgnore
     public void setAddress(List<Address> address) {
         this.address = address;
+    }
+
+    public List<PaymentMethods> getPaymentMethods() {
+        return paymentMethods;
+    }
+
+    public void setPaymentMethods(List<PaymentMethods> paymentMethods) {
+        this.paymentMethods = paymentMethods;
     }
 
     @Override

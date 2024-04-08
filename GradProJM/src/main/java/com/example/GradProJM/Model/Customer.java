@@ -1,4 +1,6 @@
 package com.example.GradProJM.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 @Entity
@@ -18,6 +20,7 @@ public class Customer{
     private String BDate;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private User user;
 
     public Customer() {
