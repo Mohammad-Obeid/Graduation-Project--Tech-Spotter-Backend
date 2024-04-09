@@ -1,7 +1,8 @@
-package com.example.GradProJM.Controller;
+package com.example.GradProJM.Model;
 
 
 import com.example.GradProJM.Model.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -9,14 +10,16 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="paymentmethod")
 public class PaymentMethods {
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int paymentMethodId;
     private String paymentMethodName;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
     @JsonIgnore
-    private User user;
-
+    User user;
+    @OneToOne(cascade = CascadeType.ALL)
+    private paymentMethodSpecification paymentMethodSpecification;
     public PaymentMethods() {
     }
 
@@ -44,12 +47,21 @@ public class PaymentMethods {
         this.paymentMethodName = paymentMethodName;
     }
 
+    @JsonIgnore
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public paymentMethodSpecification getPaymentMethodSpecification() {
+        return paymentMethodSpecification;
+    }
+
+    public void setPaymentMethodSpecification(paymentMethodSpecification paymentMethodSpecification) {
+        this.paymentMethodSpecification = paymentMethodSpecification;
     }
 
     @Override

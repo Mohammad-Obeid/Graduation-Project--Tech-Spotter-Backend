@@ -1,17 +1,13 @@
 package com.example.GradProJM.Controller;
 
 
-import com.example.GradProJM.Model.Address;
-import com.example.GradProJM.Model.Customer;
-import com.example.GradProJM.Model.ShopOwner;
-import com.example.GradProJM.Model.User;
+import com.example.GradProJM.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -183,6 +179,15 @@ public class UserController {
     @PatchMapping("UpdatePaymentbyid/{userID}/{paymentID}")
     public ResponseEntity<User> UpdatePaymentByPayIDForAUser(@PathVariable("userID") int userID, @PathVariable("paymentID") int paymentID,@RequestBody PaymentMethods paymentMethod){
         Optional<User> user= Optional.ofNullable(userService.UpdatePaymentByPayIDForAUser(userID,paymentID,paymentMethod));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+    @DeleteMapping("deletePaymentMethod/{userID}/{paymentID}")
+    public ResponseEntity<User> DeletePaymentMethod(@PathVariable("userID") int userID,@PathVariable("paymentID") int paymentID){
+        Optional<User> user= Optional.ofNullable(userService.DeletePaymentMethod(userID,paymentID));
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

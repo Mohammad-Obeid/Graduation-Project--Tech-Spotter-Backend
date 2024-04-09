@@ -1,7 +1,4 @@
 package com.example.GradProJM.Model;
-import com.example.GradProJM.Controller.PaymentMethods;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import java.util.List;

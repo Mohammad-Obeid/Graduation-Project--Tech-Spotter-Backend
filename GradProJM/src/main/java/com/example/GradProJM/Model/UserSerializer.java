@@ -21,11 +21,11 @@ public class UserSerializer extends JsonSerializer<User> {
 
         if (user.getStatus() == 0) {
             jsonGenerator.writeObjectField("customer", user.getCustomer());
-            jsonGenerator.writeObjectField("payments", user.getPaymentMethods());
         }
         else{
             jsonGenerator.writeObjectField("shopOwner", user.getShopowner());
         }
+        jsonGenerator.writeObjectField("payments", user.getPaymentMethods());
         jsonGenerator.writeObjectField("address", user.getAddress());
         jsonGenerator.writeEndObject();
     }
