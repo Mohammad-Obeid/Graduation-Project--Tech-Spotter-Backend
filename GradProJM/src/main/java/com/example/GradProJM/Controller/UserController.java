@@ -39,13 +39,14 @@ public class UserController {
 
     }
     @PostMapping("addnewuser")
-    public ResponseEntity<Void> addNewUser(@RequestBody User user) {
+    public ResponseEntity<User> addNewUser(@RequestBody User user) {
         System.out.println("User Object : " + user.toString());
         user1 = user;
-        userService.SendEmailVerification(user);
+        Optional<User> us= Optional.ofNullable(userService.SendEmailVerification(user));
         loctime = LocalDateTime.now().plusMinutes(10);
-        return ResponseEntity.ok().build();
-    }
+        return us.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.FOUND)
+                        .body(null));    }
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") int userid) {
         Optional<User> user = Optional.ofNullable(userService.getUserbyId(userid));
@@ -60,7 +61,7 @@ public class UserController {
 //        return code;
 //    }
     @PostMapping("/verifycode")
-    public ResponseEntity<Void> verifyCode(@RequestBody String code1) {
+    public ResponseEntity<String> verifyCode(@RequestBody String code1) {
 //        getCode();
         code = userService.getCode();
         LocalDateTime timeNow = LocalDateTime.now();
@@ -70,7 +71,6 @@ public class UserController {
                 if (user1.getStatus() == 0) {
                     Customer customer = user1.getCustomer();
                     customer.setUser(user1);
-
                 } else if (user1.getStatus() == 1) {
                     ShopOwner shop = user1.getShopowner();
                     shop.setUser(user1);
@@ -82,18 +82,11 @@ public class UserController {
                 userService.addUser(user1);
                 return ResponseEntity.ok().build();
             } else {
-                throw new IllegalStateException("Code Doesn't Match");
-//                return ResponseEntity.badRequest().build();
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//            return ResponseEntity.notFound().build();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//          Search which response is the suitable for this case.......
+                System.out.println("lalallala");
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Code Doesn't Match");
             }
         }
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        throw new IllegalStateException("Verification Code has been Expired...");
-
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Verification Code has been Expired...");
     }
 
 

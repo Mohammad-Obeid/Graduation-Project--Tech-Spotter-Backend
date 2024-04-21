@@ -24,6 +24,7 @@ public class UserSerializer extends JsonSerializer<User> {
         }
         else{
             jsonGenerator.writeObjectField("shopOwner", user.getShopowner());
+//            jsonGenerator.writeObjectField("products", user.getShopowner().getProducts());
         }
         jsonGenerator.writeObjectField("payments", user.getPaymentMethods());
         jsonGenerator.writeObjectField("address", user.getAddress());

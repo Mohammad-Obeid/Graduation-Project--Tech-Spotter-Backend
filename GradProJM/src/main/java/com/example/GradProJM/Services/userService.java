@@ -44,14 +44,15 @@ public class userService {
         return users;
     }
 
-    public void SendEmailVerification(User user) {
+    public User SendEmailVerification(User user) {
         Optional<User> findByuserEmail = userRepo.findByuserEmail(user.getUserEmail());
         if (findByuserEmail.isPresent()) {
-            throw new IllegalStateException("Email Taken");
+            return null;
         } else {
             user1 = user;
             randomCodeGenerator();
             sendVerificationCodeMail();
+            return user;
         }
     }
 //    public void addUser(String code){

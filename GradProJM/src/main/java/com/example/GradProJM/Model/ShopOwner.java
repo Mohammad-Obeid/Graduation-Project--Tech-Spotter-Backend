@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name="shopowner")
@@ -26,19 +27,21 @@ public class ShopOwner{
     private User user;
 
 
+    @OneToMany(mappedBy = "shopOwner",cascade = CascadeType.ALL)
+    private List<product>products;
     public ShopOwner() {
     }
 
     public ShopOwner(int shopID, String shopName, String subStartDate, String subEndDate, double shopRate) {
         this.shopID = shopID;
-        ShopName = shopName;
+        this.ShopName = shopName;
         this.subStartDate = subStartDate;
         this.subEndDate = subEndDate;
         this.shopRate = shopRate;
     }
 
     public ShopOwner(String shopName, String subStartDate, String subEndDate, double shopRate) {
-        ShopName = shopName;
+        this.ShopName = shopName;
         this.subStartDate = subStartDate;
         this.subEndDate = subEndDate;
         this.shopRate = shopRate;
@@ -60,27 +63,28 @@ public class ShopOwner{
         this.ShopName = shopName;
     }
 
-    public String getsubStartDate() {
+
+    public String getSubStartDate() {
         return subStartDate;
     }
 
-    public void setsubStartDate(String subStartDate) {
+    public void setSubStartDate(String subStartDate) {
         this.subStartDate = subStartDate;
     }
 
-    public String getsubEndDate() {
+    public String getSubEndDate() {
         return subEndDate;
     }
 
-    public void setsubEndDate(String subEndDate) {
+    public void setSubEndDate(String subEndDate) {
         this.subEndDate = subEndDate;
     }
 
-    public double getshopRate() {
+    public double getShopRate() {
         return shopRate;
     }
 
-    public void setshopRate(double shopRate) {
+    public void setShopRate(double shopRate) {
         this.shopRate = shopRate;
     }
 
@@ -90,6 +94,14 @@ public class ShopOwner{
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<product> products) {
+        this.products = products;
     }
 
     @Override
@@ -102,4 +114,5 @@ public class ShopOwner{
                 ", shopRate=" + shopRate +
                 '}';
     }
+
 }
