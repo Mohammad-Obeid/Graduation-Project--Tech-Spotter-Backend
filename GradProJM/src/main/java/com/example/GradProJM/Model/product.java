@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 public class product {
@@ -13,16 +15,21 @@ public class product {
     private String productName, productBarcode;
     private double productPrice;
     private String productCategory,productPublishDate, productDescription;
-    private int productQuantity;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonBackReference
+//    @ManyToMany(mappedBy = "products",cascade = CascadeType.MERGE)
+//    @JsonBackReference
+//    @JsonIgnore
+//    private List<ShopOwner> shopOwners;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.MERGE)
     @JsonIgnore
-    private ShopOwner shopOwner;
+    private List<Shop_Products> shopProducts;
+
+
 
     public product() {
     }
 
-    public product(int productId, String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription, int productQuantity) {
+    public product(int productId, String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription) {
         this.productId = productId;
         this.productName = productName;
         this.productBarcode = productBarcode;
@@ -30,16 +37,14 @@ public class product {
         this.productCategory = productCategory;
         this.productPublishDate = productPublishDate;
         this.productDescription = productDescription;
-        this.productQuantity = productQuantity;
     }
-    public product(String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription, int productQuantity) {
+    public product(String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription) {
         this.productName = productName;
         this.productBarcode = productBarcode;
         this.productPrice = productPrice;
         this.productCategory = productCategory;
         this.productPublishDate = productPublishDate;
         this.productDescription = productDescription;
-        this.productQuantity = productQuantity;
     }
 
     public int getProductId() {
@@ -98,25 +103,13 @@ public class product {
         this.productDescription = productDescription;
     }
 
-    public int getProductQuantity() {
-        return productQuantity;
+
+    public List<Shop_Products> getShopProducts() {
+        return shopProducts;
     }
 
-    public void setProductQuantity(int productQuantity) {
-        this.productQuantity = productQuantity;
-    }
-
-    public ShopOwner getShopOwner() {
-        return shopOwner;
-    }
-
-    public void setShopOwner(ShopOwner shopOwner) {
-        this.shopOwner = shopOwner;
-    }
-
-    public boolean isAvaibleProduct(product prod){
-        if(prod.getProductQuantity()>0)return true;
-        return false;
+    public void setShopProducts(List<Shop_Products> shopProducts) {
+        this.shopProducts = shopProducts;
     }
 
     @Override
@@ -129,7 +122,6 @@ public class product {
                 ", productCategory='" + productCategory + '\'' +
                 ", productPublishDate='" + productPublishDate + '\'' +
                 ", productDescription='" + productDescription + '\'' +
-                ", productQuantity=" + productQuantity +
                 '}';
     }
 }

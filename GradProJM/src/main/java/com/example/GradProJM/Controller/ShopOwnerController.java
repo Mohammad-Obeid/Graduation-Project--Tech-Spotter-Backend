@@ -38,33 +38,33 @@ public class ShopOwnerController {
         return shopOwnerService.getShopOwnerbyId(ShopID);
     }
 
-    @PostMapping("addProducts/{shopID}")
-    public ResponseEntity<ShopOwner> AddProductsToSomeShop(@PathVariable("shopID") int shopID, @RequestBody product prod){
-        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.AddNewProduct(shopID, prod));
-        return shop.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.FOUND)
-                        .body(null));
-    }
+//    @PostMapping("addProducts/{shopID}")
+//    public ResponseEntity<ShopOwner> AddProductsToSomeShop(@PathVariable("shopID") int shopID, @RequestBody product prod){
+//        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.AddNewProduct(shopID, prod));
+//        return shop.map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.status(HttpStatus.FOUND)
+//                        .body(null));
+//    }
 
-    @PatchMapping("modifyProduct/{shopOwnerID}/{productID}")
-    public ResponseEntity<ShopOwner> ModifyProductForShopOwner(@PathVariable("shopOwnerID") int shopOwnerID,
-                                                               @PathVariable("productID") int productID,
-                                                               @RequestBody product prod){
-        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.ModifyProductForShopOwner(shopOwnerID,productID, prod));
-        return shop.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-                        .body(null));
-    }
+//    @PatchMapping("modifyProduct/{shopOwnerID}/{productID}")
+//    public ResponseEntity<ShopOwner> ModifyProductForShopOwner(@PathVariable("shopOwnerID") int shopOwnerID,
+//                                                               @PathVariable("productID") int productID,
+//                                                               @RequestBody product prod){
+//        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.ModifyProductForShopOwner(shopOwnerID,productID, prod));
+//        return shop.map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+//                        .body(null));
+//    }
 
 
-    @DeleteMapping("deleteProduct/{shopID}/{productID}")
-    public ResponseEntity<ShopOwner> DeleteProductForShopOwner(@PathVariable("shopID") int shopID,
-                                                               @PathVariable("productID") int productID){
-        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.DeleteProductForShopOwner(shopID,productID));
-        return shop.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(null));
-    }
+//    @DeleteMapping("deleteProduct/{shopID}/{productID}")
+//    public ResponseEntity<ShopOwner> DeleteProductForShopOwner(@PathVariable("shopID") int shopID,
+//                                                               @PathVariable("productID") int productID){
+//        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.DeleteProductForShopOwner(shopID,productID));
+//        return shop.map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                        .body(null));
+//    }
 
 
 }

@@ -27,8 +27,23 @@ public class ShopOwner{
     private User user;
 
 
-    @OneToMany(mappedBy = "shopOwner",cascade = CascadeType.ALL)
-    private List<product>products;
+//    @ManyToMany(cascade = CascadeType.MERGE)
+//    @JoinTable(name = "shop_product_table",
+//            joinColumns = {
+//                    @JoinColumn(name = "shopID",referencedColumnName = "shopID"),
+//
+//            },
+//            inverseJoinColumns = {
+//                    @JoinColumn(name = "productID", referencedColumnName = "productID")
+//            }
+//    )
+//    private List<product> products;
+
+
+    @OneToMany(mappedBy = "shop",cascade = CascadeType.MERGE)
+    @JsonIgnore
+    private List<Shop_Products> shopProducts;
+
     public ShopOwner() {
     }
 
@@ -96,12 +111,12 @@ public class ShopOwner{
         this.user = user;
     }
 
-    public List<product> getProducts() {
-        return products;
+    public List<Shop_Products> getShopProducts() {
+        return shopProducts;
     }
 
-    public void setProducts(List<product> products) {
-        this.products = products;
+    public void setShopProducts(List<Shop_Products> shopProducts) {
+        this.shopProducts = shopProducts;
     }
 
     @Override

@@ -39,39 +39,39 @@ public class shopOwnerService {
         return findByShopid.orElse(null);
     }
 
-    public ShopOwner AddNewProduct(int shopID, product prod) {
-        System.out.println("MOE");
-        Optional<ShopOwner> shop=shopOwnerRepo.findById(shopID);
-        if(shop.isPresent()){
-            //todo: make sure product doesn't exist
-            List<product> products=shop.get().getProducts();
-            prod.setShopOwner(shop.get());
-            products.add(prod);
-            shop.get().setProducts(products);
-            shopOwnerRepo.save(shop.get());
-            System.out.println("slsllalala");
-            return shop.get();
-        }
-        else
-            return null;
-    }
+//    public ShopOwner AddNewProduct(int shopID, product prod) {
+//        System.out.println("MOE");
+//        Optional<ShopOwner> shop=shopOwnerRepo.findById(shopID);
+//        if(shop.isPresent()){
+//            //todo: make sure product doesn't exist
+//            List<product> products=shop.get().getProducts();
+//            prod.setShopOwner(shop.get());
+//            products.add(prod);
+//            shop.get().setProducts(products);
+//            shopOwnerRepo.save(shop.get());
+//            System.out.println("slsllalala");
+//            return shop.get();
+//        }
+//        else
+//            return null;
+//    }
 
-    public ShopOwner ModifyProductForShopOwner(int shopOwnerID, int productID, product prodd) {
-        Optional <ShopOwner> shop=shopOwnerRepo.findById(shopOwnerID);
-        if(shop.isPresent()){
-            Optional<product> prod=prodRepo.findById(productID);
-            if(prod.isPresent()){
-                prodd.setProductId(prod.get().getProductId());
-                prodd.setShopOwner(shop.get());
-//                List<product> products =shop.get().getProducts();
-//                produc
-                prodRepo.save(prodd);
-                return shop.get();
-            }
-            return null;
-        }
-        return null;
-    }
+//    public ShopOwner ModifyProductForShopOwner(int shopOwnerID, int productID, product prodd) {
+//        Optional <ShopOwner> shop=shopOwnerRepo.findById(shopOwnerID);
+//        if(shop.isPresent()){
+//            Optional<product> prod=prodRepo.findById(productID);
+//            if(prod.isPresent()){
+//                prodd.setProductId(prod.get().getProductId());
+//                prodd.setShopOwner(shop.get());
+////                List<product> products =shop.get().getProducts();
+////                produc
+//                prodRepo.save(prodd);
+//                return shop.get();
+//            }
+//            return null;
+//        }
+//        return null;
+//    }
 
     public ShopOwner DeleteProductForShopOwner(int shopID, int productID) {
         Optional<ShopOwner> shop=shopOwnerRepo.findById(shopID);
@@ -87,7 +87,7 @@ public class shopOwnerService {
 
 
                 product productToRemove = prod.get();
-                shop.get().getProducts().remove(productToRemove);
+//                shop.get().getProducts().remove(productToRemove);
                 shopOwnerRepo.save(shop.get());
                 prodRepo.deleteById(productID);
                 return shop.get();
