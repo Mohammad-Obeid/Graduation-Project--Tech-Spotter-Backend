@@ -116,7 +116,6 @@ public class ProductShopService {
 
     public Boolean deleteAProductByBarcodeFromAShop(int shopID, String prodBarcode) {
         Optional<product> prod=prdRepo.findByproductBarcode(prodBarcode);
-        if(prod.isPresent()) return DeleteAProductFromAShop(shopID,prod.get().getProductId());
-        return null;
+        return prod.map(product -> DeleteAProductFromAShop(shopID, product.getProductId())).orElse(null);
     }
 }

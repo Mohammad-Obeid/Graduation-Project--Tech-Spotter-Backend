@@ -6,6 +6,7 @@ import com.example.GradProJM.Repos.PaymentMethodRepository;
 import com.example.GradProJM.Repos.PaymentSpecificationRepository;
 import com.example.GradProJM.Repos.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,8 +67,12 @@ public class userService {
         if (findByuserEmail.isPresent()) {
             throw new IllegalStateException("Email Taken");
         }
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encryptedPassword=bCryptPasswordEncoder.encode(user1.getUserPass());
+        user1.setUserPass(encryptedPassword);
         userRepo.saveAndFlush(user1);
     }
+
 
 
     public User getUserbyId(int userid) {
@@ -349,4 +354,29 @@ public class userService {
 
             return null;
     }
+
+    public String Login(LoginRequest loginreq) {
+        BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+        Optional<User> user=userRepo.findUserByUserName(loginreq.getUserNameOrEmail());
+        if(!user.isPresent()){
+            user=userRepo.findByuserEmail(loginreq.getUserNameOrEmail());
+            if(user.isPresent()){
+                System.out.println("sss");
+                if(bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
+                    return "Success";
+                }
+                return "Password Wasn't correct";
+            }
+            return "user Wassn't Found";
+        }
+        else{
+        if(bCryptPasswordEncoder.matches(loginreq.getPassword(),user.get().getUserPass())){
+            return "Success";
+        }
+
+        return "Password Wasn't correct";
+        }
+    }
+
+
 }

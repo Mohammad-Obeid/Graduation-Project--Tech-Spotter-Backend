@@ -55,6 +55,8 @@ public class UserController {
                         .body(null));
     }
 
+
+
 //    @GetMapping("/getcode")
 //    public String getCode() {
 //        code = userService.getCode();
@@ -90,6 +92,13 @@ public class UserController {
     }
 
 
+    @PostMapping("loginUser")
+    public ResponseEntity<String> Login(@RequestBody LoginRequest loginreq){
+        Optional<String> LoginUser= Optional.ofNullable(userService.Login(loginreq));
+        return LoginUser.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(""));
+    }
     @DeleteMapping("deleteuser/{userID}")
     public ResponseEntity<User> deleteUser(@PathVariable("userID") int userID){
         Optional<User> user = userService.DeleteUser(userID);
