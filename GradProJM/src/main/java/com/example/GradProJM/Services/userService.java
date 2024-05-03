@@ -361,7 +361,6 @@ public class userService {
         if(!user.isPresent()){
             user=userRepo.findByuserEmail(loginreq.getUserNameOrEmail());
             if(user.isPresent()){
-                System.out.println("sss");
                 if(bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
                     return "Success";
                 }
