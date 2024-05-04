@@ -15,11 +15,6 @@ public class product {
     private String productName, productBarcode;
     private double productPrice;
     private String productCategory,productPublishDate, productDescription;
-//    @ManyToMany(mappedBy = "products",cascade = CascadeType.MERGE)
-//    @JsonBackReference
-//    @JsonIgnore
-//    private List<ShopOwner> shopOwners;
-
     @OneToMany(mappedBy = "product",cascade = CascadeType.MERGE)
     @JsonIgnore
     private List<Shop_Products> shopProducts;

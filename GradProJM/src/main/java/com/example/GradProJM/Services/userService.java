@@ -1,10 +1,7 @@
 package com.example.GradProJM.Services;
 
 import com.example.GradProJM.Model.*;
-import com.example.GradProJM.Repos.AddressRepository;
-import com.example.GradProJM.Repos.PaymentMethodRepository;
-import com.example.GradProJM.Repos.PaymentSpecificationRepository;
-import com.example.GradProJM.Repos.userRepository;
+import com.example.GradProJM.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,13 +20,15 @@ public class userService {
     private final PaymentMethodRepository paymentMetRepo;
 
     private final PaymentSpecificationRepository paySpecRepo;
+    private final ShoppingCartRepository shpCrtRepo;
 
     @Autowired
-    public userService(userRepository userRepo, AddressRepository addRepo, PaymentMethodRepository paymentMetRepo, PaymentSpecificationRepository paySpecRepo) {
+    public userService(userRepository userRepo, AddressRepository addRepo, PaymentMethodRepository paymentMetRepo, PaymentSpecificationRepository paySpecRepo, ShoppingCartRepository shpCrtRepo) {
         this.userRepo = userRepo;
         this.addRepo = addRepo;
         this.paymentMetRepo = paymentMetRepo;
         this.paySpecRepo = paySpecRepo;
+        this.shpCrtRepo=shpCrtRepo;
     }
 
 
@@ -67,10 +66,21 @@ public class userService {
         if (findByuserEmail.isPresent()) {
             throw new IllegalStateException("Email Taken");
         }
+
+//        if(user1.getStatus()==0){
+//            Customer cust=user1.getCustomer();
+//            cust.setShoppingCart(shpCrt);
+//        }
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String encryptedPassword=bCryptPasswordEncoder.encode(user1.getUserPass());
         user1.setUserPass(encryptedPassword);
         userRepo.saveAndFlush(user1);
+    }
+    public ShoppingCart GetShoppingCart() {
+        ShoppingCart shpCrt=new ShoppingCart(0);
+        shpCrtRepo.save(shpCrt);
+        return shpCrt;
+
     }
 
 
@@ -376,6 +386,7 @@ public class userService {
         return "Password Wasn't correct";
         }
     }
+
 
 
 }

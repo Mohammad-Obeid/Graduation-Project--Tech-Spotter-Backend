@@ -1,47 +1,33 @@
 package com.example.GradProJM.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.time.LocalDate;
 @Entity
 @Table(name = "customer")
 public class Customer{
     @Id
-//    @SequenceGenerator(
-//            name = "customer_sequence",
-//            sequenceName = "customer_sequence",
-//            allocationSize = 1
-//    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int custID;
     private String FName,LName;
-    private int cartid;
-
     private String BDate;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private User user;
-
-
-
+    @OneToOne(cascade = CascadeType.ALL)
+    private ShoppingCart shoppingCart;
     public Customer() {
     }
 
-    public Customer(int custID, String FName, String LName, String BDate, int cartid) {
+    public Customer(int custID, String FName, String LName, String BDate) {
         this.custID = custID;
         this.FName = FName;
         this.LName = LName;
         this.BDate = BDate;
-        this.cartid = cartid;
-//        this.user=user;
     }
 
-    public Customer(String FName, String LName, String BDate, int cartid,User user) {
+    public Customer(String FName, String LName, String BDate, User user) {
         this.FName = FName;
         this.LName = LName;
         this.BDate = BDate;
-        this.cartid = cartid;
         this.user=user;
     }
 
@@ -79,13 +65,7 @@ public class Customer{
         this.BDate = BDate;
     }
 
-    public int getcartid() {
-        return cartid;
-    }
 
-    public void setcartid(int cartid) {
-        this.cartid = cartid;
-    }
 
     public User getUser() {
         return user;
@@ -95,6 +75,14 @@ public class Customer{
         this.user = user;
     }
 
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -102,7 +90,6 @@ public class Customer{
                 ", FName='" + FName + '\'' +
                 ", LName='" + LName + '\'' +
                 ", BDate=" + BDate +
-                ", cartid=" + cartid +
                 '}';
     }
 }

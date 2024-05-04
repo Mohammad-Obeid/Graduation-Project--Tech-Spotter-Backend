@@ -72,6 +72,7 @@ public class UserController {
                 List<Address> address = user1.getAddress();
                 if (user1.getStatus() == 0) {
                     Customer customer = user1.getCustomer();
+                    customer.setShoppingCart(userService.GetShoppingCart());
                     customer.setUser(user1);
                 } else if (user1.getStatus() == 1) {
                     ShopOwner shop = user1.getShopowner();
