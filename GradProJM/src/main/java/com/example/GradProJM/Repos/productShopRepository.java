@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface productShopRepository extends JpaRepository<Shop_Products,Integer> {
     Optional<List> findShop_ProductsByShop_ShopID(int shopID);
+    Optional<Shop_Products> findShop_ProductsByShop_ShopIDAndProduct_ProductId(int shopID,int ProdID);
 }

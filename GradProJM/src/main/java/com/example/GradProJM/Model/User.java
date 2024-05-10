@@ -1,20 +1,29 @@
 package com.example.GradProJM.Model;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 @Table(name="user")
 @JsonSerialize(using = UserSerializer.class)
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userid;
     @Column(nullable = false)
-    private String userName,userPNum,userEmail,userPass,userAddID;
+    private String userName,userPNum,userEmail,userPass;
+    private String joinDate;
     @Column(nullable = false)
-
     private int status;
+
+    @Column(nullable = false)
+    private boolean verified;
 
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
@@ -34,26 +43,30 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<PaymentMethods> paymentMethods;
 
+
     public User() {
+        this.verified=false;
     }
 
-    public User(int userid, String userName, String userPNum, String userEmail, String userPass, String userAddID,int status) {
+    public User(int userid, String userName, String userPNum, String userEmail, String userPass,int status,String joinDate, boolean verifie) {
         this.userid = userid;
         this.userName = userName;
         this.userPNum = userPNum;
         this.userEmail = userEmail;
         this.userPass = userPass;
-        this.userAddID = userAddID;
         this.status=status;
+        this.joinDate=String.valueOf(LocalDate.now());
+        this.verified=false;
     }
-    public User(String userName, String userPNum, String userEmail, String userPass, String userAddID,int status , Customer customer) {
+    public User(String userName, String userPNum, String userEmail, String userPass, int status , Customer customer,String joinDate, boolean verifie) {
         this.userName = userName;
         this.userPNum = userPNum;
         this.userEmail = userEmail;
         this.userPass = userPass;
-        this.userAddID = userAddID;
         this.status=status;
         this.customer = customer ;
+        this.joinDate=String.valueOf(LocalDate.now());
+        this.verified=false;
     }
 
 
@@ -97,13 +110,6 @@ public class User {
         this.userPass = userPass;
     }
 
-    public String getUserAddID() {
-        return userAddID;
-    }
-
-    public void setUserAddID(String userAddID) {
-        this.userAddID = userAddID;
-    }
 
     public int getStatus() {
         return status;
@@ -146,6 +152,22 @@ public class User {
         this.paymentMethods = paymentMethods;
     }
 
+    public String getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(String joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -154,8 +176,32 @@ public class User {
                 ", userPNum='" + userPNum + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", userPass='" + userPass + '\'' +
-                ", userAddID='" + userAddID + '\'' +
                 ", status=" + status +
                 '}';
     }
+
+
+//    public static void deleteUnverifiedUsersAfterTimeout(EntityManager entityManager) {
+//        Duration timeoutDuration = Duration.ofMinutes(1);
+//        LocalDateTime thresholdDateTime = LocalDateTime.now().minus(timeoutDuration);
+//
+//
+//        List<User> unverifiedUsers = entityManager.createQuery(
+//                        "SELECT u FROM User u WHERE u.verified = false AND u.joinDate < :thresholdDate",
+//                        User.class)
+//                .setParameter("thresholdDate", thresholdDateTime)
+//                .getResultList();
+//        for (User user : unverifiedUsers) {
+//            entityManager.getTransaction().begin();
+//            entityManager.remove(user);
+//            entityManager.getTransaction().commit();
+//            System.out.println("Deleted unverified user: " + user.getUserName());
+//        }
+//    }
+//
+//    public static void scheduleUnverifiedUserDeletion(EntityManager entityManager) {
+//        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//        scheduler.scheduleAtFixedRate(() -> deleteUnverifiedUsersAfterTimeout(entityManager),
+//                0, 1, TimeUnit.MINUTES);
+//    }
 }

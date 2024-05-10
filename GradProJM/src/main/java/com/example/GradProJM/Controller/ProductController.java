@@ -70,4 +70,12 @@ public class ProductController {
                         .body(false));
     }
 
+    @PatchMapping("RateaProduct/{custID}/{prodID}")
+    public ResponseEntity<product> RateAProduct(@PathVariable("custID") int custID, @PathVariable("prodID") int prodID,@RequestBody double rate){
+        Optional<product> product= Optional.ofNullable(prodService.RateAProduct(custID,prodID,rate));
+        return product.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
 }

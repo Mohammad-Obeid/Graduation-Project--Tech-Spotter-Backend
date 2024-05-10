@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="shop_product_table")
 @JsonSerialize(using = Shop_Product_Serializer.class)
 public class Shop_Products {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
@@ -21,6 +23,16 @@ public class Shop_Products {
     private product product;
 
     private int quantity;
+
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private Order order;
+
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<orderItems> orderItem;
+
 
     public Shop_Products() {
     }
@@ -69,4 +81,22 @@ public class Shop_Products {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+//    public List<orderItems> getOrderItem() {
+//        return orderItem;
+//    }
+//
+//    public void setOrderItem(List<orderItems> orderItem) {
+//        this.orderItem = orderItem;
+//    }
+
+    //    public Order getOrder() {
+//        return order;
+//    }
+//
+//    public void setOrder(Order order) {
+//        this.order = order;
+//    }
+
+
 }

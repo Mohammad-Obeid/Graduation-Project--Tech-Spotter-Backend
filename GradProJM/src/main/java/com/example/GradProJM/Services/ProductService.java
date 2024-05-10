@@ -1,20 +1,23 @@
 package com.example.GradProJM.Services;
 
 
+import com.example.GradProJM.Model.Customer;
 import com.example.GradProJM.Model.product;
+import com.example.GradProJM.Repos.CustomerRepository;
 import com.example.GradProJM.Repos.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.text.DecimalFormat;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductService {
-    private static ProductRepository prodRepo;
-    @Autowired
-    public ProductService(ProductRepository prodRepo) {
+    private final ProductRepository prodRepo;
+    private final CustomerRepository custRepo;
+    public ProductService(ProductRepository prodRepo, CustomerRepository custRepo) {
         this.prodRepo=prodRepo;
+        this.custRepo=custRepo;
     }
 
     public List<product> getAllProducts() {
@@ -67,5 +70,28 @@ public class ProductService {
             return true;
         }
         return null;
+    }
+
+    public product RateAProduct(int custID, int prodID,double rate) {
+        Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
+        if (customer.isPresent()) {
+            Optional<product> prod = prodRepo.findById(prodID);
+            if (prod.isPresent()) {
+                int numOfRates = prod.get().getNumOfRates();
+                double rat = prod.get().getProductRate();
+                rat *= numOfRates;
+                rat += rate;
+                numOfRates += 1;
+                rat /= numOfRates;
+                DecimalFormat df = new DecimalFormat("#.#");
+                rat = Double.parseDouble(df.format(rat));
+                prod.get().setNumOfRates(numOfRates);
+                prod.get().setProductRate(rat);
+                prodRepo.save(prod.get());
+                return prod.get();
+            }
+            return null;
+        }
+    return null;
     }
 }

@@ -10,21 +10,28 @@ import java.util.List;
 @Table(name = "product")
 public class product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
     private String productName, productBarcode;
     private double productPrice;
     private String productCategory,productPublishDate, productDescription;
+    private int numOfRates;
+    private double productRate;
     @OneToMany(mappedBy = "product",cascade = CascadeType.MERGE)
     @JsonIgnore
     private List<Shop_Products> shopProducts;
 
 
+//    @ManyToOne(cascade = CascadeType.MERGE)
+//    @JsonIgnore
+//    private Order_item orderItem;
+
 
     public product() {
     }
 
-    public product(int productId, String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription) {
+    public product(int productId, String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription,
+                   double rate, int numOfRates) {
         this.productId = productId;
         this.productName = productName;
         this.productBarcode = productBarcode;
@@ -32,14 +39,19 @@ public class product {
         this.productCategory = productCategory;
         this.productPublishDate = productPublishDate;
         this.productDescription = productDescription;
+        this.productRate=0;
+        this.numOfRates=0;
     }
-    public product(String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription) {
+    public product(String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription,
+                   double rate, int numOfRates) {
         this.productName = productName;
         this.productBarcode = productBarcode;
         this.productPrice = productPrice;
         this.productCategory = productCategory;
         this.productPublishDate = productPublishDate;
         this.productDescription = productDescription;
+        this.productRate=0;
+        this.numOfRates=0;
     }
 
     public int getProductId() {
@@ -98,6 +110,22 @@ public class product {
         this.productDescription = productDescription;
     }
 
+    public int getNumOfRates() {
+        return numOfRates;
+    }
+
+    public void setNumOfRates(int numOfRates) {
+        this.numOfRates = numOfRates;
+    }
+
+    public double getProductRate() {
+        return productRate;
+    }
+
+    public void setProductRate(double productRate) {
+        this.productRate = productRate;
+    }
+
 
     public List<Shop_Products> getShopProducts() {
         return shopProducts;
@@ -106,6 +134,15 @@ public class product {
     public void setShopProducts(List<Shop_Products> shopProducts) {
         this.shopProducts = shopProducts;
     }
+
+
+//    public List<Order_item> getOrderItems() {
+//        return orderItems;
+//    }
+//
+//    public void setOrderItems(List<Order_item> orderItems) {
+//        this.orderItems = orderItems;
+//    }
 
     @Override
     public String toString() {
@@ -117,6 +154,8 @@ public class product {
                 ", productCategory='" + productCategory + '\'' +
                 ", productPublishDate='" + productPublishDate + '\'' +
                 ", productDescription='" + productDescription + '\'' +
+                ", numOfRates=" + numOfRates +
+                ", productRate=" + productRate +
                 '}';
     }
 }

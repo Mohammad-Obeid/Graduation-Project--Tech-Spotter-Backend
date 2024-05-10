@@ -6,14 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class userService {
     private final userRepository userRepo;
+    private static userRepository userRepo1 ;
     private static String g = "";
-    private static User user1 = new User();
 
     private final AddressRepository addRepo;
 
@@ -21,14 +25,26 @@ public class userService {
 
     private final PaymentSpecificationRepository paySpecRepo;
     private final ShoppingCartRepository shpCrtRepo;
+    private final tempRepository tempRepository;
+    private static tempRepository tempRepo;
 
     @Autowired
-    public userService(userRepository userRepo, AddressRepository addRepo, PaymentMethodRepository paymentMetRepo, PaymentSpecificationRepository paySpecRepo, ShoppingCartRepository shpCrtRepo) {
+    public userService(userRepository userRepo,
+                       AddressRepository addRepo,
+                       PaymentMethodRepository paymentMetRepo,
+                       PaymentSpecificationRepository paySpecRepo,
+                       ShoppingCartRepository shpCrtRepo,
+                       tempRepository tempRepository,
+                       userRepository userRepo1,
+                       tempRepository tempRepo) {
         this.userRepo = userRepo;
         this.addRepo = addRepo;
         this.paymentMetRepo = paymentMetRepo;
         this.paySpecRepo = paySpecRepo;
-        this.shpCrtRepo=shpCrtRepo;
+        this.shpCrtRepo = shpCrtRepo;
+        this.tempRepository = tempRepository;
+        this.userRepo1=userRepo1;
+        this.tempRepo=tempRepo;
     }
 
 
@@ -37,6 +53,28 @@ public class userService {
 
     private RandomCodeGenerator randomCode = new RandomCodeGenerator();
 
+    public static void removeUnVerifiedUsers() {
+        LocalDateTime current = LocalDateTime.now();
+        List<User> users = userRepo1.findAll();
+        for(int i=0; i < users.size(); i++){
+            LocalDateTime userjoinDate = LocalDateTime.parse(users.get(i).getJoinDate()).plusMinutes(10);
+            if(!users.get(i).isVerified() && current.isAfter(userjoinDate)){
+                userRepo1.delete(users.get(i));
+            }
+        }
+    }
+
+    public static void removeUnVerifiedUsersCodes() {
+        LocalDateTime current = LocalDateTime.now();
+        List <tempDataBaseForVerificationCode> temps = tempRepo.findAll();
+        for(int i=0; i < temps.size(); i++){
+            LocalDateTime userjoinDate = LocalDateTime.parse(temps.get(i).getTime()).plusMinutes(10);
+            if(current.isAfter(userjoinDate)){
+                tempRepo.delete(temps.get(i));
+            }
+        }
+    }
+
     public List<User> getUsers() {
         List<User> users = userRepo.findAll();
         if (users.isEmpty())
@@ -44,16 +82,50 @@ public class userService {
         return users;
     }
 
+    public User getUserByEmail(String email) {
+        Optional<User> userr = userRepo.findByuserEmail(email);
+        if (userr.isPresent()) {
+            if (!userr.get().isVerified()) return userr.get();
+        }
+        return null;
+    }
+
     public User SendEmailVerification(User user) {
         Optional<User> findByuserEmail = userRepo.findByuserEmail(user.getUserEmail());
-        if (findByuserEmail.isPresent()) {
+        if (findByuserEmail.isPresent() && findByuserEmail.get().isVerified()) {
             return null;
-        } else {
-            user1 = user;
+        } else if (findByuserEmail.isEmpty()) {
             randomCodeGenerator();
-            sendVerificationCodeMail();
+            sendVerificationCodeMail(user);
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            String encryptedPassword = bCryptPasswordEncoder.encode(user.getUserPass());
+            user.setUserPass(encryptedPassword);
+            user.setJoinDate(String.valueOf(LocalDateTime.now()));
+//            user.setVerified(false);
+            if (user.getStatus() == 0) {
+                Customer cust = new Customer();
+                cust = user.getCustomer();
+                user.setCustomer(cust);
+                cust.setUser(user);
+            } else if (user.getStatus() == 1) {
+                ShopOwner shop = new ShopOwner();
+                shop = user.getShopowner();
+                user.setShopowner(shop);
+                shop.setUser(user);
+            }
+            userRepo.save(user);
+            //todo: make the temporaryDataBase to save each email with its verification Code
+            tempDataBaseForVerificationCode tmp = new tempDataBaseForVerificationCode(user.getUserEmail(), g, String.valueOf(LocalTime.now()));
+            Optional<tempDataBaseForVerificationCode> tmpchk = tempRepository.findByUserEmail(user.getUserEmail());
+            if (tmpchk.isPresent()) {
+                tmpchk.get().setVerificationCode(g);
+                tmpchk.get().setTime(String.valueOf(LocalDateTime.now()));
+                tempRepository.save(tmpchk.get());
+            } else
+                tempRepository.save(tmp);
             return user;
         }
+        return findByuserEmail.get();
     }
 //    public void addUser(String code){
 //        if(code.equals(g)){
@@ -62,27 +134,31 @@ public class userService {
 //    }
 
     public void addUser(User user) {
-        Optional<User> findByuserEmail = userRepo.findByuserEmail(user.getUserEmail());
-        if (findByuserEmail.isPresent()) {
-            throw new IllegalStateException("Email Taken");
-        }
 
-//        if(user1.getStatus()==0){
-//            Customer cust=user1.getCustomer();
-//            cust.setShoppingCart(shpCrt);
-//        }
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encryptedPassword=bCryptPasswordEncoder.encode(user1.getUserPass());
-        user1.setUserPass(encryptedPassword);
-        userRepo.saveAndFlush(user1);
+        Optional<tempDataBaseForVerificationCode> tmp = tempRepository.findByUserEmail(user.getUserEmail());
+        if (tmp.isPresent()) {
+            if (user.getUserEmail().equals(tmp.get().getUserEmail())) {
+//                user.setJoinDate(String.valueOf(LocalDate.now()));
+                user.setVerified(true);
+                userRepo.saveAndFlush(user);
+                Optional<tempDataBaseForVerificationCode> tmpchk = tempRepository.findByUserEmail(user.getUserEmail());
+                tempRepository.delete(tmpchk.get());
+
+            }
+        }
     }
+
+    public void removetempCheck(String Email) {
+        Optional<tempDataBaseForVerificationCode> tmpchk = tempRepository.findByUserEmail(Email);
+        tempRepository.delete(tmpchk.get());
+    }
+
     public ShoppingCart GetShoppingCart() {
-        ShoppingCart shpCrt=new ShoppingCart(0);
+        ShoppingCart shpCrt = new ShoppingCart(0);
         shpCrtRepo.save(shpCrt);
         return shpCrt;
 
     }
-
 
 
     public User getUserbyId(int userid) {
@@ -97,8 +173,8 @@ public class userService {
     }
 
     //    @EventListener(ApplicationReadyEvent.class)
-    public void sendVerificationCodeMail() {
-        emailService.sendVerificationCodeEmail("mohammadkadoumi77@yahoo.com", g, user1.getUserName());//riyadjannah2023@gmail.com
+    public void sendVerificationCodeMail(User user) {
+        emailService.sendVerificationCodeEmail("mohammadkadoumi77@yahoo.com", g, user.getUserName());//riyadjannah2023@gmail.com
 //        1200644@student.birzeit.edu
     }
 
@@ -107,8 +183,18 @@ public class userService {
         return g;
     }
 
-    public String getCode() {
-        return g;
+    public String getCode(String email) {
+//        return g;
+        Optional<tempDataBaseForVerificationCode> tmp = tempRepository.findByUserEmail(email);
+        if (tmp.isPresent()) return tmp.get().getVerificationCode();
+        return " ";
+    }
+
+    public String getTime(String email) {
+//        return g;
+        Optional<tempDataBaseForVerificationCode> tmp = tempRepository.findByUserEmail(email);
+        if (tmp.isPresent()) return tmp.get().getTime();
+        return "";
     }
 
     public Optional<User> DeleteUser(int userID) {
@@ -344,14 +430,14 @@ public class userService {
                     paymentMethodSpecification ps = payments.get(i).getPaymentMethodSpecification();
                     payments.get(i).setPaymentMethodSpecification(null);
                     ps.setPaymentMethod(null);
-                    PaymentMethods pay=payments.get(i);
+                    PaymentMethods pay = payments.get(i);
                     payments.remove(i);
                     user.get().setPaymentMethods(payments);
                     paymentMetRepo.deleteById(pay.getPaymentMethodId());
                     paySpecRepo.deleteById(ps.getPaymentSpecID());
                     break;
                 }
-                if(flag==1)break;
+                if (flag == 1) break;
             }
             if (flag == 0) return null;
             else {
@@ -362,31 +448,65 @@ public class userService {
             }
         }
 
-            return null;
+        return null;
     }
+
+//    public String Login(LoginRequest loginreq) {
+//        BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+//        Optional<User> user=userRepo.findUserByUserName(loginreq.getUserNameOrEmail());
+//        if(user.isPresent()){
+//            if(user.get().isVerified()){
+//            user=userRepo.findByuserEmail(loginreq.getUserNameOrEmail());
+//            if(user.isPresent()){
+//                if(bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
+//                    return "Success";
+//                }
+//                return "Password Wasn't correct";
+//            }}
+//            return "user Wasn't Found";
+//        }
+//        else{
+//            if(user.get().isVerified()) {
+//                if (bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())) {
+//                    return "Success";
+//                }
+//                return "Password Wasn't correct";
+//            }
+//            return "user Wasn't Found";
+//        }
+//    }
+
 
     public String Login(LoginRequest loginreq) {
         BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
-        Optional<User> user=userRepo.findUserByUserName(loginreq.getUserNameOrEmail());
-        if(!user.isPresent()){
-            user=userRepo.findByuserEmail(loginreq.getUserNameOrEmail());
-            if(user.isPresent()){
-                if(bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
+        Optional<User> user=userRepo.findByuserEmail(loginreq.getUserNameOrEmail());
+        if(user.isPresent()){
+            if(user.get().isVerified()){
+                if((loginreq.getUserNameOrEmail().equals(user.get().getUserEmail()) || loginreq.getUserNameOrEmail().equals(user.get().getUserName()))
+                        && bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
                     return "Success";
                 }
-                return "Password Wasn't correct";
+                else if((loginreq.getUserNameOrEmail().equals(user.get().getUserEmail()) || loginreq.getUserNameOrEmail().equals(user.get().getUserName()))
+                        && !bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
+                    return "Password Wasn't correct";
+                }
+//                return "lala";
             }
-            return "user Wassn't Found";
-        }
-        else{
-        if(bCryptPasswordEncoder.matches(loginreq.getPassword(),user.get().getUserPass())){
-            return "Success";
-        }
+            return "User wasn't Found!!";
 
-        return "Password Wasn't correct";
         }
+        return "User wasn't Found!!";
     }
 
-
-
+    public User getUserByEmaill(LoginRequest login) {
+        BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+        Optional<User> user = userRepo.findByuserEmail(login.getUserNameOrEmail());
+        if(user.isPresent()){
+            if(bCryptPasswordEncoder.matches(login.getPassword(), user.get().getUserPass())){
+                return user.get();
+            }
+            return null;
+        }
+        return null;
+    }
 }

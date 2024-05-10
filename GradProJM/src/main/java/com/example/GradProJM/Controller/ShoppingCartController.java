@@ -1,16 +1,11 @@
 package com.example.GradProJM.Controller;
-
 import com.example.GradProJM.Model.ShoppingCart;
-import com.example.GradProJM.Model.User;
 import com.example.GradProJM.Services.ShoppingCartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
-
 @RestController
 @RequestMapping("shoppingCart")
 public class ShoppingCartController {

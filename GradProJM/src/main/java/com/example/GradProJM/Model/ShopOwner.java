@@ -15,17 +15,21 @@ public class ShopOwner{
 //            sequenceName = "shopOwner_sequence",
 //            allocationSize = 1
 //    )
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private int shopID;
     private String ShopName;
-    private String subStartDate,subEndDate;
     private double shopRate;
+    private int NumOfRates;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private User user;
 
+
+//    @OneToOne(mappedBy = "shop", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private Order_item order_item;
 
 //    @ManyToMany(cascade = CascadeType.MERGE)
 //    @JoinTable(name = "shop_product_table",
@@ -47,19 +51,17 @@ public class ShopOwner{
     public ShopOwner() {
     }
 
-    public ShopOwner(int shopID, String shopName, String subStartDate, String subEndDate, double shopRate) {
+    public ShopOwner(int shopID, String shopName, double shopRate, int NumOfRates) {
         this.shopID = shopID;
         this.ShopName = shopName;
-        this.subStartDate = subStartDate;
-        this.subEndDate = subEndDate;
-        this.shopRate = shopRate;
+        this.shopRate = 0;
+        this.NumOfRates=NumOfRates;
     }
 
-    public ShopOwner(String shopName, String subStartDate, String subEndDate, double shopRate) {
+    public ShopOwner(String shopName, double shopRate, int NumOfRates) {
         this.ShopName = shopName;
-        this.subStartDate = subStartDate;
-        this.subEndDate = subEndDate;
         this.shopRate = shopRate;
+        this.NumOfRates=NumOfRates;
     }
 
     public int getShopID() {
@@ -79,21 +81,6 @@ public class ShopOwner{
     }
 
 
-    public String getSubStartDate() {
-        return subStartDate;
-    }
-
-    public void setSubStartDate(String subStartDate) {
-        this.subStartDate = subStartDate;
-    }
-
-    public String getSubEndDate() {
-        return subEndDate;
-    }
-
-    public void setSubEndDate(String subEndDate) {
-        this.subEndDate = subEndDate;
-    }
 
     public double getShopRate() {
         return shopRate;
@@ -101,6 +88,14 @@ public class ShopOwner{
 
     public void setShopRate(double shopRate) {
         this.shopRate = shopRate;
+    }
+
+    public int getNumOfRates() {
+        return NumOfRates;
+    }
+
+    public void setNumOfRates(int numOfRates) {
+        NumOfRates = numOfRates;
     }
 
     public User getUser() {
@@ -119,15 +114,21 @@ public class ShopOwner{
         this.shopProducts = shopProducts;
     }
 
+//    public Order_item getOrder_item() {
+//        return order_item;
+//    }
+//
+//    public void setOrder_item(Order_item order_item) {
+//        this.order_item = order_item;
+//    }
+
     @Override
     public String toString() {
         return "ShopOwner{" +
                 "shopID=" + shopID +
                 ", ShopName='" + ShopName + '\'' +
-                ", subStartDate=" + subStartDate +
-                ", subEndDate=" + subEndDate +
                 ", shopRate=" + shopRate +
+                ", NumOfRates=" + NumOfRates +
                 '}';
     }
-
 }

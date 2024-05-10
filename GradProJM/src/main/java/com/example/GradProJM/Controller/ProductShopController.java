@@ -1,5 +1,6 @@
 package com.example.GradProJM.Controller;
 
+import com.example.GradProJM.Model.Order;
 import com.example.GradProJM.Model.Shop_Products;
 import com.example.GradProJM.Model.product;
 import com.example.GradProJM.Services.ProductService;
@@ -78,6 +79,15 @@ public class ProductShopController {
         return product.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(false));
+    }
+
+
+    @PostMapping("makeNewOrder")
+    public ResponseEntity<Order> makeNewOrder(@RequestBody Order order){
+        Optional<Order> ord= Optional.ofNullable(prdShopService.MakeNewOrder(order));
+        return ord.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
     }
 
 }

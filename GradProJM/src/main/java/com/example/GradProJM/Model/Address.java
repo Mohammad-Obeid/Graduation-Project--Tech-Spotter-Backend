@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 @Table(name="address")
 public class Address {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int addID;
     private String street, city, state, postalCode, country;
 
@@ -16,8 +16,8 @@ public class Address {
     @JsonBackReference
     @JsonIgnore
     User user;
-    public Address() {
-    }
+
+    public Address() {}
 
     public Address(int addID, String street, String city, String state, String postalCode, String country) {
         this.addID = addID;
@@ -26,6 +26,7 @@ public class Address {
         this.state = state;
         this.postalCode = postalCode;
         this.country = country;
+
     }
     public Address(String street, String city, String state, String postalCode, String country) {
         this.street = street;
@@ -82,6 +83,7 @@ public class Address {
     public void setCountry(String country) {
         this.country = country;
     }
+
     @JsonIgnore
     public User getUser() {
         return user;

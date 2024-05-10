@@ -1,23 +1,27 @@
 package com.example.GradProJM.Services;
 
+import com.example.GradProJM.Model.Customer;
 import com.example.GradProJM.Model.ShopOwner;
 import com.example.GradProJM.Model.product;
+import com.example.GradProJM.Repos.CustomerRepository;
 import com.example.GradProJM.Repos.ProductRepository;
 import com.example.GradProJM.Repos.ShopOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 @Service
 public class shopOwnerService {
-    private static ShopOwnerRepository shopOwnerRepo;
-    private static ProductRepository prodRepo;
+    private final ShopOwnerRepository shopOwnerRepo;
+    private final ProductRepository prodRepo;
+    private final CustomerRepository custRepo;
 
-    @Autowired
-    public shopOwnerService(ShopOwnerRepository shopOwnerRepo,ProductRepository prodRepo) {
+    public shopOwnerService(ShopOwnerRepository shopOwnerRepo,ProductRepository prodRepo, CustomerRepository custRepo) {
         this.shopOwnerRepo = shopOwnerRepo;
         this.prodRepo=prodRepo;
+        this.custRepo=custRepo;
     }
 
     public List<ShopOwner> getCustomers(){
@@ -30,7 +34,7 @@ public class shopOwnerService {
 //            throw new IllegalStateException("Email Taken from Customer ");
 //        }
 //        else {
-            shopOwnerRepo.save(shopOwner);
+//            shopOwnerRepo.save(shopOwner);
 //        }
     }
 
@@ -91,14 +95,34 @@ public class shopOwnerService {
                 shopOwnerRepo.save(shop.get());
                 prodRepo.deleteById(productID);
                 return shop.get();
-
-
-
 //                return shop.get();
 
             }
             else return null;
 
+        }
+        return null;
+    }
+
+    public ShopOwner RateAShop(int custID, int shopID, double rate) {
+        Optional<ShopOwner> shop = shopOwnerRepo.findById(shopID);
+        if (shop.isPresent()) {
+            Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
+            if (customer.isPresent()) {
+                int numOfRates = shop.get().getNumOfRates();
+                double rat = shop.get().getShopRate();
+                rat *= numOfRates;
+                rat += rate;
+                numOfRates += 1;
+                rat /= numOfRates;
+                DecimalFormat df = new DecimalFormat("#.#");
+                rat = Double.parseDouble(df.format(rat));
+                shop.get().setNumOfRates(numOfRates);
+                shop.get().setShopRate(rat);
+                shopOwnerRepo.save(shop.get());
+                return shop.get();
+            }
+            return null;
         }
         return null;
     }

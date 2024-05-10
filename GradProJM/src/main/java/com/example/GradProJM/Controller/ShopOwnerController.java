@@ -67,4 +67,13 @@ public class ShopOwnerController {
 //    }
 
 
+    @PatchMapping("RateAShop/{custID}/{shopID}")
+    public ResponseEntity<ShopOwner> RateAShop(@PathVariable("custID") int custID, @PathVariable("shopID") int shopID, @RequestBody double rate){
+        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.RateAShop(custID,shopID,rate));
+        return shop.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
 }

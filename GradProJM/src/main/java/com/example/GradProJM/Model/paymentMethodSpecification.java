@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 @Table(name = "paymentSpecification")
 public class paymentMethodSpecification {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int paymentSpecID;
     private String cardNum,expireDate,securityCode, ownerName;
 

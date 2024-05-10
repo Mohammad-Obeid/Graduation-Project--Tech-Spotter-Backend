@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +24,6 @@ public class UserController {
 //                                       User Work// customer, ShopIwner, Registration, Login, Verification, Deletion, update.
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static String code = "";
-    private static User user1 = new User();
-    private static LocalDateTime loctime;
     @Autowired
     public UserController(userService userService) {
         this.userService = userService;
@@ -40,10 +38,7 @@ public class UserController {
     }
     @PostMapping("addnewuser")
     public ResponseEntity<User> addNewUser(@RequestBody User user) {
-        System.out.println("User Object : " + user.toString());
-        user1 = user;
         Optional<User> us= Optional.ofNullable(userService.SendEmailVerification(user));
-        loctime = LocalDateTime.now().plusMinutes(10);
         return us.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.FOUND)
                         .body(null));    }
@@ -62,38 +57,75 @@ public class UserController {
 //        code = userService.getCode();
 //        return code;
 //    }
+//    @PostMapping("/verifycode")
+//    public ResponseEntity<String> verifyCode(@RequestBody codeVerificationCheck check) {
+//        String code = userService.getCode(check.getUserEmail());
+//        if(!code.equals("")) {
+//            LocalDateTime timeNow = LocalDateTime.now();
+//            if (loctime.isAfter(timeNow)) {
+//                if (check.getVerificationCode().replace("\"", "").equals(code)) {
+//                    List<Address> address = user1.getAddress();
+//                    if (user1.getStatus() == 0) {
+//                        Customer customer = user1.getCustomer();
+//                        customer.setShoppingCart(userService.GetShoppingCart());
+//                        customer.setUser(user1);
+//                    } else if (user1.getStatus() == 1) {
+//                        ShopOwner shop = user1.getShopowner();
+//                        shop.setUser(user1);
+//                        System.out.println(shop.toString());
+//                    }
+//                    for (int i = 0; i < address.size(); i++) {
+//                        address.get(i).setUser(user1);
+//                    }
+//                    userService.addUser(user1);
+//                    return ResponseEntity.ok().build();
+//                } else {
+//                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Code Doesn't Match");
+//                }
+//            }
+//
+//            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Verification Code has been Expired...");
+//        }
+//        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User wasn't Found!");
+//    }
+
+
     @PostMapping("/verifycode")
-    public ResponseEntity<String> verifyCode(@RequestBody String code1) {
-//        getCode();
-        code = userService.getCode();
-        LocalDateTime timeNow = LocalDateTime.now();
-        if (loctime.isAfter(timeNow)) {
-            if (code1.replace("\"", "").equals(code)) {
-                List<Address> address = user1.getAddress();
-                if (user1.getStatus() == 0) {
-                    Customer customer = user1.getCustomer();
-                    customer.setShoppingCart(userService.GetShoppingCart());
-                    customer.setUser(user1);
-                } else if (user1.getStatus() == 1) {
-                    ShopOwner shop = user1.getShopowner();
-                    shop.setUser(user1);
-                    System.out.println(shop.toString());
+    public ResponseEntity<String> verifyCode(@RequestBody codeVerificationCheck check) {
+        User user = userService.getUserByEmail(check.getUserEmail());
+        if(user!=null) {
+            String code = userService.getCode(check.getUserEmail());
+            LocalDateTime lc = LocalDateTime.parse(userService.getTime(check.getUserEmail()));
+            LocalDateTime timeNow = LocalDateTime.now();
+            if (timeNow.isBefore(lc.plusMinutes(10))) {
+                if (check.getVerificationCode().equals(code)) {
+//                List<Address> address = user.getAddress();
+                    if (user.getStatus() == 0) {
+                        Customer customer = user.getCustomer();
+                        customer.setShoppingCart(userService.GetShoppingCart());
+                        customer.setUser(user);
+                    } else if (user.getStatus() == 1) {
+                        ShopOwner shop = user.getShopowner();
+                        shop.setUser(user);
+                        System.out.println(shop.toString());
+                    }
+//                    for (int i = 0; i < address.size(); i++) {
+//                        address.get(i).setUser(user);
+//                    }
+                    userService.addUser(user);
+                    return ResponseEntity.ok().build();
                 }
-                for(int i=0;i<address.size();i++){
-                    address.get(i).setUser(user1);
-                }
-                userService.addUser(user1);
-                return ResponseEntity.ok().build();
-            } else {
-                System.out.println("lalallala");
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Code Doesn't Match");
+
             }
+            userService.DeleteUser(user.getUserid());
+            userService.removetempCheck(user.getUserEmail());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Verification Code has been Expired...");
         }
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Verification Code has been Expired...");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User Wasn't Found!");
     }
 
-
-    @PostMapping("loginUser")
+    @GetMapping("loginUser")
     public ResponseEntity<String> Login(@RequestBody LoginRequest loginreq){
         Optional<String> LoginUser= Optional.ofNullable(userService.Login(loginreq));
         return LoginUser.map(ResponseEntity::ok)
@@ -191,6 +223,14 @@ public class UserController {
     @DeleteMapping("deletePaymentMethod/{userID}/{paymentID}")
     public ResponseEntity<User> DeletePaymentMethod(@PathVariable("userID") int userID,@PathVariable("paymentID") int paymentID){
         Optional<User> user= Optional.ofNullable(userService.DeletePaymentMethod(userID,paymentID));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("getUserByEmail")
+    public ResponseEntity<User> getUserByEmail(@RequestBody LoginRequest login){
+        Optional<User> user= Optional.ofNullable(userService.getUserByEmaill(login));
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

@@ -1,11 +1,15 @@
 package com.example.GradProJM.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.apache.catalina.LifecycleState;
+
+import java.util.List;
+
 @Entity
 @Table(name = "customer")
 public class Customer{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int custID;
     private String FName,LName;
     private String BDate;
@@ -14,6 +18,10 @@ public class Customer{
     private User user;
     @OneToOne(cascade = CascadeType.ALL)
     private ShoppingCart shoppingCart;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.MERGE)
+    private List<Order> orders;
+
     public Customer() {
     }
 

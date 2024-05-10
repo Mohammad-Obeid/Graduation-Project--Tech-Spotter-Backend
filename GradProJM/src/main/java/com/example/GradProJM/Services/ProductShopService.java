@@ -1,30 +1,38 @@
 package com.example.GradProJM.Services;
 
+import com.example.GradProJM.Model.Order;
 import com.example.GradProJM.Model.ShopOwner;
 import com.example.GradProJM.Model.Shop_Products;
 import com.example.GradProJM.Model.product;
+import com.example.GradProJM.Repos.OrderRepository;
 import com.example.GradProJM.Repos.ProductRepository;
 import com.example.GradProJM.Repos.ShopOwnerRepository;
 import com.example.GradProJM.Repos.productShopRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductShopService {
-    private static productShopRepository prdshpRepo;
-    private static ProductRepository prdRepo;
-    private static ShopOwnerRepository shpRepo;
+    private final productShopRepository prdshpRepo;
+    private final ProductRepository prdRepo;
+    private final ShopOwnerRepository shpRepo;
+    private final OrderRepository ordRepo;
 
     @Autowired
     public ProductShopService(productShopRepository prdshpRepo,
                               ProductRepository prdRepo,
-                              ShopOwnerRepository shpRepo) {
+                              ShopOwnerRepository shpRepo,
+                              OrderRepository ordRepo) {
         this.prdshpRepo=prdshpRepo;
         this.prdRepo=prdRepo;
         this.shpRepo=shpRepo;
+        this.ordRepo=ordRepo;
     }
 
     public Boolean AddAnExistingProducttoaShop(Shop_Products shopProducts) {
@@ -118,4 +126,63 @@ public class ProductShopService {
         Optional<product> prod=prdRepo.findByproductBarcode(prodBarcode);
         return prod.map(product -> DeleteAProductFromAShop(shopID, product.getProductId())).orElse(null);
     }
+
+//    public Order MakeNewOrder(Order order) {
+//        Order ord=new Order();
+//        ord.setCustomer(order.getCustomer());
+//        ord.setOrderAdd(order.getOrderAdd());
+//        ord.setOrderDate(String.valueOf(LocalDate.now()));
+//
+//        List<Shop_Products> prdcts = new ArrayList<>();
+//        for(int i=0;i<order.getProducts().size();i++){
+//            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopIDAndProduct_ProductId(
+//                    order.getProducts().get(i).getShop().getShopID(),
+//                    order.getProducts().get(i).getProduct().getProductId());
+//            shopProduct.get().setOrder(order);
+//            prdcts.add(shopProduct.get());
+//
+//        }
+//
+//        ord.setProducts(prdcts);
+//        ordRepo.saveAndFlush(ord);
+//
+////        prdshpRepo.saveAll(prdcts);
+//        return order;
+//    }
+
+
+
+    public Order MakeNewOrder(Order order) {
+        Order ord = new Order();
+        ord.setCustomer(order.getCustomer());
+        ord.setOrderAdd(order.getOrderAdd());
+        ord.setOrderDate(String.valueOf(LocalDate.now()));
+
+//        List<Shop_Products> prdcts = new ArrayList<>();
+//        for (Shop_Products shopProduct : order.getProducts()) {
+//            Optional<Shop_Products> existingProduct = prdshpRepo.findShop_ProductsByShop_ShopIDAndProduct_ProductId(
+//                    shopProduct.getShop().getShopID(),
+//                    shopProduct.getProduct().getProductId());
+//            if (existingProduct.isPresent()) {
+//                Shop_Products persistedProduct = existingProduct.get();
+//                persistedProduct.setOrder(ord); // Set the order for the persisted product
+//                prdcts.add(persistedProduct);
+//            } else {
+//                // Handle the case when the product is not found
+//                // This could be an error condition or require creating a new product entity
+//                // Depending on your application logic
+//                System.out.println("kaka");
+//            }
+        return null;
+
+        }
+
+
+//        ord.setProducts(prdcts);
+//        ordRepo.saveAndFlush(ord); // Save the order along with its associated products
+
+//        return ord; // Return the saved order
+//    }
+
+
 }

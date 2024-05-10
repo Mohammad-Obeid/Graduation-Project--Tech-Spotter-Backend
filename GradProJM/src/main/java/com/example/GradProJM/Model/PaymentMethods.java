@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 @Table(name="paymentmethod")
 public class PaymentMethods {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int paymentMethodId;
     private String paymentMethodName;
     @ManyToOne(cascade = CascadeType.ALL)

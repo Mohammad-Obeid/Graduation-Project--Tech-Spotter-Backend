@@ -10,14 +10,14 @@ import java.util.List;
 
 public class ShoppingCart {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cartID;
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
 //    private Customer customer;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<product> products;
+    private List<Shop_Products> products;
 
     private double totalPrice;
 
@@ -47,18 +47,19 @@ public class ShoppingCart {
 //        this.customer = customer;
 //    }
 
-    public List<product> getProducts() {
+
+    public List<Shop_Products> getProducts() {
         return products;
     }
 
-    public void setProducts(List<product> products) {
+    public void setProducts(List<Shop_Products> products) {
         this.products = products;
     }
 
     public double getTotalPrice() {
         double totPrice=0;
         for(int i=0; i<products.size();i++){
-            totPrice+=products.get(i).getProductPrice();
+            totPrice+=products.get(i).getProduct().getProductPrice();
         }
         return totPrice;
     }
