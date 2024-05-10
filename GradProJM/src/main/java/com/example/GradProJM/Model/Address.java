@@ -3,6 +3,7 @@ package com.example.GradProJM.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 @Entity
 @Table(name="address")
@@ -10,7 +11,8 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int addID;
-    private String street, city, state, postalCode, country;
+    @NonNull
+    private String governorate, city, town, streetNo, depNo, moreDetails;
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JsonBackReference
@@ -19,21 +21,22 @@ public class Address {
 
     public Address() {}
 
-    public Address(int addID, String street, String city, String state, String postalCode, String country) {
+    public Address(int addID, @NonNull String governorate, @NonNull String city, @NonNull String town, @NonNull String streetNo, @NonNull String depNo, @NonNull String moreDetails) {
         this.addID = addID;
-        this.street = street;
+        this.governorate = governorate;
         this.city = city;
-        this.state = state;
-        this.postalCode = postalCode;
-        this.country = country;
-
+        this.town = town;
+        this.streetNo = streetNo;
+        this.depNo = depNo;
+        this.moreDetails = moreDetails;
     }
-    public Address(String street, String city, String state, String postalCode, String country) {
-        this.street = street;
+    public Address(@NonNull String governorate, @NonNull String city, @NonNull String town, @NonNull String streetNo, @NonNull String depNo, @NonNull String moreDetails) {
+        this.governorate = governorate;
         this.city = city;
-        this.state = state;
-        this.postalCode = postalCode;
-        this.country = country;
+        this.town = town;
+        this.streetNo = streetNo;
+        this.depNo = depNo;
+        this.moreDetails = moreDetails;
     }
 
     public int getAddID() {
@@ -44,63 +47,65 @@ public class Address {
         this.addID = addID;
     }
 
-    public String getStreet() {
-        return street;
+    @NonNull
+    public String getGovernorate() {
+        return governorate;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setGovernorate(@NonNull String governorate) {
+        this.governorate = governorate;
     }
 
+    @NonNull
     public String getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(@NonNull String city) {
         this.city = city;
     }
 
-    public String getState() {
-        return state;
+    @NonNull
+    public String getTown() {
+        return town;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setTown(@NonNull String town) {
+        this.town = town;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    @NonNull
+    public String getStreetNo() {
+        return streetNo;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public void setStreetNo(@NonNull String streetNo) {
+        this.streetNo = streetNo;
     }
 
-    public String getCountry() {
-        return country;
+    @NonNull
+    public String getDepNo() {
+        return depNo;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setDepNo(@NonNull String depNo) {
+        this.depNo = depNo;
     }
 
-    @JsonIgnore
+    @NonNull
+    public String getMoreDetails() {
+        return moreDetails;
+    }
+
+    public void setMoreDetails(@NonNull String moreDetails) {
+        this.moreDetails = moreDetails;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "addID=" + addID +
-                ", street='" + street + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", country='" + country + '}';
     }
 }

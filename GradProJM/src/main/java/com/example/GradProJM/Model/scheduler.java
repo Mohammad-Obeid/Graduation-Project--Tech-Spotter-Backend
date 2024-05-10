@@ -1,19 +1,17 @@
 package com.example.GradProJM.Model;
 
 import com.example.GradProJM.Services.userService;
-import org.apache.juli.logging.Log;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
-public class sceduler {
+public class scheduler {
     private final userService userservice;
 
-    public sceduler(userService userservice) {
+    public scheduler(userService userservice) {
         this.userservice = userservice;
     }
 

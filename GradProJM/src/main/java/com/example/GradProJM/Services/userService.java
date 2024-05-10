@@ -251,10 +251,11 @@ public class userService {
             for (int i = 0; i < addresses.size(); i++) {
                 if (addresses.get(i).getAddID() == addID) {
                     addresses.get(i).setCity(add.getCity());
-                    addresses.get(i).setCountry(add.getCountry());
-                    addresses.get(i).setState(add.getState());
-                    addresses.get(i).setStreet(add.getStreet());
-                    addresses.get(i).setPostalCode(add.getPostalCode());
+                    addresses.get(i).setGovernorate(add.getGovernorate());
+                    addresses.get(i).setTown(add.getTown());
+                    addresses.get(i).setStreetNo(add.getStreetNo());
+                    addresses.get(i).setDepNo(add.getDepNo());
+                    addresses.get(i).setMoreDetails(add.getMoreDetails());
                     flag = 1;
                     user.get().setAddress(addresses);
                     userRepo.save(user.get());
