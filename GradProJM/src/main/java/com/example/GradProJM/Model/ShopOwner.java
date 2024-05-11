@@ -18,7 +18,7 @@ public class ShopOwner{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private int shopID;
-    private String ShopName;
+    private String shopName;
     private double shopRate;
     private int NumOfRates;
 
@@ -53,13 +53,13 @@ public class ShopOwner{
 
     public ShopOwner(int shopID, String shopName, double shopRate, int NumOfRates) {
         this.shopID = shopID;
-        this.ShopName = shopName;
+        this.shopName = shopName;
         this.shopRate = 0;
         this.NumOfRates=NumOfRates;
     }
 
     public ShopOwner(String shopName, double shopRate, int NumOfRates) {
-        this.ShopName = shopName;
+        this.shopName = shopName;
         this.shopRate = shopRate;
         this.NumOfRates=NumOfRates;
     }
@@ -73,11 +73,11 @@ public class ShopOwner{
     }
 
     public String getShopName() {
-        return ShopName;
+        return shopName;
     }
 
     public void setShopName(String shopName) {
-        this.ShopName = shopName;
+        this.shopName = shopName;
     }
 
 
@@ -126,7 +126,7 @@ public class ShopOwner{
     public String toString() {
         return "ShopOwner{" +
                 "shopID=" + shopID +
-                ", ShopName='" + ShopName + '\'' +
+                ", ShopName='" + shopName + '\'' +
                 ", shopRate=" + shopRate +
                 ", NumOfRates=" + NumOfRates +
                 '}';

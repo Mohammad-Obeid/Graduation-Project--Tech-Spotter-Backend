@@ -24,6 +24,8 @@ public class Shop_Products {
 
     private int quantity;
 
+    private double rate;
+
 
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
@@ -82,7 +84,18 @@ public class Shop_Products {
         this.quantity = quantity;
     }
 
-//    public List<orderItems> getOrderItem() {
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
+
+
+
+
+    //    public List<orderItems> getOrderItem() {
 //        return orderItem;
 //    }
 //

@@ -1,6 +1,8 @@
 package com.example.GradProJM.Model;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.time.Duration;
@@ -24,6 +26,8 @@ public class User {
 
     @Column(nullable = false)
     private boolean verified;
+    @NonNull
+    private int addCount;
 
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
@@ -166,6 +170,14 @@ public class User {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public int getAddCount() {
+        return addCount;
+    }
+
+    public void setAddCount(int addCount) {
+        this.addCount = addCount;
     }
 
     @Override

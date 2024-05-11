@@ -12,6 +12,7 @@ import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,7 @@ public class ProductShopService {
                 return null;
             } else {
                 product prod = shopProducts.getProduct();
+                shopProducts.setRate(prod.getProductRate());
                 prdRepo.save(prod);
                 prdshpRepo.save(shopProducts);
                 return true;
@@ -87,6 +89,7 @@ public class ProductShopService {
             if(shop.isPresent()){
                 System.out.println(product.get());
                 Shop_Products shpprdct= new Shop_Products(shopProducts.getShop(),product.get(),shopProducts.getQuantity());
+                shpprdct.setRate(product.get().getProductRate());
                 prdshpRepo.save(shpprdct);
                 return true;
             }
@@ -176,6 +179,29 @@ public class ProductShopService {
         return null;
 
         }
+
+    public Shop_Products rateAProduct(int custID, String shopName, String prodBarcode, double rate) {
+        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        if(shopProduct.isPresent()){
+            Optional<product> prod = prdRepo.findByproductBarcode(prodBarcode);
+            double rt = prod.get().getProductRate();
+            int noRates = prod.get().getNumOfRates();
+            rt*=noRates;
+            noRates+=1;
+            rt+=rate;
+            rt/=noRates;
+            DecimalFormat df = new DecimalFormat("#.#");
+            rt = Double.parseDouble(df.format(rt));
+            prod.get().setProductRate(rt);
+            prod.get().setNumOfRates(noRates);
+            shopProduct.get().setRate(rt);
+            prdRepo.save(prod.get());
+            prdshpRepo.save(shopProduct.get());
+            return shopProduct.get();
+            //todo: save the customer...
+        }
+        return null;
+    }
 
 
 //        ord.setProducts(prdcts);

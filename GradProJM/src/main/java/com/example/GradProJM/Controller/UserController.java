@@ -151,9 +151,9 @@ public class UserController {
                         .body(null));
     }
 
-    @DeleteMapping("deleteAddress/{userID}/{addressName}")
-    public ResponseEntity<User> deleteAddress(@PathVariable("userID") int userID, @PathVariable("addressName") String addName){
-        Optional<User> user=Optional.ofNullable(userService.RemoveAddress(userID,addName));
+    @DeleteMapping("deleteAddress/{userID}")
+    public ResponseEntity<User> deleteAddress(@PathVariable("userID") int userID, @RequestBody Address address){
+        Optional<User> user=Optional.ofNullable(userService.RemoveAddress(userID,address));
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

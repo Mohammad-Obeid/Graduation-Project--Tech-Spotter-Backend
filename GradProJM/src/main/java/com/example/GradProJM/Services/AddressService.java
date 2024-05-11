@@ -33,11 +33,12 @@ public class AddressService {
 
     public void AddnewAddress(int userID,Address address) {
         Optional<User> user = userRepo.findByuserid(userID);
+
+
         if(user.isPresent()){
             address.setUser(user.get());
             addrepo.save(address);
-            user.get().setAddress(address.getUser().getAddress());
-        }
+            user.get().setAddress(address.getUser().getAddress());}
         else{
             throw new IllegalStateException("User with ID "+ userID + " wasn't Found");
         }

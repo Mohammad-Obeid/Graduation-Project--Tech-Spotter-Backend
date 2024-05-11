@@ -99,9 +99,17 @@ public class userService {
         return null;
     }
 
+    public boolean isUserNameExists(String userName){
+        Optional<User> user = userRepo.findUserByUserName(userName);
+        if(user.isPresent())return true;
+        return false;
+    }
+
     public User SendEmailVerification(User user) {
         Optional<User> findByuserEmail = userRepo.findByuserEmail(user.getUserEmail());
         if (findByuserEmail.isPresent() && findByuserEmail.get().isVerified()) {
+            return null;
+        } else if (isUserNameExists(user.getUserName()) && findByuserEmail.get().isVerified()) {
             return null;
         } else if (findByuserEmail.isEmpty()) {
             randomCodeGenerator();
@@ -123,7 +131,6 @@ public class userService {
                 shop.setUser(user);
             }
             userRepo.save(user);
-            //todo: make the temporaryDataBase to save each email with its verification Code
             BCryptPasswordEncoder bCryptCodeEncoder = new BCryptPasswordEncoder();
             String encryptedCode= bCryptCodeEncoder.encode(g);
             tempDataBaseForVerificationCode tmp = new tempDataBaseForVerificationCode(user.getUserEmail(), encryptedCode, String.valueOf(LocalTime.now()));
@@ -135,6 +142,19 @@ public class userService {
             } else
                 tempRepository.save(tmp);
             return user;
+        }
+        else if(!findByuserEmail.get().isVerified()){
+            String code = randomCodeGenerator();
+            sendVerificationCodeMail(user);
+            Optional<User> userexists = userRepo.findByuserEmail(user.getUserEmail());
+            userexists.get().setJoinDate(String.valueOf(LocalDateTime.now()));
+            userRepo.save(userexists.get());
+            BCryptPasswordEncoder bCryptCodeEncoder = new BCryptPasswordEncoder();
+            String encryptedCode= bCryptCodeEncoder.encode(code);
+            Optional<tempDataBaseForVerificationCode> tmpchk = tempRepository.findByUserEmail(user.getUserEmail());
+            tmpchk.get().setVerificationCode(encryptedCode);
+            tmpchk.get().setTime(String.valueOf(LocalDateTime.now()));
+            tempRepository.save(tmpchk.get());
         }
         return findByuserEmail.get();
     }
@@ -202,14 +222,12 @@ public class userService {
     }
 
     public String getCode(String email) {
-//        return g;
         Optional<tempDataBaseForVerificationCode> tmp = tempRepository.findByUserEmail(email);
         if (tmp.isPresent()) return tmp.get().getVerificationCode();
         return " ";
     }
 
     public String getTime(String email) {
-//        return g;
         Optional<tempDataBaseForVerificationCode> tmp = tempRepository.findByUserEmail(email);
         if (tmp.isPresent()) return tmp.get().getTime();
         return "";
@@ -226,36 +244,55 @@ public class userService {
 
     public User AddNewAddress(int userID, Address address) {
         Optional<User> user = userRepo.findByuserid(userID);
+        Optional<Address> addExist = addRepo.findByGovernorateAndCityAndTownAndStreetNoAndDepNoAndUser_Userid(
+                address.getGovernorate(),
+                address.getCity(),
+                address.getTown(),
+                address.getStreetNo(),
+                address.getDepNo(),
+                userID);
         if (user.isPresent()) {
+            if(addExist.isEmpty()){
+                if(user.get().getStatus()==0){
+                    if(user.get().getAddCount()>=3) throw new IllegalStateException("Maximum Number of addresses");
+                }
+                if(user.get().getStatus()==1){
+                    if(user.get().getAddCount()>5) throw new IllegalStateException("Maximum Number of addresses");
+                }
+
             List<Address> addresses = user.get().getAddress();
             addresses.add(address);
             address.setUser(user.get());
+            user.get().setAddCount(user.get().getAddCount()+1);
             userRepo.save(user.get());
-            return user.get();
+            return user.get();}
+            throw new IllegalStateException("Address was Added before");
         }
         return null;
     }
 
-    public User RemoveAddress(int userID, String addName) {
+    public User RemoveAddress(int userID, Address address) {
+
         Optional<User> user = userRepo.findByuserid(userID);
-        int flag = 0;
+        Optional<Address> addExist = addRepo.findByGovernorateAndCityAndTownAndStreetNoAndDepNoAndUser_Userid(
+                address.getGovernorate(),
+                address.getCity(),
+                address.getTown(),
+                address.getStreetNo(),
+                address.getDepNo(),
+                userID);
         if (user.isPresent()) {
-            List<Address> addresses = user.get().getAddress();
-            for (int i = 0; i < addresses.size(); i++) {
-                if (addresses.get(i).getCity().equals(addName)) {
-                    addRepo.deleteById(addresses.get(i).getAddID());
-                    addresses.remove(i);
-                    System.out.println(addresses.get(i));
-                    flag = 1;
-                }
-            }
-            if (flag == 0) {
-                return null;
-            } else {
+            if(addExist.isPresent()){
+                List<Address> addresses = user.get().getAddress();
+                addresses.remove(addExist.get());
+                addExist.get().setUser(null);
+                addRepo.deleteById(addExist.get().getAddID());
                 user.get().setAddress(addresses);
-                userRepo.saveAndFlush(user.get());
+                user.get().setAddCount(user.get().getAddCount()-1);
+                userRepo.save(user.get());
                 return user.get();
             }
+            return null;
 
         }
         return null;
@@ -285,6 +322,23 @@ public class userService {
         }
         return null;
     }
+
+
+//    public User updateAddress(int userID, Address add) {
+//        Optional<User> user = userRepo.findByuserid(userID);
+//        Optional<Address> addExist = addRepo.findByGovernorateAndCityAndTownAndStreetNoAndDepNoAndUser_Userid(
+//                add.getGovernorate(),
+//                add.getCity(),
+//                add.getTown(),
+//                add.getStreetNo(),
+//                add.getDepNo(),
+//                userID);
+//        if (user.isPresent()) {
+//            if(!addExist.isPresent())
+//        }
+//        return null;
+//
+//    }
 
     public User updateCustomerInformation(int userID, User userr) {
         Optional<User> user = userRepo.findByuserid(userID);
@@ -505,16 +559,12 @@ public class userService {
                         && bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
                     return "Success";
                 }
-                else if((loginreq.getUserNameOrEmail().equals(user.get().getUserEmail()) || loginreq.getUserNameOrEmail().equals(user.get().getUserName()))
-                        && !bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
-                    return "Password Wasn't correct";
-                }
-//                return "lala";
-            }
-            return "User wasn't Found!!";
+                return "Check Email or Password";
 
+            }
+            return "Check Email or Password";
         }
-        return "User wasn't Found!!";
+        return "Check Email or Password";
     }
 
     public User getUserByEmaill(LoginRequest login) {

@@ -90,4 +90,18 @@ public class ProductShopController {
                         .body(null));
     }
 
+    @PatchMapping("rateAProduct/{custID}/{shopName}/{prodBarcode}/{rate}")
+    public ResponseEntity<Shop_Products> rateAProduct(@PathVariable("custID") int custID,
+                                                      @PathVariable("shopName") String shopName,
+                                                      @PathVariable("prodBarcode") String prodBarcode,
+                                                      @PathVariable("rate") double rate){
+        Optional<Shop_Products> productRate= Optional.ofNullable(prdShopService.rateAProduct(
+                custID, shopName, prodBarcode, rate
+        ));
+        return productRate.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
 }
