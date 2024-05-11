@@ -1,8 +1,6 @@
 package com.example.GradProJM.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.apache.catalina.LifecycleState;
-
 import java.util.List;
 
 @Entity
@@ -18,6 +16,9 @@ public class Customer{
     private User user;
     @OneToOne(cascade = CascadeType.ALL)
     private ShoppingCart shoppingCart;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private wishList wishlist;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.MERGE)
     private List<Order> orders;
@@ -73,8 +74,6 @@ public class Customer{
         this.BDate = BDate;
     }
 
-
-
     public User getUser() {
         return user;
     }
@@ -89,6 +88,14 @@ public class Customer{
 
     public void setShoppingCart(ShoppingCart shoppingCart) {
         this.shoppingCart = shoppingCart;
+    }
+
+    public wishList getWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(wishList wishlist) {
+        this.wishlist = wishlist;
     }
 
     @Override

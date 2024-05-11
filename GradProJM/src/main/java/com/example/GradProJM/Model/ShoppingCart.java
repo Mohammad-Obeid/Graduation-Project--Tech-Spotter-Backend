@@ -12,10 +12,6 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cartID;
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private Customer customer;
-
     @OneToMany(cascade = CascadeType.ALL)
     private List<Shop_Products> products;
 
@@ -38,14 +34,6 @@ public class ShoppingCart {
     public void setCartID(int cartID) {
         this.cartID = cartID;
     }
-
-//    public Customer getCustomer() {
-//        return customer;
-//    }
-//
-//    public void setCustomer(Customer customer) {
-//        this.customer = customer;
-//    }
 
 
     public List<Shop_Products> getProducts() {

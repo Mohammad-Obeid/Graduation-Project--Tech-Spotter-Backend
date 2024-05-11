@@ -26,6 +26,7 @@ public class userService {
     private final PaymentSpecificationRepository paySpecRepo;
     private final ShoppingCartRepository shpCrtRepo;
     private final tempRepository tempRepository;
+    private final wishListRepository wishlstRepository;
     private static tempRepository tempRepo;
 
     @Autowired
@@ -36,7 +37,8 @@ public class userService {
                        ShoppingCartRepository shpCrtRepo,
                        tempRepository tempRepository,
                        userRepository userRepo1,
-                       tempRepository tempRepo) {
+                       tempRepository tempRepo,
+                       wishListRepository wishlstRepository) {
         this.userRepo = userRepo;
         this.addRepo = addRepo;
         this.paymentMetRepo = paymentMetRepo;
@@ -45,6 +47,7 @@ public class userService {
         this.tempRepository = tempRepository;
         this.userRepo1=userRepo1;
         this.tempRepo=tempRepo;
+        this.wishlstRepository=wishlstRepository;
     }
 
 
@@ -54,23 +57,29 @@ public class userService {
     private RandomCodeGenerator randomCode = new RandomCodeGenerator();
 
     public static void removeUnVerifiedUsers() {
-        LocalDateTime current = LocalDateTime.now();
-        List<User> users = userRepo1.findAll();
-        for(int i=0; i < users.size(); i++){
-            LocalDateTime userjoinDate = LocalDateTime.parse(users.get(i).getJoinDate()).plusMinutes(10);
-            if(!users.get(i).isVerified() && current.isAfter(userjoinDate)){
-                userRepo1.delete(users.get(i));
+        List<tempDataBaseForVerificationCode> tmp = tempRepo.findAll();
+        if(!tmp.isEmpty()) {
+            LocalDateTime current = LocalDateTime.now();
+            List<User> users = userRepo1.findAll();
+            for (int i = 0; i < users.size(); i++) {
+                LocalDateTime userjoinDate = LocalDateTime.parse(users.get(i).getJoinDate()).plusMinutes(10);
+                if (!users.get(i).isVerified() && current.isAfter(userjoinDate)) {
+                    userRepo1.delete(users.get(i));
+                }
             }
         }
     }
 
     public static void removeUnVerifiedUsersCodes() {
-        LocalDateTime current = LocalDateTime.now();
-        List <tempDataBaseForVerificationCode> temps = tempRepo.findAll();
-        for(int i=0; i < temps.size(); i++){
-            LocalDateTime userjoinDate = LocalDateTime.parse(temps.get(i).getTime()).plusMinutes(10);
-            if(current.isAfter(userjoinDate)){
-                tempRepo.delete(temps.get(i));
+        List<tempDataBaseForVerificationCode> tmp = tempRepo.findAll();
+        if(!tmp.isEmpty()) {
+            LocalDateTime current = LocalDateTime.now();
+            List<tempDataBaseForVerificationCode> temps = tempRepo.findAll();
+            for (int i = 0; i < temps.size(); i++) {
+                LocalDateTime userjoinDate = LocalDateTime.parse(temps.get(i).getTime()).plusMinutes(10);
+                if (current.isAfter(userjoinDate)) {
+                    tempRepo.delete(temps.get(i));
+                }
             }
         }
     }
@@ -115,10 +124,12 @@ public class userService {
             }
             userRepo.save(user);
             //todo: make the temporaryDataBase to save each email with its verification Code
-            tempDataBaseForVerificationCode tmp = new tempDataBaseForVerificationCode(user.getUserEmail(), g, String.valueOf(LocalTime.now()));
+            BCryptPasswordEncoder bCryptCodeEncoder = new BCryptPasswordEncoder();
+            String encryptedCode= bCryptCodeEncoder.encode(g);
+            tempDataBaseForVerificationCode tmp = new tempDataBaseForVerificationCode(user.getUserEmail(), encryptedCode, String.valueOf(LocalTime.now()));
             Optional<tempDataBaseForVerificationCode> tmpchk = tempRepository.findByUserEmail(user.getUserEmail());
             if (tmpchk.isPresent()) {
-                tmpchk.get().setVerificationCode(g);
+                tmpchk.get().setVerificationCode(encryptedCode);
                 tmpchk.get().setTime(String.valueOf(LocalDateTime.now()));
                 tempRepository.save(tmpchk.get());
             } else
@@ -134,7 +145,6 @@ public class userService {
 //    }
 
     public void addUser(User user) {
-
         Optional<tempDataBaseForVerificationCode> tmp = tempRepository.findByUserEmail(user.getUserEmail());
         if (tmp.isPresent()) {
             if (user.getUserEmail().equals(tmp.get().getUserEmail())) {
@@ -159,6 +169,14 @@ public class userService {
         return shpCrt;
 
     }
+
+    public wishList GetWishList() {
+        wishList wish = new wishList();
+        wishlstRepository.save(wish);
+        return wish;
+
+    }
+
 
 
     public User getUserbyId(int userid) {

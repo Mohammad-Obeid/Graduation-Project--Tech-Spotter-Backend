@@ -5,6 +5,7 @@ import com.example.GradProJM.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -98,20 +99,19 @@ public class UserController {
             LocalDateTime lc = LocalDateTime.parse(userService.getTime(check.getUserEmail()));
             LocalDateTime timeNow = LocalDateTime.now();
             if (timeNow.isBefore(lc.plusMinutes(10))) {
-                if (check.getVerificationCode().equals(code)) {
-//                List<Address> address = user.getAddress();
+                BCryptPasswordEncoder bCryptCodeEncoder = new BCryptPasswordEncoder();
+                if(bCryptCodeEncoder.matches(check.getVerificationCode(), code))
+                {
                     if (user.getStatus() == 0) {
                         Customer customer = user.getCustomer();
                         customer.setShoppingCart(userService.GetShoppingCart());
+                        customer.setWishlist(userService.GetWishList());
                         customer.setUser(user);
                     } else if (user.getStatus() == 1) {
                         ShopOwner shop = user.getShopowner();
                         shop.setUser(user);
                         System.out.println(shop.toString());
                     }
-//                    for (int i = 0; i < address.size(); i++) {
-//                        address.get(i).setUser(user);
-//                    }
                     userService.addUser(user);
                     return ResponseEntity.ok().build();
                 }
