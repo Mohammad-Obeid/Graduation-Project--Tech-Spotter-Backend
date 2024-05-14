@@ -4,8 +4,11 @@ import com.example.GradProJM.Model.ShopOwner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ShopOwnerRepository extends JpaRepository<ShopOwner,Integer> {
 //    Optional<User> findByuserEmail(String userEmail);
 //    Optional<User> findByuserid(int userid);
+    Optional<ShopOwner> findShopOwnerByShopName(String shopName);
 }

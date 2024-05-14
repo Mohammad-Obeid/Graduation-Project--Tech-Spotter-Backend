@@ -5,7 +5,11 @@ import com.example.GradProJM.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,6 +32,7 @@ public class userService {
     private final tempRepository tempRepository;
     private final wishListRepository wishlstRepository;
     private static tempRepository tempRepo;
+    private final ShopOwnerRepository shopRepo;
 
     @Autowired
     public userService(userRepository userRepo,
@@ -38,7 +43,9 @@ public class userService {
                        tempRepository tempRepository,
                        userRepository userRepo1,
                        tempRepository tempRepo,
-                       wishListRepository wishlstRepository) {
+                       wishListRepository wishlstRepository,
+                       ShopOwnerRepository shopRepo
+                       ) {
         this.userRepo = userRepo;
         this.addRepo = addRepo;
         this.paymentMetRepo = paymentMetRepo;
@@ -48,6 +55,7 @@ public class userService {
         this.userRepo1=userRepo1;
         this.tempRepo=tempRepo;
         this.wishlstRepository=wishlstRepository;
+        this.shopRepo=shopRepo;
     }
 
 
@@ -109,22 +117,27 @@ public class userService {
         Optional<User> findByuserEmail = userRepo.findByuserEmail(user.getUserEmail());
         if (findByuserEmail.isPresent() && findByuserEmail.get().isVerified()) {
             return null;
-        } else if (isUserNameExists(user.getUserName()) && findByuserEmail.get().isVerified()) {
-            return null;
-        } else if (findByuserEmail.isEmpty()) {
+        }
+//        else if (isUserNameExists(user.getUserName()) && findByuserEmail.get().isVerified()) {
+//            return null;
+//        }
+        else if (findByuserEmail.isEmpty()) {
             randomCodeGenerator();
             sendVerificationCodeMail(user);
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             String encryptedPassword = bCryptPasswordEncoder.encode(user.getUserPass());
             user.setUserPass(encryptedPassword);
             user.setJoinDate(String.valueOf(LocalDateTime.now()));
-//            user.setVerified(false);
             if (user.getStatus() == 0) {
                 Customer cust = new Customer();
                 cust = user.getCustomer();
                 user.setCustomer(cust);
                 cust.setUser(user);
             } else if (user.getStatus() == 1) {
+                Optional<ShopOwner> sh = shopRepo.findShopOwnerByShopName(
+                        user.getShopowner().getShopName()
+                );
+                if(sh.isPresent())return null;
                 ShopOwner shop = new ShopOwner();
                 shop = user.getShopowner();
                 user.setShopowner(shop);
@@ -254,7 +267,7 @@ public class userService {
         if (user.isPresent()) {
             if(addExist.isEmpty()){
                 if(user.get().getStatus()==0){
-                    if(user.get().getAddCount()>=3) throw new IllegalStateException("Maximum Number of addresses");
+                    if(user.get().getAddCount()>=1) throw new IllegalStateException("Maximum Number of addresses");
                 }
                 if(user.get().getStatus()==1){
                     if(user.get().getAddCount()>5) throw new IllegalStateException("Maximum Number of addresses");

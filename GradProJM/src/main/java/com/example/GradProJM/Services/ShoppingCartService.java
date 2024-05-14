@@ -51,7 +51,7 @@ public class ShoppingCartService {
             Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
             if(prod.isPresent()){
                 double totprice= shpcrt.getTotalPrice();
-                totprice+=prod.get().getProduct().getProductPrice();
+                totprice+=prod.get().getProductPrice();
                 List<Shop_Products> products=shpcrt.getProducts();
                 int flag=0;
                 for(int i=0;i<products.size();i++){
@@ -70,11 +70,18 @@ public class ShoppingCartService {
         return null;
     }
 
+
+    public ShoppingCart AddProductToCart(int custID, String shopName, String prodBarcode) {
+        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        return AddProductToCart(custID, product.get().getId());
+    }
+
+
     public ShoppingCart DeleteProductFromCart(int custID, int prodID) {
         Optional<Customer> customer=custRepo.findCustomerByCustID(custID);
         if(customer.isPresent()) {
             ShoppingCart shpcrt = customer.get().getShoppingCart();
-            Optional<product> prod = prodRepo.findById(prodID);
+            Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
             if (prod.isPresent()) {
                 double totPrice=0;
                 totPrice=shpcrt.getTotalPrice();
@@ -91,5 +98,11 @@ public class ShoppingCartService {
             return null;
         }
         return null;
+    }
+
+
+    public ShoppingCart DeleteProductFromCart(int custID, String shopName, String prodBarcode) {
+        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        return DeleteProductFromCart(custID, product.get().getId());
     }
 }

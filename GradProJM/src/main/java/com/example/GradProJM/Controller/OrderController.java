@@ -26,4 +26,19 @@ public class OrderController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
+    @PatchMapping("updateStatus/{orderID}")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable("orderID") int orderID,@RequestBody Order ord){
+        Optional<Order> order= Optional.ofNullable(orderService.updateOrderStatus(orderID, ord));
+        return order.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @PatchMapping("updateLocation/{orderID}")
+    public ResponseEntity<Order> updateOrderLocation(@PathVariable("orderID") int orderID,@RequestBody Order ord){
+        Optional<Order> order= Optional.ofNullable(orderService.updateOrderLocation(orderID, ord));
+        return order.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
 }

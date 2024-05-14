@@ -21,9 +21,9 @@ public class OrderService {
 
 
 
-    public OrderService(OrderRepository orderRep, CustomerRepository custRepo,
+    public OrderService(OrderRepository orderRepo, CustomerRepository custRepo,
                         ProductRepository prodRepo) {
-        this.orderRepo = orderRep;
+        this.orderRepo = orderRepo;
         this.custRepo = custRepo;
         this.prodRepo = prodRepo;
     }
@@ -33,6 +33,27 @@ public class OrderService {
         if(customer.isPresent()){
             Optional<List> orders = orderRepo.findOrdersByCustomer_CustID(custID);
             return orders.get();
+        }
+        return null;
+    }
+
+    public Order updateOrderStatus(int orderID, Order ord) {
+        Optional<Order> order = orderRepo.findById(orderID);
+        if(order.isPresent()){
+            order.get().setStatus(ord.getStatus());
+            orderRepo.save(order.get());
+            return order.get();
+        }
+        return null;
+
+    }
+
+    public Order updateOrderLocation(int orderID, Order ord) {
+        Optional<Order> order = orderRepo.findById(orderID);
+        if(order.isPresent()){
+            order.get().setOrderAdd(ord.getOrderAdd());
+            orderRepo.save(order.get());
+            return order.get();
         }
         return null;
     }

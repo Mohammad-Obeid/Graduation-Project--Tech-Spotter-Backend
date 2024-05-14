@@ -18,18 +18,22 @@ public class Order {
 
     @OneToMany(mappedBy = "order",cascade=CascadeType.ALL)
     private List<orderItems> orderItem;
+
+    private String status;
     public Order() {
     }
 
-    public Order(int orderID, String orderDate, String orderAdd) {
+    public Order(int orderID, String orderDate, String orderAdd,String status) {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.orderAdd = orderAdd;
+        this.status=status;
     }
 
-    public Order(String orderDate, String orderAdd) {
+    public Order(String orderDate, String orderAdd,String status) {
         this.orderDate = orderDate;
         this.orderAdd = orderAdd;
+        this.status=status;
     }
 
     public int getOrderID() {
@@ -91,6 +95,14 @@ public class Order {
 
     public void setOrderItem(List<orderItems> orderItem) {
         this.orderItem = orderItem;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

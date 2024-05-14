@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.GradProJM.Services.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(path="user")
@@ -38,7 +40,7 @@ public class UserController {
 
     }
     @PostMapping("addnewuser")
-    public ResponseEntity<User> addNewUser(@RequestBody User user) {
+    public ResponseEntity<User> addNewUser(@RequestBody User user, @RequestParam("image") MultipartFile file) throws IOException {
         Optional<User> us= Optional.ofNullable(userService.SendEmailVerification(user));
         return us.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.FOUND)
@@ -124,7 +126,6 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User Wasn't Found!");
     }
-
     @GetMapping("loginUser")
     public ResponseEntity<String> Login(@RequestBody LoginRequest loginreq){
         Optional<String> LoginUser= Optional.ofNullable(userService.Login(loginreq));
@@ -228,7 +229,7 @@ public class UserController {
                         .body(null));
     }
 
-    @GetMapping("getUserByEmail")
+    @PostMapping("getUserByEmail")
     public ResponseEntity<User> getUserByEmail(@RequestBody LoginRequest login){
         Optional<User> user= Optional.ofNullable(userService.getUserByEmaill(login));
         return user.map(ResponseEntity::ok)

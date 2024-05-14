@@ -26,23 +26,9 @@ public class ShopOwner{
     @JsonIgnore
     private User user;
 
-
-//    @OneToOne(mappedBy = "shop", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private Order_item order_item;
-
-//    @ManyToMany(cascade = CascadeType.MERGE)
-//    @JoinTable(name = "shop_product_table",
-//            joinColumns = {
-//                    @JoinColumn(name = "shopID",referencedColumnName = "shopID"),
-//
-//            },
-//            inverseJoinColumns = {
-//                    @JoinColumn(name = "productID", referencedColumnName = "productID")
-//            }
-//    )
-//    private List<product> products;
-
+    @OneToOne(cascade = CascadeType.ALL)
+            @JsonIgnore
+    ImageData imageData;
 
     @OneToMany(mappedBy = "shop",cascade = CascadeType.MERGE)
     @JsonIgnore
@@ -114,7 +100,15 @@ public class ShopOwner{
         this.shopProducts = shopProducts;
     }
 
-//    public Order_item getOrder_item() {
+    public ImageData getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(ImageData imageData) {
+        this.imageData = imageData;
+    }
+
+    //    public Order_item getOrder_item() {
 //        return order_item;
 //    }
 //

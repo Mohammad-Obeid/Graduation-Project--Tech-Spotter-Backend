@@ -23,16 +23,28 @@ public class ShoppingCartController {
                         .body(null));
     }
 
-    @PostMapping("addProductToCart/{custID}/{productID}")
-    public ResponseEntity<ShoppingCart> AddProductToCustomerCart(@PathVariable("custID") int custID, @PathVariable("productID") int prodID){
-        Optional<ShoppingCart> cart= Optional.ofNullable(shpCartServ.AddProductToCart(custID,prodID));
+//    @PostMapping("addProductToCart/{custID}/{productID}")
+//    public ResponseEntity<ShoppingCart> AddProductToCustomerCart(@PathVariable("custID") int custID, @PathVariable("productID") int prodID){
+//        Optional<ShoppingCart> cart= Optional.ofNullable(shpCartServ.AddProductToCart(custID,prodID));
+//        return cart.map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                        .body(null));
+//    }
+
+    @PostMapping("addProductToCart/{custID}/{shopName}/{productBarcode}")
+    public ResponseEntity<ShoppingCart> AddProductToCustomerCart(@PathVariable("custID") int custID,
+                                                                 @PathVariable("shopName") String shopName,
+                                                                 @PathVariable("productBarcode") String prodBarcode){
+        Optional<ShoppingCart> cart= Optional.ofNullable(shpCartServ.AddProductToCart(custID, shopName, prodBarcode));
         return cart.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
-    @DeleteMapping("deleteProductFromACart/{custID}/{productID}")
-    public ResponseEntity<ShoppingCart> DeleteAProductFromACart(@PathVariable("custID") int custID, @PathVariable("productID") int prodID){
-        Optional<ShoppingCart> deleteProd= Optional.ofNullable(shpCartServ.DeleteProductFromCart(custID,prodID));
+    @DeleteMapping("deleteProductFromACart/{custID}/{shopName}/{productBarcode}")
+    public ResponseEntity<ShoppingCart> DeleteAProductFromACart(@PathVariable("custID") int custID,
+                                                                @PathVariable("shopName") String shopName,
+                                                                @PathVariable("productBarcode") String prodBarcode){
+        Optional<ShoppingCart> deleteProd= Optional.ofNullable(shpCartServ.DeleteProductFromCart(custID, shopName, prodBarcode));
         return deleteProd.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

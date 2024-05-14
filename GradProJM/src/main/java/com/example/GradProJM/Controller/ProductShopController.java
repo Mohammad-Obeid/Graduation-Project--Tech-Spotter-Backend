@@ -2,6 +2,7 @@ package com.example.GradProJM.Controller;
 
 import com.example.GradProJM.Model.Order;
 import com.example.GradProJM.Model.Shop_Products;
+import com.example.GradProJM.Model.customerRates;
 import com.example.GradProJM.Model.product;
 import com.example.GradProJM.Services.ProductService;
 import com.example.GradProJM.Services.ProductShopService;
@@ -90,14 +91,31 @@ public class ProductShopController {
                         .body(null));
     }
 
-    @PatchMapping("rateAProduct/{custID}/{shopName}/{prodBarcode}/{rate}")
+    @PatchMapping("rateAProduct")
+    public ResponseEntity<Shop_Products> rateAProduct(@RequestBody customerRates custRate){
+
+//        @PathVariable("custID") int custID,
+//        @PathVariable("shopName") String shopName,
+//        @PathVariable("prodBarcode") String prodBarcode,
+//        @PathVariable("rate") double rate
+        Optional<Shop_Products> productRate= Optional.ofNullable(prdShopService.rateAProduct(
+                custRate));
+        return productRate.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @PatchMapping("rateAProduct/{custID}/{shopName}/{prodBarcode}")
     public ResponseEntity<Shop_Products> rateAProduct(@PathVariable("custID") int custID,
                                                       @PathVariable("shopName") String shopName,
                                                       @PathVariable("prodBarcode") String prodBarcode,
-                                                      @PathVariable("rate") double rate){
-        Optional<Shop_Products> productRate= Optional.ofNullable(prdShopService.rateAProduct(
-                custID, shopName, prodBarcode, rate
-        ));
+                                                      @RequestBody customerRates custRate){
+
+
+        Optional<Shop_Products> productRate= Optional.ofNullable(prdShopService.rateAProduct(custID,
+                shopName,
+                prodBarcode,
+                custRate));
         return productRate.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

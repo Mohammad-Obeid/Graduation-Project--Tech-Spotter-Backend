@@ -1,13 +1,7 @@
 package com.example.GradProJM.Services;
 
-import com.example.GradProJM.Model.Order;
-import com.example.GradProJM.Model.ShopOwner;
-import com.example.GradProJM.Model.Shop_Products;
-import com.example.GradProJM.Model.product;
-import com.example.GradProJM.Repos.OrderRepository;
-import com.example.GradProJM.Repos.ProductRepository;
-import com.example.GradProJM.Repos.ShopOwnerRepository;
-import com.example.GradProJM.Repos.productShopRepository;
+import com.example.GradProJM.Model.*;
+import com.example.GradProJM.Repos.*;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,16 +18,22 @@ public class ProductShopService {
     private final ProductRepository prdRepo;
     private final ShopOwnerRepository shpRepo;
     private final OrderRepository ordRepo;
+    private final customerFeedbackRepository custfeedbkRepo;
+    private final CustomerRepository custRepo;
 
     @Autowired
     public ProductShopService(productShopRepository prdshpRepo,
                               ProductRepository prdRepo,
                               ShopOwnerRepository shpRepo,
-                              OrderRepository ordRepo) {
+                              OrderRepository ordRepo,
+                              customerFeedbackRepository custfeedbkRepo,
+                              CustomerRepository custRepo) {
         this.prdshpRepo=prdshpRepo;
         this.prdRepo=prdRepo;
         this.shpRepo=shpRepo;
         this.ordRepo=ordRepo;
+        this.custfeedbkRepo=custfeedbkRepo;
+        this.custRepo=custRepo;
     }
 
     public Boolean AddAnExistingProducttoaShop(Shop_Products shopProducts) {
@@ -180,35 +180,46 @@ public class ProductShopService {
 
         }
 
-    public Shop_Products rateAProduct(int custID, String shopName, String prodBarcode, double rate) {
-        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
-        if(shopProduct.isPresent()){
-            Optional<product> prod = prdRepo.findByproductBarcode(prodBarcode);
-            double rt = prod.get().getProductRate();
-            int noRates = prod.get().getNumOfRates();
-            rt*=noRates;
-            noRates+=1;
-            rt+=rate;
-            rt/=noRates;
-            DecimalFormat df = new DecimalFormat("#.#");
-            rt = Double.parseDouble(df.format(rt));
-            prod.get().setProductRate(rt);
-            prod.get().setNumOfRates(noRates);
-            shopProduct.get().setRate(rt);
-            prdRepo.save(prod.get());
-            prdshpRepo.save(shopProduct.get());
-            return shopProduct.get();
-            //todo: save the customer...
+    public Shop_Products rateAProduct(customerRates custRate) {
+        Optional<ShopOwner> shop = shpRepo.findById(custRate.getProducts().getShop().getShopID());
+        Optional<product> product = prdRepo.findById(custRate.getProducts().getProduct().getProductId());
+        if(shop.isPresent() && product.isPresent()) {
+            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shop.get().getShopName(), product.get().getProductBarcode());
+            if (shopProduct.isPresent()) {
+                Optional<product> prod = prdRepo.findByproductBarcode(product.get().getProductBarcode());
+                double rt = prod.get().getProductRate();
+                int noRates = prod.get().getNumOfRates();
+                rt *= noRates;
+                noRates += 1;
+                rt += custRate.getRate();
+                rt /= noRates;
+                DecimalFormat df = new DecimalFormat("#.#");
+                rt = Double.parseDouble(df.format(rt));
+                prod.get().setProductRate(rt);
+                prod.get().setNumOfRates(noRates);
+                shopProduct.get().setRate(rt);
+                Optional <Customer> customer = custRepo.findById(custRate.getCustomer().getCustID());
+                custRate.setProducts(shopProduct.get());
+                custRate.setCustomer(customer.get());
+                custfeedbkRepo.save(custRate);
+                prdRepo.save(prod.get());
+                prdshpRepo.save(shopProduct.get());
+                return shopProduct.get();
+                //todo: save the customer...
+
+            }
         }
-        return null;
+            return null;
+
     }
 
-
-//        ord.setProducts(prdcts);
-//        ordRepo.saveAndFlush(ord); // Save the order along with its associated products
-
-//        return ord; // Return the saved order
-//    }
+    public Shop_Products rateAProduct(int custID, String shopName, String prodBarcode, customerRates custRate) {
+        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        Optional <Customer> customer = custRepo.findById(custID);
+        custRate.setCustomer(customer.get());
+        custRate.setProducts(shopProduct.get());
+        return rateAProduct(custRate);
+    }
 
 
 }

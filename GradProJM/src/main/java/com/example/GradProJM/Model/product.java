@@ -13,7 +13,6 @@ public class product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
     private String productName, productBarcode;
-    private double productPrice;
     private String productCategory,productPublishDate, productDescription;
     private int numOfRates;
     private double productRate;
@@ -30,23 +29,21 @@ public class product {
     public product() {
     }
 
-    public product(int productId, String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription,
+    public product(int productId, String productName, String productBarcode,String productCategory, String productPublishDate, String productDescription,
                    double rate, int numOfRates) {
         this.productId = productId;
         this.productName = productName;
         this.productBarcode = productBarcode;
-        this.productPrice = productPrice;
         this.productCategory = productCategory;
         this.productPublishDate = productPublishDate;
         this.productDescription = productDescription;
         this.productRate=0;
         this.numOfRates=0;
     }
-    public product(String productName, String productBarcode, double productPrice, String productCategory, String productPublishDate, String productDescription,
+    public product(String productName, String productBarcode, String productCategory, String productPublishDate, String productDescription,
                    double rate, int numOfRates) {
         this.productName = productName;
         this.productBarcode = productBarcode;
-        this.productPrice = productPrice;
         this.productCategory = productCategory;
         this.productPublishDate = productPublishDate;
         this.productDescription = productDescription;
@@ -76,14 +73,6 @@ public class product {
 
     public void setProductBarcode(String productBarcode) {
         this.productBarcode = productBarcode;
-    }
-
-    public double getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(double productPrice) {
-        this.productPrice = productPrice;
     }
 
     public String getProductCategory() {
@@ -150,7 +139,6 @@ public class product {
                 "productId=" + productId +
                 ", productName='" + productName + '\'' +
                 ", productBarcode='" + productBarcode + '\'' +
-                ", productPrice=" + productPrice +
                 ", productCategory='" + productCategory + '\'' +
                 ", productPublishDate='" + productPublishDate + '\'' +
                 ", productDescription='" + productDescription + '\'' +
