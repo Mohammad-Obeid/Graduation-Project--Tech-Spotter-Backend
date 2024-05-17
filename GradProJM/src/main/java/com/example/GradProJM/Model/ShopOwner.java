@@ -28,7 +28,7 @@ public class ShopOwner{
 
     @OneToOne(cascade = CascadeType.ALL)
             @JsonIgnore
-    ImageData imageData;
+    private ImageData imageData;
 
     @OneToMany(mappedBy = "shop",cascade = CascadeType.MERGE)
     @JsonIgnore

@@ -5,6 +5,7 @@ import com.example.GradProJM.Model.Order;
 import com.example.GradProJM.Repos.CustomerRepository;
 import com.example.GradProJM.Repos.OrderRepository;
 import com.example.GradProJM.Repos.ProductRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ public class OrderService {
     public List getOrdersForACustomer(int custID) {
         Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
         if(customer.isPresent()){
-            Optional<List> orders = orderRepo.findOrdersByCustomer_CustID(custID);
+            Optional<List<Order>> orders = orderRepo.findOrdersByCustomer_CustID(custID);
             return orders.get();
         }
         return null;

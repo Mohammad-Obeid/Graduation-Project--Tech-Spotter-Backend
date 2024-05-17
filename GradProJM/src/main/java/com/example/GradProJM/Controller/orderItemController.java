@@ -28,4 +28,13 @@ public class orderItemController {
 
     }
 
+    @PatchMapping("updateOrderItemStatus/{orderID}/{productID}/{status}")
+    public ResponseEntity<orderItems> changeStatus(@PathVariable("orderID") int orderID,
+                                                   @PathVariable("productID") int prodID,
+                                                   @PathVariable("status") String status){
+        Optional<orderItems> ordItm= Optional.ofNullable(ordItmSrv.changeStatus(orderID,prodID, status));
+        return ordItm.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
 }

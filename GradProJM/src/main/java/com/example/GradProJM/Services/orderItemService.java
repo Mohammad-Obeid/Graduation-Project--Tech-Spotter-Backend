@@ -78,17 +78,66 @@ public class orderItemService {
                 orderItems orditm=new orderItems();
                 orditm.setOrder(ord);
                 orditm.setProduct(shopProduct.get());
+                orditm.setOrderItemStats("Delivered To "+ shopProduct.get().getShop().getShopName());
                 orderItems.add(orditm);
             }
             else{
                 System.out.println("Product: "+shopProduct.get().getProduct().getProductName()+" is Out of Stock");
             }
         }
-        ord.setStatus("Submitted");
+        ord.setStatus("Processing");
         ord.setOrderItem(orderItems);
         ordRepo.save(ord);
         return ord;
     }
+    public void changeOrderStatus(){
+        Optional <List<Order>> orders = ordRepo.findOrdersByStatus("Processing");
+        for(int i = 0; i < orders.get().size(); i++){
+            Optional<List<orderItems>> items = ordItmRepo.findByOrder(orders.get().get(i));
+            int flag=0;
+            for(int j=0; j < items.get().size(); j++){
+                if(!items.get().get(i).getOrderItemStats().equals("Accepted")){
+                    flag=1;
+                }
+                if(flag==1)break;
+            }
+            if(flag==0){
+                orders.get().get(i).setStatus("Ready to be Shipped");
+                ordRepo.save(orders.get().get(i));
+            }
+        }
+    }
+
+
+
+    public void changeOrderStatus2(){
+        Optional <List<Order>> orders = ordRepo.findOrdersByStatus("Ready to be Shipped");
+        for(int i = 0; i < orders.get().size(); i++){
+            Optional<List<orderItems>> items = ordItmRepo.findByOrder(orders.get().get(i));
+            int flag=0;
+            for(int j=0; j < items.get().size(); j++){
+                if(!items.get().get(i).getOrderItemStats().equals("Shipped")){
+                    flag=1;
+                }
+                if(flag==1)break;
+            }
+            if(flag==0){
+                orders.get().get(i).setStatus("Shipped");
+                ordRepo.save(orders.get().get(i));
+            }
+        }
+    }
+
+
+
+
+    public orderItems changeStatus(int orderID, int prodID,String status) {
+        Optional<orderItems> item = ordItmRepo.findByOrderOrderIDAndProductId(orderID,prodID);
+        item.get().setOrderItemStats(status);
+        ordItmRepo.save(item.get());
+        return item.get();
+    }
+
 
 //    public Order MakeNewOrder(int custID, String shopName, String prodBarcode, Order order) {
 //        List<>

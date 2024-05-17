@@ -225,6 +225,7 @@ public class userService {
 
     //    @EventListener(ApplicationReadyEvent.class)
     public void sendVerificationCodeMail(User user) {
+        //todo: change the email
         emailService.sendVerificationCodeEmail("mohammadkadoumi77@yahoo.com", g, user.getUserName());//riyadjannah2023@gmail.com
 //        1200644@student.birzeit.edu
     }
@@ -314,23 +315,12 @@ public class userService {
     public User updateAddress(int userID, int addID, Address add) {
         Optional<User> user = userRepo.findByuserid(userID);
         if (user.isPresent()) {
-            List<Address> addresses = user.get().getAddress();
-            int flag = 0;
-            for (int i = 0; i < addresses.size(); i++) {
-                if (addresses.get(i).getAddID() == addID) {
-                    addresses.get(i).setCity(add.getCity());
-                    addresses.get(i).setGovernorate(add.getGovernorate());
-                    addresses.get(i).setTown(add.getTown());
-                    addresses.get(i).setStreetNo(add.getStreetNo());
-                    addresses.get(i).setDepNo(add.getDepNo());
-                    addresses.get(i).setMoreDetails(add.getMoreDetails());
-                    flag = 1;
-                    user.get().setAddress(addresses);
-                    userRepo.save(user.get());
-                }
+            Optional<Address> address = addRepo.findById(addID);
+            if(address.isPresent()){
+                add.setAddID(address.get().getAddID());
+                add.setUser(user.get());
+                addRepo.save(add);
             }
-            if (flag == 0)
-                return null;
             return user.get();
         }
         return null;
@@ -573,7 +563,6 @@ public class userService {
                     return "Success";
                 }
                 return "Check Email or Password";
-
             }
             return "Check Email or Password";
         }

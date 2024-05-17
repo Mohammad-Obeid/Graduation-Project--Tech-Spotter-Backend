@@ -40,11 +40,12 @@ public class UserController {
 
     }
     @PostMapping("addnewuser")
-    public ResponseEntity<User> addNewUser(@RequestBody User user, @RequestParam("image") MultipartFile file) throws IOException {
+    public ResponseEntity<User> addNewUser(@RequestBody User user){
         Optional<User> us= Optional.ofNullable(userService.SendEmailVerification(user));
         return us.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.FOUND)
-                        .body(null));    }
+                        .body(null));
+    }
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") int userid) {
         Optional<User> user = Optional.ofNullable(userService.getUserbyId(userid));
@@ -148,7 +149,7 @@ public class UserController {
     public ResponseEntity<User> addNewAddress(@PathVariable("userID") int userID, @RequestBody Address address){
         Optional<User> user= Optional.ofNullable(userService.AddNewAddress(userID, address));
         return user.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .orElse(ResponseEntity.status(HttpStatus.FOUND)
                         .body(null));
     }
 
@@ -192,8 +193,6 @@ public class UserController {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                     Payment Methods Work, addition, deletion, update, get ...
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     @PostMapping("AddPaymentMethod/{userID}")
     public ResponseEntity<User> AddNewPaymentMethod(@PathVariable("userID") int userID, @RequestBody PaymentMethods paymentMethod){

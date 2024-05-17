@@ -7,5 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order,Integer> {
-    Optional<List> findOrdersByCustomer_CustID(int custID);
+    Optional<List<Order>> findOrdersByCustomer_CustID(int custID);
+    Optional<List<Order>> findOrdersByStatus(String status);
 }
