@@ -21,9 +21,7 @@ public class product {
     private List<Shop_Products> shopProducts;
 
 
-//    @ManyToOne(cascade = CascadeType.MERGE)
-//    @JsonIgnore
-//    private Order_item orderItem;
+
 
 
     public product() {
@@ -125,7 +123,7 @@ public class product {
     }
 
 
-//    public List<Order_item> getOrderItems() {
+    //    public List<Order_item> getOrderItems() {
 //        return orderItems;
 //    }
 //

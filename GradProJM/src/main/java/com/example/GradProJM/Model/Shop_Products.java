@@ -28,6 +28,9 @@ public class Shop_Products {
 
     private double productPrice;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private ProductImageData img;
+
 
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
@@ -102,8 +105,15 @@ public class Shop_Products {
         this.productPrice = productPrice;
     }
 
+    public ProductImageData getImg() {
+        return img;
+    }
 
-//    public List<orderItems> getOrderItem() {
+    public void setImg(ProductImageData img) {
+        this.img = img;
+    }
+
+    //    public List<orderItems> getOrderItem() {
 //        return orderItem;
 //    }
 //
