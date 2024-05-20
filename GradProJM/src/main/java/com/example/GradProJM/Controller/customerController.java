@@ -1,5 +1,6 @@
 package com.example.GradProJM.Controller;
 import com.example.GradProJM.Model.Customer;
+import com.example.GradProJM.Model.ProductReport;
 import com.example.GradProJM.Model.User;
 import com.example.GradProJM.Services.customerService;
 import org.springframework.beans.factory.annotation.Autowired;

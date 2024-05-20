@@ -31,7 +31,7 @@ public class ShopOwner{
     private ImageData imageData;
 
     @OneToMany(mappedBy = "shop",cascade = CascadeType.MERGE)
-    @JsonIgnore
+//    @JsonIgnore
     private List<Shop_Products> shopProducts;
 
     public ShopOwner() {

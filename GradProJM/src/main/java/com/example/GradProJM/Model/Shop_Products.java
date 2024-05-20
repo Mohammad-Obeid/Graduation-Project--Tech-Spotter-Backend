@@ -16,7 +16,6 @@ public class Shop_Products {
     private int id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-//    @JsonIgnore
     private ShopOwner shop;
 
     @ManyToOne(cascade = CascadeType.MERGE)

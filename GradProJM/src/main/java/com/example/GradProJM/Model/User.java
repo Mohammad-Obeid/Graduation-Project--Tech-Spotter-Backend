@@ -31,14 +31,15 @@ public class User {
 
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
-//    @JsonManagedReference
     private ShopOwner shopowner;
 
 
 
     @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
-//    @JsonManagedReference
     private Customer customer;
+
+    @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL)
+    private Admin admin;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 //    @JsonManagedReference
@@ -178,6 +179,14 @@ public class User {
 
     public void setAddCount(int addCount) {
         this.addCount = addCount;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
     }
 
     @Override

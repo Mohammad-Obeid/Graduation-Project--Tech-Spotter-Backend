@@ -12,8 +12,8 @@ public class Shop_Product_Serializer extends JsonSerializer<Shop_Products> {
     public void serialize(Shop_Products shopProducts, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
 
-        jsonGenerator.writeObjectField("Shop", shopProducts.getShop());
-        jsonGenerator.writeObjectField("Products", shopProducts.getProduct());
+        jsonGenerator.writeObjectField("ShopName", shopProducts.getShop().getShopName());
+        jsonGenerator.writeObjectField("Product Barcode", shopProducts.getProduct().getProductBarcode());
 
         jsonGenerator.writeEndObject();
 
