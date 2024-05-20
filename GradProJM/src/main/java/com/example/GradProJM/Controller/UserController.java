@@ -39,6 +39,7 @@ public class UserController {
                         .body(null));
 
     }
+
     @PostMapping("addnewuser")
     public ResponseEntity<User> addNewUser(@RequestBody User user){
         Optional<User> us= Optional.ofNullable(userService.SendEmailVerification(user));

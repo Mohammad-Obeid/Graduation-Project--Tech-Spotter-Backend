@@ -4,6 +4,7 @@ import com.example.GradProJM.Model.*;
 import com.example.GradProJM.Repos.*;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
@@ -220,6 +221,4 @@ public class ProductShopService {
         custRate.setProducts(shopProduct.get());
         return rateAProduct(custRate);
     }
-
-
 }

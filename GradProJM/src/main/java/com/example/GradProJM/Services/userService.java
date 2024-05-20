@@ -70,9 +70,11 @@ public class userService {
             LocalDateTime current = LocalDateTime.now();
             List<User> users = userRepo1.findAll();
             for (int i = 0; i < users.size(); i++) {
-                LocalDateTime userjoinDate = LocalDateTime.parse(users.get(i).getJoinDate()).plusMinutes(10);
-                if (!users.get(i).isVerified() && current.isAfter(userjoinDate)) {
-                    userRepo1.delete(users.get(i));
+                if(users.get(i).getStatus()!=2) {
+                    LocalDateTime userjoinDate = LocalDateTime.parse(users.get(i).getJoinDate()).plusMinutes(10);
+                    if (!users.get(i).isVerified() && current.isAfter(userjoinDate)) {
+                        userRepo1.delete(users.get(i));
+                    }
                 }
             }
         }
