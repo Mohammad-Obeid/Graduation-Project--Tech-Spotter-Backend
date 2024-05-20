@@ -8,6 +8,9 @@ import com.example.GradProJM.Repos.ProductRepository;
 import com.example.GradProJM.Repos.ShopOwnerRepository;
 import com.example.GradProJM.Repos.productShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -52,20 +55,23 @@ public class customerService {
     }
 
 
+    //todo: change page Size to 10;
 
-    public List<Shop_Products> Search(String prodName) {
-        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prodName);
-        return products.get();
-    }
-    public List<Shop_Products> SortASC(String prodName, String field) {
-        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prodName,Sort.by(Sort.Direction.ASC, field));
+    public List<Shop_Products> Search(String prodName, int pageNum) {
+        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prodName, PageRequest.of(pageNum,2));
         return products.get();
     }
 
-    public List<Shop_Products> SortDESC(String prodName, String field) {
-        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prodName,Sort.by(Sort.Direction.DESC, field));
-        return products.get();
+    public Page<Shop_Products> SortASC(String prefix, int page, String sortField) {
+        Pageable pageable = PageRequest.of(page, 2, Sort.by(Sort.Direction.ASC, sortField));
+        return prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prefix, pageable);
     }
+
+    public Page<Shop_Products> SortDESC(String prefix, int page, String sortField) {
+        Pageable pageable = PageRequest.of(page, 2, Sort.by(Sort.Direction.DESC, sortField));
+        return prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prefix, pageable);
+    }
+
 
 
 

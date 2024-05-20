@@ -11,18 +11,14 @@ public class Shop_Product_Serializer extends JsonSerializer<Shop_Products> {
     @Override
     public void serialize(Shop_Products shopProducts, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
-
         jsonGenerator.writeObjectField("ShopName", shopProducts.getShop().getShopName());
-        jsonGenerator.writeObjectField("Product Barcode", shopProducts.getProduct().getProductBarcode());
-        jsonGenerator.writeObjectField("Product Name", shopProducts.getProduct().getProductName());
-        jsonGenerator.writeObjectField("Product Rate", shopProducts.getProduct().getProductRate());
-        jsonGenerator.writeObjectField("Product Price", shopProducts.getProductPrice());
-        jsonGenerator.writeObjectField("Product Quantity", shopProducts.getQuantity());
-
+        jsonGenerator.writeObjectField("ProductBarcode", shopProducts.getProduct().getProductBarcode());
+        jsonGenerator.writeObjectField("ProductName", shopProducts.getProduct().getProductName());
+        jsonGenerator.writeObjectField("ProductRate", shopProducts.getProduct().getProductRate());
+        jsonGenerator.writeObjectField("ProductPrice", shopProducts.getProductPrice());
+        jsonGenerator.writeObjectField("ProductQuantity", shopProducts.getQuantity());
+        jsonGenerator.writeObjectField("ProductCategory", shopProducts.getProduct().getProductCategory());
+        jsonGenerator.writeObjectField("ProductDescription", shopProducts.getProduct().getProductDescription());
         jsonGenerator.writeEndObject();
-
-
-
-
     }
 }
