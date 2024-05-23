@@ -30,6 +30,7 @@ public class Shop_Products {
     @OneToOne(cascade = CascadeType.ALL)
     private ProductImageData img;
 
+    private boolean deleted=false;
 
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
@@ -110,6 +111,14 @@ public class Shop_Products {
 
     public void setImg(ProductImageData img) {
         this.img = img;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     //    public List<orderItems> getOrderItem() {

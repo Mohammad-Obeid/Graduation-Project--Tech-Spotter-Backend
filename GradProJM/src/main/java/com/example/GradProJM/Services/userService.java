@@ -582,4 +582,16 @@ public class userService {
         }
         return null;
     }
+
+    public User changePassword(User us, int userID) {
+        Optional<User> user = userRepo.findByuserid(userID);
+        if(user.isPresent()){
+            BCryptPasswordEncoder encrypter = new BCryptPasswordEncoder();
+            String x = encrypter.encode(us.getUserPass());
+            user.get().setUserPass(x);
+            userRepo.save(user.get());
+            return user.get();
+        }
+        return null;
+    }
 }

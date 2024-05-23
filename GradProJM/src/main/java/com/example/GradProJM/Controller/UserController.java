@@ -236,4 +236,13 @@ public class UserController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
+
+    @PatchMapping("changePassword/{userID}")
+    public ResponseEntity<User> changePassword(@PathVariable("userID") int userID,
+            @RequestBody User us){
+        Optional<User> user= Optional.ofNullable(userService.changePassword(us,userID));
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
 }

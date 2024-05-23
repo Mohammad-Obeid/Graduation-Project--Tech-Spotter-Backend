@@ -47,6 +47,16 @@ public class ProductShopController {
                         .body(null));
     }
 
+    @GetMapping("getProducts/{category}/{shopID}/{pageNum}")
+    public ResponseEntity<List<Shop_Products>> getProductsbyCategory(@PathVariable("category") String category,
+            @PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum
+    ){
+        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.getProductsbyCategory(category,shopID, pageNum));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
 
     @GetMapping("sortasc/{shopID}/{field}/{pageNum}")
     public ResponseEntity<Page<Shop_Products>> sortASC(@PathVariable("shopID") int shopID,
@@ -70,6 +80,13 @@ public class ProductShopController {
                         .body(null));
     }
 
+    @PatchMapping("updateProduct/{shopName}/{prodBarcode}")
+    public ResponseEntity<Shop_Products> updateProduct(@RequestBody Shop_Products prod, @PathVariable("shopName") String shopName,@PathVariable("prodBarcode") String prodBarcode){
+        Optional<Shop_Products> product= Optional.ofNullable(prdShopService.updateProduct(prod, shopName,prodBarcode));
+        return product.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
 
 
     @PostMapping("AddanExistingProductToShop")
@@ -109,9 +126,9 @@ public class ProductShopController {
     }
 
 
-    @DeleteMapping("deleteAProductByBarcodeFromAShop/{shopID}/{prodBarcode}")
-    public ResponseEntity<Boolean> deleteAProductByBarcodeFromAShop(@PathVariable("shopID") int shopID,@PathVariable("prodBarcode") String prodBarcode){
-        Optional<Boolean> product= Optional.ofNullable(prdShopService.deleteAProductByBarcodeFromAShop(shopID,prodBarcode));
+    @DeleteMapping("deleteAProductByBarcodeFromAShop/{shopName}/{prodBarcode}")
+    public ResponseEntity<Boolean> deleteAProductByBarcodeFromAShop(@PathVariable("shopName") String shopName,@PathVariable("prodBarcode") String prodBarcode){
+        Optional<Boolean> product= Optional.ofNullable(prdShopService.deleteAProductByBarcodeFromAShop(shopName,prodBarcode));
         return product.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(false));

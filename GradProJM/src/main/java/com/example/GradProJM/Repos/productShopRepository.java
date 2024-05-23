@@ -12,9 +12,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface productShopRepository extends JpaRepository<Shop_Products,Integer> {
     Optional<List> findShop_ProductsByShop_ShopID(int shopID);
-    Optional<List<Shop_Products>> findShop_ProductsByShop_ShopID(int shopID, PageRequest of);
+    Optional<List<Shop_Products>> findShop_ProductsByShop_ShopIDAndDeletedFalse(int shopID, PageRequest of);
+    Optional<List<Shop_Products>> findShop_ProductsByShop_ShopIDAndProductProductCategoryAndDeletedFalse(int shopID,String category, PageRequest of);
 
-    Page<Shop_Products> findShop_ProductsByShop_ShopID(int shopID, Pageable pageable);
+    Page<Shop_Products> findShop_ProductsByShop_ShopIDAndDeletedFalse(int shopID, Pageable pageable);
 
 //    Optional<Shop_Products> findShop_ProductsByShop_ShopIDAndProduct_ProductId(int shopID,int ProdID);
 

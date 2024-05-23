@@ -79,6 +79,8 @@ public class ProductShopService {
 
     public Boolean AddAnExistingProductByBarcodetoaShop(Shop_Products shopProducts) {
         Optional<product> product=prdRepo.findByproductBarcode(shopProducts.getProduct().getProductBarcode());
+        Optional<Shop_Products> shsh = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopProducts.getShop().getShopName(),
+                shopProducts.getProduct().getProductBarcode());
         int flag=0;
         List<Shop_Products> chk=prdshpRepo.findAll();
         for(Shop_Products sh: chk){
@@ -94,12 +96,19 @@ public class ProductShopService {
                 System.out.println(product.get());
                 Shop_Products shpprdct= new Shop_Products(shopProducts.getShop(),product.get(),shopProducts.getQuantity());
                 shpprdct.setRate(product.get().getProductRate());
+                shpprdct.setDeleted(false);
                 prdshpRepo.save(shpprdct);
                 return true;
             }
             return null;
         }
 
+        }
+        if(flag ==1 && shsh.get().isDeleted()){
+            shsh.get().setDeleted(false);
+            shsh.get().setProductPrice(shopProducts.getProductPrice());
+            shsh.get().setQuantity(shopProducts.getQuantity());
+            return true;
         }
         return null;
     }
@@ -129,9 +138,23 @@ public class ProductShopService {
         return null;
     }
 
-    public Boolean deleteAProductByBarcodeFromAShop(int shopID, String prodBarcode) {
-        Optional<product> prod=prdRepo.findByproductBarcode(prodBarcode);
-        return prod.map(product -> DeleteAProductFromAShop(shopID, product.getProductId())).orElse(null);
+    public Boolean deleteAProductByBarcodeFromAShop(String shopName, String prodBarcode) {
+        Optional <ShopOwner> shop = shpRepo.findShopOwnerByShopName(shopName);
+        if(shop.isPresent()){
+            List<Shop_Products> products = shop.get().getShopProducts();
+            Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(
+                    shopName,prodBarcode
+            );
+            products.remove(prod.get());
+            shop.get().setShopProducts(products);
+            shpRepo.save(shop.get());
+//            prod.get().setProduct(null);
+//            prod.get().setShop(null);
+            prod.get().setDeleted(true);
+            prdshpRepo.save(prod.get());
+            return true;
+        }
+        return false;
     }
 
 //    public Order MakeNewOrder(Order order) {
@@ -228,17 +251,41 @@ public class ProductShopService {
     }
 
     public List<Shop_Products> view(int shopID, int pageNum) {
-        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByShop_ShopID(shopID, PageRequest.of(pageNum,2));
+        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByShop_ShopIDAndDeletedFalse(shopID, PageRequest.of(pageNum,2));
         return products.get();
     }
 
+    public List<Shop_Products> getProductsbyCategory(String category, int shopID, int pageNum) {
+        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByShop_ShopIDAndProductProductCategoryAndDeletedFalse(shopID, category, PageRequest.of(pageNum,2));
+        return products.get();
+    }
+
+
+
     public Page<Shop_Products> SortASC(int shopID, int pageNum, String field) {
         Pageable pageable = PageRequest.of(pageNum, 2, Sort.by(Sort.Direction.ASC, field));
-        return prdshpRepo.findShop_ProductsByShop_ShopID(shopID, pageable);
+        return prdshpRepo.findShop_ProductsByShop_ShopIDAndDeletedFalse(shopID, pageable);
     }
 
     public Page<Shop_Products> sortDESC(int shopID, int pageNum, String field) {
         Pageable pageable = PageRequest.of(pageNum, 2, Sort.by(Sort.Direction.DESC, field));
-        return prdshpRepo.findShop_ProductsByShop_ShopID(shopID, pageable);
+        return prdshpRepo.findShop_ProductsByShop_ShopIDAndDeletedFalse(shopID, pageable);
+    }
+
+
+
+
+
+
+
+    public Shop_Products updateProduct(Shop_Products product,String shopName, String prodBarcode) {
+        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        if(shopProduct.isPresent()){
+            shopProduct.get().setProductPrice(product.getProductPrice());
+            shopProduct.get().setQuantity(product.getQuantity());
+            prdshpRepo.save(shopProduct.get());
+            return shopProduct.get();
+        }
+        return null;
     }
 }
