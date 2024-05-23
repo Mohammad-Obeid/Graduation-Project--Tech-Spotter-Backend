@@ -73,11 +73,12 @@ public class orderItemService {
             Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(
                     order.getOrderItem().get(i).getProduct().getShop().getShopName(),
                     order.getOrderItem().get(i).getProduct().getProduct().getProductBarcode());
-            if(shopProduct.get().getQuantity()>0){
-//              todo:  shopProduct.get().setQuantity(shopProduct.get().getQuantity()-1); after payment verification
+            if(shopProduct.get().getQuantity()>=order.getOrderItem().get(i).getItemQuantity()){
+//              todo:  shopProduct.get().setQuantity(shopProduct.get().getQuantity()-order.getOrderItem().get(i).getItemQuantity()); after payment verification
                 orderItems orditm=new orderItems();
                 orditm.setOrder(ord);
                 orditm.setProduct(shopProduct.get());
+                orditm.setItemQuantity(order.getOrderItem().get(i).getItemQuantity());
                 orditm.setOrderItemStats("Delivered To "+ shopProduct.get().getShop().getShopName());
                 orderItems.add(orditm);
             }

@@ -36,6 +36,14 @@ public class ProductController {
                         .body(null));
     }
 
+    @GetMapping("getProduct/{prodBarcode}")
+    public ResponseEntity<product> getAllProducts(@PathVariable("prodBarcode") String prodBarcode){
+        Optional<product> product= Optional.ofNullable(prodService.getProductbyBarcode(prodBarcode));
+        return product.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
     @PostMapping("addNewProduct")
     public ResponseEntity<product> AddNewProduct(@RequestBody product prod){
         Optional<product> product= Optional.ofNullable(prodService.AddNewProduct(prod));

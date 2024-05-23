@@ -94,4 +94,9 @@ public class ProductService {
         }
     return null;
     }
+
+    public product getProductbyBarcode(String prodBarcode) {
+        Optional<product> product= prodRepo.findByproductBarcode(prodBarcode);
+        return getProduct(product.get().getProductId());
+    }
 }

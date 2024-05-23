@@ -19,6 +19,8 @@ public class orderItems {
     @JsonIgnore
     private Order order;
 
+    private int itemQuantity;
+
     private String orderItemStats;
 
     public orderItems() {
@@ -58,6 +60,14 @@ public class orderItems {
 
     public void setOrderItemStats(String orderItemStats) {
         this.orderItemStats = orderItemStats;
+    }
+
+    public int getItemQuantity() {
+        return itemQuantity;
+    }
+
+    public void setItemQuantity(int itemQuantity) {
+        this.itemQuantity = itemQuantity;
     }
 
     @Override

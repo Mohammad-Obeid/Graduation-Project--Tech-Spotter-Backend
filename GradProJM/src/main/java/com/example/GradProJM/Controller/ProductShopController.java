@@ -8,6 +8,7 @@ import com.example.GradProJM.Services.ProductService;
 import com.example.GradProJM.Services.ProductShopService;
 import com.example.GradProJM.Services.shopOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,39 @@ public class ProductShopController {
     @GetMapping("getProductsForaShop/{shopID}")
     public ResponseEntity<List> getAllProductsForAShop(@PathVariable("shopID") int shopID){
         Optional<List> products= Optional.ofNullable(prdShopService.getAllProductsForAShop(shopID));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("getProducts/{shopID}/{pageNum}")
+    public ResponseEntity<List<Shop_Products>> Search(@PathVariable("shopID") int shopID,
+                                                      @PathVariable("pageNum") int pageNum
+    ){
+        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.view(shopID, pageNum));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+    @GetMapping("sortasc/{shopID}/{field}/{pageNum}")
+    public ResponseEntity<Page<Shop_Products>> sortASC(@PathVariable("shopID") int shopID,
+                                                       @PathVariable("field") String field,
+                                                       @PathVariable("pageNum") int pageNum
+    ){
+        Optional<Page<Shop_Products>> products= Optional.ofNullable(prdShopService.SortASC(shopID,pageNum,field));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("sortDesc/{shopID}/{field}/{pageNum}")
+    public ResponseEntity<Page<Shop_Products>> sortDESC(@PathVariable("shopID") int shopID,
+                                                       @PathVariable("field") String field,
+                                                       @PathVariable("pageNum") int pageNum
+    ){
+        Optional<Page<Shop_Products>> products= Optional.ofNullable(prdShopService.sortDESC(shopID,pageNum,field));
         return products.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

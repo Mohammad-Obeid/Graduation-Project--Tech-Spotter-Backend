@@ -4,6 +4,9 @@ import com.example.GradProJM.Model.*;
 import com.example.GradProJM.Repos.*;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -206,7 +209,9 @@ public class ProductShopService {
                 prdRepo.save(prod.get());
                 prdshpRepo.save(shopProduct.get());
                 return shopProduct.get();
-                //todo: save the customer...
+                //todo: save the customer..
+                //todo: send an confirmation link to the email ...
+                
 
             }
         }
@@ -220,5 +225,20 @@ public class ProductShopService {
         custRate.setCustomer(customer.get());
         custRate.setProducts(shopProduct.get());
         return rateAProduct(custRate);
+    }
+
+    public List<Shop_Products> view(int shopID, int pageNum) {
+        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByShop_ShopID(shopID, PageRequest.of(pageNum,2));
+        return products.get();
+    }
+
+    public Page<Shop_Products> SortASC(int shopID, int pageNum, String field) {
+        Pageable pageable = PageRequest.of(pageNum, 2, Sort.by(Sort.Direction.ASC, field));
+        return prdshpRepo.findShop_ProductsByShop_ShopID(shopID, pageable);
+    }
+
+    public Page<Shop_Products> sortDESC(int shopID, int pageNum, String field) {
+        Pageable pageable = PageRequest.of(pageNum, 2, Sort.by(Sort.Direction.DESC, field));
+        return prdshpRepo.findShop_ProductsByShop_ShopID(shopID, pageable);
     }
 }
