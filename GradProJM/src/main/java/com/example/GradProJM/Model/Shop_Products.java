@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -31,6 +32,9 @@ public class Shop_Products {
     private ProductImageData img;
 
     private boolean deleted=false;
+
+    private String productDescription;
+    private String productPublishDate  = String.valueOf(LocalDateTime.now());
 
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
@@ -119,6 +123,22 @@ public class Shop_Products {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
+    public String getProductPublishDate() {
+        return productPublishDate;
+    }
+
+    public void setProductPublishDate(String productPublishDate) {
+        this.productPublishDate = productPublishDate;
     }
 
     //    public List<orderItems> getOrderItem() {

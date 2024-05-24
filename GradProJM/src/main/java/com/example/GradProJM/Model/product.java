@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ public class product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
     private String productName, productBarcode;
-    private String productCategory,productPublishDate, productDescription;
+    private String productCategory;
     private int numOfRates;
     private double productRate;
     @OneToMany(mappedBy = "product",cascade = CascadeType.MERGE)
@@ -27,24 +28,20 @@ public class product {
     public product() {
     }
 
-    public product(int productId, String productName, String productBarcode,String productCategory, String productPublishDate, String productDescription,
+    public product(int productId, String productName, String productBarcode,String productCategory,
                    double rate, int numOfRates) {
         this.productId = productId;
         this.productName = productName;
         this.productBarcode = productBarcode;
         this.productCategory = productCategory;
-        this.productPublishDate = productPublishDate;
-        this.productDescription = productDescription;
         this.productRate=0;
         this.numOfRates=0;
     }
-    public product(String productName, String productBarcode, String productCategory, String productPublishDate, String productDescription,
+    public product(String productName, String productBarcode, String productCategory ,
                    double rate, int numOfRates) {
         this.productName = productName;
         this.productBarcode = productBarcode;
         this.productCategory = productCategory;
-        this.productPublishDate = productPublishDate;
-        this.productDescription = productDescription;
         this.productRate=0;
         this.numOfRates=0;
     }
@@ -79,22 +76,6 @@ public class product {
 
     public void setProductCategory(String productCategory) {
         this.productCategory = productCategory;
-    }
-
-    public String getProductPublishDate() {
-        return productPublishDate;
-    }
-
-    public void setProductPublishDate(String productPublishDate) {
-        this.productPublishDate = productPublishDate;
-    }
-
-    public String getProductDescription() {
-        return productDescription;
-    }
-
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
     }
 
     public int getNumOfRates() {
@@ -138,8 +119,6 @@ public class product {
                 ", productName='" + productName + '\'' +
                 ", productBarcode='" + productBarcode + '\'' +
                 ", productCategory='" + productCategory + '\'' +
-                ", productPublishDate='" + productPublishDate + '\'' +
-                ", productDescription='" + productDescription + '\'' +
                 ", numOfRates=" + numOfRates +
                 ", productRate=" + productRate +
                 '}';

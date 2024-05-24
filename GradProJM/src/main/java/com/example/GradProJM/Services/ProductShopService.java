@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -97,6 +98,9 @@ public class ProductShopService {
                 Shop_Products shpprdct= new Shop_Products(shopProducts.getShop(),product.get(),shopProducts.getQuantity());
                 shpprdct.setRate(product.get().getProductRate());
                 shpprdct.setDeleted(false);
+                shpprdct.setProductPrice(shopProducts.getProductPrice());
+                shpprdct.setProductDescription(shopProducts.getProductDescription());
+                shpprdct.setProductPublishDate(String.valueOf(LocalDateTime.now()));
                 prdshpRepo.save(shpprdct);
                 return true;
             }
@@ -108,6 +112,8 @@ public class ProductShopService {
             shsh.get().setDeleted(false);
             shsh.get().setProductPrice(shopProducts.getProductPrice());
             shsh.get().setQuantity(shopProducts.getQuantity());
+            shsh.get().setProductDescription(shopProducts.getProductDescription());
+            shsh.get().setProductPublishDate(String.valueOf(LocalDateTime.now()));
             return true;
         }
         return null;
@@ -145,14 +151,14 @@ public class ProductShopService {
             Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(
                     shopName,prodBarcode
             );
+            if(prod.isPresent()){
             products.remove(prod.get());
             shop.get().setShopProducts(products);
             shpRepo.save(shop.get());
-//            prod.get().setProduct(null);
-//            prod.get().setShop(null);
             prod.get().setDeleted(true);
             prdshpRepo.save(prod.get());
-            return true;
+            return true;}
+            return false;
         }
         return false;
     }
