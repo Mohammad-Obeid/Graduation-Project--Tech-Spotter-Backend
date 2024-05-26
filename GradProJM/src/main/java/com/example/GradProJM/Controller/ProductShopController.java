@@ -58,6 +58,15 @@ public class ProductShopController {
     }
 
 
+
+    @GetMapping("getNumOfPages/{category}/{shopID}")
+    public int getNumOfPagesForaCategory(@PathVariable("category") String category,
+                                                                     @PathVariable("shopID") int shopID
+    ){
+        int num= prdShopService.getCategoriesPagesNum(category,shopID);
+        return num;
+    }
+
     @GetMapping("sortasc/{shopID}/{field}/{pageNum}")
     public ResponseEntity<Page<Shop_Products>> sortASC(@PathVariable("shopID") int shopID,
                                                        @PathVariable("field") String field,

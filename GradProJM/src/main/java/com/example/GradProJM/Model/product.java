@@ -15,8 +15,6 @@ public class product {
     private int productId;
     private String productName, productBarcode;
     private String productCategory;
-    private int numOfRates;
-    private double productRate;
     @OneToMany(mappedBy = "product",cascade = CascadeType.MERGE)
     @JsonIgnore
     private List<Shop_Products> shopProducts;
@@ -28,22 +26,20 @@ public class product {
     public product() {
     }
 
-    public product(int productId, String productName, String productBarcode,String productCategory,
-                   double rate, int numOfRates) {
+    public product(int productId, String productName, String productBarcode,String productCategory
+                  ) {
         this.productId = productId;
         this.productName = productName;
         this.productBarcode = productBarcode;
         this.productCategory = productCategory;
-        this.productRate=0;
-        this.numOfRates=0;
+
     }
     public product(String productName, String productBarcode, String productCategory ,
                    double rate, int numOfRates) {
         this.productName = productName;
         this.productBarcode = productBarcode;
         this.productCategory = productCategory;
-        this.productRate=0;
-        this.numOfRates=0;
+
     }
 
     public int getProductId() {
@@ -78,22 +74,6 @@ public class product {
         this.productCategory = productCategory;
     }
 
-    public int getNumOfRates() {
-        return numOfRates;
-    }
-
-    public void setNumOfRates(int numOfRates) {
-        this.numOfRates = numOfRates;
-    }
-
-    public double getProductRate() {
-        return productRate;
-    }
-
-    public void setProductRate(double productRate) {
-        this.productRate = productRate;
-    }
-
 
     public List<Shop_Products> getShopProducts() {
         return shopProducts;
@@ -119,8 +99,6 @@ public class product {
                 ", productName='" + productName + '\'' +
                 ", productBarcode='" + productBarcode + '\'' +
                 ", productCategory='" + productCategory + '\'' +
-                ", numOfRates=" + numOfRates +
-                ", productRate=" + productRate +
                 '}';
     }
 }

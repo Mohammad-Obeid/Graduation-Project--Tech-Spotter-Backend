@@ -19,13 +19,24 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("getorders/{custID}")
-    public ResponseEntity<List> getOrdersForACustomer(@PathVariable("custID") int custID){
-        Optional<List> orders= Optional.ofNullable(orderService.getOrdersForACustomer(custID));
+    @GetMapping("getordersforCust/{custID}/{pageNum}")
+    public ResponseEntity<List> getOrdersForACustomer(@PathVariable("custID") int custID, @PathVariable("pageNum") int pageNum){
+        Optional<List> orders= Optional.ofNullable(orderService.getOrdersForACustomer(custID, pageNum));
         return orders.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
+
+    @GetMapping("getordersforShop/{shopID}/{pageNum}")
+    public ResponseEntity<List> getOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
+        Optional<List> orders= Optional.ofNullable(orderService.getOrdersForAShop(shopID, pageNum));
+        return orders.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+
     @PatchMapping("updateStatus/{orderID}")
     public ResponseEntity<Order> updateOrderStatus(@PathVariable("orderID") int orderID,@RequestBody Order ord){
         Optional<Order> order= Optional.ofNullable(orderService.updateOrderStatus(orderID, ord));

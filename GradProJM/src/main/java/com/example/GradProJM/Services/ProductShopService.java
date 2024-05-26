@@ -69,7 +69,6 @@ public class ProductShopService {
                 return null;
             } else {
                 product prod = shopProducts.getProduct();
-                shopProducts.setRate(prod.getProductRate());
                 prdRepo.save(prod);
                 prdshpRepo.save(shopProducts);
                 return true;
@@ -96,7 +95,6 @@ public class ProductShopService {
             if(shop.isPresent()){
                 System.out.println(product.get());
                 Shop_Products shpprdct= new Shop_Products(shopProducts.getShop(),product.get(),shopProducts.getQuantity());
-                shpprdct.setRate(product.get().getProductRate());
                 shpprdct.setDeleted(false);
                 shpprdct.setProductPrice(shopProducts.getProductPrice());
                 shpprdct.setProductDescription(shopProducts.getProductDescription());
@@ -120,7 +118,7 @@ public class ProductShopService {
     }
 
     public List getAllProductsForAShop(int shopID) {
-        Optional<List> products = prdshpRepo.findShop_ProductsByShop_ShopID(shopID);
+        Optional<List> products = prdshpRepo.findShop_ProductsByShop_ShopIDAndDeletedFalse(shopID);
         return products.orElse(null);
     }
 
@@ -220,16 +218,16 @@ public class ProductShopService {
             Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shop.get().getShopName(), product.get().getProductBarcode());
             if (shopProduct.isPresent()) {
                 Optional<product> prod = prdRepo.findByproductBarcode(product.get().getProductBarcode());
-                double rt = prod.get().getProductRate();
-                int noRates = prod.get().getNumOfRates();
+                double rt = shopProduct.get().getRate();
+                int noRates = shopProduct.get().getNumOfRates();
                 rt *= noRates;
                 noRates += 1;
                 rt += custRate.getRate();
                 rt /= noRates;
                 DecimalFormat df = new DecimalFormat("#.#");
                 rt = Double.parseDouble(df.format(rt));
-                prod.get().setProductRate(rt);
-                prod.get().setNumOfRates(noRates);
+                shopProduct.get().setRate(rt);
+                shopProduct.get().setNumOfRates(noRates);
                 shopProduct.get().setRate(rt);
                 Optional <Customer> customer = custRepo.findById(custRate.getCustomer().getCustID());
                 custRate.setProducts(shopProduct.get());
@@ -261,9 +259,15 @@ public class ProductShopService {
         return products.get();
     }
 
+
     public List<Shop_Products> getProductsbyCategory(String category, int shopID, int pageNum) {
         Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByShop_ShopIDAndProductProductCategoryAndDeletedFalse(shopID, category, PageRequest.of(pageNum,2));
         return products.get();
+    }
+    public int getCategoriesPagesNum(String cat, int shopID){
+        long totalProducts = prdshpRepo.countByShopShopIDAndProductProductCategory(shopID, cat);
+        return (int) Math.ceil((double) totalProducts / 2);
+        //todo: change 2 to 10
     }
 
 

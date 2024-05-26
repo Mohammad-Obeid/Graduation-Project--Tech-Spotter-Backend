@@ -24,7 +24,8 @@ public class Shop_Products {
 
     private int quantity;
 
-    private double rate;
+    private double rate=0;
+    private int numOfRates=0;
 
     private double productPrice;
 
@@ -139,6 +140,14 @@ public class Shop_Products {
 
     public void setProductPublishDate(String productPublishDate) {
         this.productPublishDate = productPublishDate;
+    }
+
+    public int getNumOfRates() {
+        return numOfRates;
+    }
+
+    public void setNumOfRates(int numOfRates) {
+        this.numOfRates = numOfRates;
     }
 
     //    public List<orderItems> getOrderItem() {

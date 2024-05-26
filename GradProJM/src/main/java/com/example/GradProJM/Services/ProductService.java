@@ -72,31 +72,31 @@ public class ProductService {
         return null;
     }
 
-    public product RateAProduct(int custID, int prodID,double rate) {
-        Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
-        if (customer.isPresent()) {
-            Optional<product> prod = prodRepo.findById(prodID);
-            if (prod.isPresent()) {
-                int numOfRates = prod.get().getNumOfRates();
-                double rat = prod.get().getProductRate();
-                rat *= numOfRates;
-                rat += rate;
-                numOfRates += 1;
-                rat /= numOfRates;
-                DecimalFormat df = new DecimalFormat("#.#");
-                rat = Double.parseDouble(df.format(rat));
-                prod.get().setNumOfRates(numOfRates);
-                prod.get().setProductRate(rat);
-                prodRepo.save(prod.get());
-                return prod.get();
-            }
-            return null;
-        }
-    return null;
-    }
+//    public product RateAProduct(int custID, int prodID,double rate) {
+//        Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
+//        if (customer.isPresent()) {
+//            Optional<product> prod = prodRepo.findById(prodID);
+//            if (prod.isPresent()) {
+//                int numOfRates = prod.get().getNumOfRates();
+//                double rat = prod.get().getProductRate();
+//                rat *= numOfRates;
+//                rat += rate;
+//                numOfRates += 1;
+//                rat /= numOfRates;
+//                DecimalFormat df = new DecimalFormat("#.#");
+//                rat = Double.parseDouble(df.format(rat));
+//                prod.get().setNumOfRates(numOfRates);
+//                prod.get().setProductRate(rat);
+//                prodRepo.save(prod.get());
+//                return prod.get();
+//            }
+//            return null;
+//        }
+//    return null;
+//    }
 
     public product getProductbyBarcode(String prodBarcode) {
         Optional<product> product= prodRepo.findByproductBarcode(prodBarcode);
-        return getProduct(product.get().getProductId());
+        return product.get();
     }
 }

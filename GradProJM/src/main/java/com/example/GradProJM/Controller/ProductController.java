@@ -36,7 +36,7 @@ public class ProductController {
                         .body(null));
     }
 
-    @GetMapping("getProduct/{prodBarcode}")
+    @GetMapping("getProductbyBarcode/{prodBarcode}")
     public ResponseEntity<product> getAllProducts(@PathVariable("prodBarcode") String prodBarcode){
         Optional<product> product= Optional.ofNullable(prodService.getProductbyBarcode(prodBarcode));
         return product.map(ResponseEntity::ok)
@@ -78,12 +78,12 @@ public class ProductController {
                         .body(false));
     }
 
-    @PatchMapping("RateaProduct/{custID}/{prodID}")
-    public ResponseEntity<product> RateAProduct(@PathVariable("custID") int custID, @PathVariable("prodID") int prodID,@RequestBody double rate){
-        Optional<product> product= Optional.ofNullable(prodService.RateAProduct(custID,prodID,rate));
-        return product.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(null));
-    }
+//    @PatchMapping("RateaProduct/{custID}/{prodID}")
+//    public ResponseEntity<product> RateAProduct(@PathVariable("custID") int custID, @PathVariable("prodID") int prodID,@RequestBody double rate){
+//        Optional<product> product= Optional.ofNullable(prodService.RateAProduct(custID,prodID,rate));
+//        return product.map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                        .body(null));
+//    }
 
 }

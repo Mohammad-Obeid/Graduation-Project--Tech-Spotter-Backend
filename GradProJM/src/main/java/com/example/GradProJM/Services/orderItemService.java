@@ -97,7 +97,8 @@ public class orderItemService {
             Optional<List<orderItems>> items = ordItmRepo.findByOrder(orders.get().get(i));
             int flag=0;
             for(int j=0; j < items.get().size(); j++){
-                if(!items.get().get(i).getOrderItemStats().equals("Accepted")){
+                if(!items.get().get(j).getOrderItemStats().equals("Accepted")){
+                    //todo: check
                     flag=1;
                 }
                 if(flag==1)break;
@@ -117,7 +118,8 @@ public class orderItemService {
             Optional<List<orderItems>> items = ordItmRepo.findByOrder(orders.get().get(i));
             int flag=0;
             for(int j=0; j < items.get().size(); j++){
-                if(!items.get().get(i).getOrderItemStats().equals("Shipped")){
+                if(!items.get().get(j).getOrderItemStats().equals("Shipped")){
+                    //todo: check
                     flag=1;
                 }
                 if(flag==1)break;

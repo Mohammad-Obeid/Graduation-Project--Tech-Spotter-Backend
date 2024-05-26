@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface productShopRepository extends JpaRepository<Shop_Products,Integer> {
-    Optional<List> findShop_ProductsByShop_ShopID(int shopID);
+    Optional<List> findShop_ProductsByShop_ShopIDAndDeletedFalse(int shopID);
     Optional<List<Shop_Products>> findShop_ProductsByShop_ShopIDAndDeletedFalse(int shopID, PageRequest of);
     Optional<List<Shop_Products>> findShop_ProductsByShop_ShopIDAndProductProductCategoryAndDeletedFalse(int shopID,String category, PageRequest of);
 
@@ -22,5 +22,6 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
     Optional<Shop_Products> findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(String shpName, String brcode);
     Page<Shop_Products> findShop_ProductsByProductProductNameStartingWith(String prodName, Pageable pageable);
     Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWith(String prodName,PageRequest of);
+    Long countByShopShopIDAndProductProductCategory(int shopID, String cat);
 
 }
