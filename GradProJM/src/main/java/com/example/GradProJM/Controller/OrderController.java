@@ -27,9 +27,33 @@ public class OrderController {
                         .body(null));
     }
 
-    @GetMapping("getordersforShop/{shopID}/{pageNum}")
-    public ResponseEntity<List> getOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
-        Optional<List> orders= Optional.ofNullable(orderService.getOrdersForAShop(shopID, pageNum));
+    @GetMapping("getAllordersforShop/{shopID}/{pageNum}")
+    public ResponseEntity<List> getAllOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
+        Optional<List> orders= Optional.ofNullable(orderService.getAllOrdersForAShop(shopID, pageNum));
+        return orders.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("getAcceptedordersforShop/{shopID}/{pageNum}")
+    public ResponseEntity<List> getAcceptedOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
+        Optional<List> orders= Optional.ofNullable(orderService.getAcceptedOrdersForAShop(shopID, pageNum));
+        return orders.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("getShippedordersforShop/{shopID}/{pageNum}")
+    public ResponseEntity<List> getShippedOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
+        Optional<List> orders= Optional.ofNullable(orderService.getShippedOrdersForAShop(shopID, pageNum));
+        return orders.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("getPendingordersforShop/{shopID}/{pageNum}")
+    public ResponseEntity<List> getPendingOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
+        Optional<List> orders= Optional.ofNullable(orderService.getPendingOrdersForAShop(shopID, pageNum));
         return orders.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

@@ -22,6 +22,6 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
     Optional<Shop_Products> findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(String shpName, String brcode);
     Page<Shop_Products> findShop_ProductsByProductProductNameStartingWith(String prodName, Pageable pageable);
     Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWith(String prodName,PageRequest of);
-    Long countByShopShopIDAndProductProductCategory(int shopID, String cat);
+    Long countByShopShopIDAndProductProductCategoryAndDeletedFalse(int shopID, String cat);
 
 }

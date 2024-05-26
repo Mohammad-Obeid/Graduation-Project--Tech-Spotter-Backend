@@ -43,10 +43,37 @@ public class OrderService {
         return null;
     }
 
-    public List getOrdersForAShop(int shopID, int pageNum) {
+    public List getAllOrdersForAShop(int shopID, int pageNum) {
         Optional<ShopOwner> shop = shpRepo.findById(shopID);
         if(shop.isPresent()){
             Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopID(shopID,PageRequest.of(pageNum,2));
+            return orders.get();
+        }
+        return null;
+    }
+
+    public List getAcceptedOrdersForAShop(int shopID, int pageNum) {
+        Optional<ShopOwner> shop = shpRepo.findById(shopID);
+        if(shop.isPresent()){
+            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Accepted",PageRequest.of(pageNum,2));
+            return orders.get();
+        }
+        return null;
+    }
+
+    public List getShippedOrdersForAShop(int shopID, int pageNum) {
+        Optional<ShopOwner> shop = shpRepo.findById(shopID);
+        if(shop.isPresent()){
+            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Shipped",PageRequest.of(pageNum,2));
+            return orders.get();
+        }
+        return null;
+    }
+
+    public List getPendingOrdersForAShop(int shopID, int pageNum) {
+        Optional<ShopOwner> shop = shpRepo.findById(shopID);
+        if(shop.isPresent()){
+            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Pending",PageRequest.of(pageNum,2));
             return orders.get();
         }
         return null;
@@ -73,6 +100,7 @@ public class OrderService {
         }
         return null;
     }
+
 
 
 }

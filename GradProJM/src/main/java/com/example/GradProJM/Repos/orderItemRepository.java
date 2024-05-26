@@ -12,6 +12,7 @@ public interface orderItemRepository extends JpaRepository<orderItems,Integer> {
     Optional<List<orderItems>> findByOrder(Order order);
 
     Optional<List<orderItems>> findAllByProduct_ShopShopID(int shopID, PageRequest of);
+    Optional<List<orderItems>> findAllByProduct_ShopShopIDAndOrderItemStats(int shopID, String statss, PageRequest of);
 
     Optional<orderItems> findByOrderOrderIDAndProductId(int orderId, int prodID);
 }

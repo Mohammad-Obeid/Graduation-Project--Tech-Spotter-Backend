@@ -265,7 +265,7 @@ public class ProductShopService {
         return products.get();
     }
     public int getCategoriesPagesNum(String cat, int shopID){
-        long totalProducts = prdshpRepo.countByShopShopIDAndProductProductCategory(shopID, cat);
+        long totalProducts = prdshpRepo.countByShopShopIDAndProductProductCategoryAndDeletedFalse(shopID, cat);
         return (int) Math.ceil((double) totalProducts / 2);
         //todo: change 2 to 10
     }
