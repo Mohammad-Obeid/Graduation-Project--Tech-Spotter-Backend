@@ -258,6 +258,11 @@ public class ProductShopService {
         Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByShop_ShopIDAndDeletedFalse(shopID, PageRequest.of(pageNum,2));
         return products.get();
     }
+    public int getShopProductsPagesNum(int shopID){
+        long totalProducts = prdshpRepo.countByShopShopIDAndDeletedFalse(shopID);
+        return (int) Math.ceil((double) totalProducts / 2);
+        //todo: change 2 to 10
+    }
 
 
     public List<Shop_Products> getProductsbyCategory(String category, int shopID, int pageNum) {
@@ -282,12 +287,6 @@ public class ProductShopService {
         return prdshpRepo.findShop_ProductsByShop_ShopIDAndDeletedFalse(shopID, pageable);
     }
 
-
-
-
-
-
-
     public Shop_Products updateProduct(Shop_Products product,String shopName, String prodBarcode) {
         Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
         if(shopProduct.isPresent()){
@@ -297,5 +296,30 @@ public class ProductShopService {
             return shopProduct.get();
         }
         return null;
+    }
+
+    public Shop_Products getProductForAShop(String shopName, String barcode) {
+        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, barcode);
+        return shopProduct.orElse(null);
+    }
+
+    public List<Shop_Products> getTrendingProducts() {
+        Optional<List<Shop_Products>> trendingProds = prdshpRepo.findTopByNumOfSales();
+        return trendingProds.orElse(null);
+    }
+
+    public List<Shop_Products> getnewProducts() {
+        Optional<List<Shop_Products>> trendingProds = prdshpRepo.findTopByDate();
+        return trendingProds.orElse(null);
+    }
+
+    public List<Shop_Products> SearchProducts(String prodName, int pageNum) {
+        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(prodName, PageRequest.of(pageNum,2));
+        return products.get();
+    }
+
+    public int getSearchPagesNum(String prodName) {
+        long totalProducts = prdshpRepo.countByProductProductNameStartingWithAndDeletedFalse(prodName);
+        return (int) Math.ceil((double) totalProducts / 2);
     }
 }

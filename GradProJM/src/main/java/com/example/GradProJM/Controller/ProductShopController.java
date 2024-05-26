@@ -20,15 +20,17 @@ import java.util.Optional;
 @RequestMapping("productShop")
 public class ProductShopController {
     private final ProductShopService prdShopService;
-
-
-    @Autowired
     public ProductShopController(ProductShopService prdShopService) {
         this.prdShopService = prdShopService;
     }
-
-
-
+    @GetMapping("/{shopName}/{prodBarcode}")
+    public ResponseEntity<Shop_Products> getProductForAShop(@PathVariable("shopName") String shopName,
+                                                            @PathVariable("prodBarcode") String barcode){
+        Optional<Shop_Products> products= Optional.ofNullable(prdShopService.getProductForAShop(shopName,barcode));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
     @GetMapping("getProductsForaShop/{shopID}")
     public ResponseEntity<List> getAllProductsForAShop(@PathVariable("shopID") int shopID){
         Optional<List> products= Optional.ofNullable(prdShopService.getAllProductsForAShop(shopID));
@@ -45,6 +47,35 @@ public class ProductShopController {
         return products.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
+    }
+
+
+    @GetMapping("getAllProductsNumOfPages/{shopID}")
+    public int getNumOfPagesForaCategory(
+                                         @PathVariable("shopID") int shopID
+    ){
+        int num= prdShopService.getShopProductsPagesNum(shopID);
+        return num;
+    }
+
+    @GetMapping("getTrendingProducts")
+    public ResponseEntity<List<Shop_Products>> getTrendingProducts(){
+
+        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.getTrendingProducts());
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+
+    }
+
+    @GetMapping("getNewProducts")
+    public ResponseEntity<List<Shop_Products>> getnewProducts(){
+
+        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.getnewProducts());
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+
     }
 
     @GetMapping("getProducts/{category}/{shopID}/{pageNum}")
@@ -180,6 +211,21 @@ public class ProductShopController {
         return productRate.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
+    }
+    @GetMapping("getProductsBySearching/{prodName}/{pageNum}")
+    public ResponseEntity<List<Shop_Products>> SearchProducts(@PathVariable("prodName") String prodName,
+                                                      @PathVariable("pageNum") int pageNum
+    ){
+        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.SearchProducts(prodName, pageNum));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+    @GetMapping("getNumOfPagesWhenSearching/{prodName}")
+    public int SearchProducts(@PathVariable("prodName") String prodName
+    ){
+        int num= prdShopService.getSearchPagesNum(prodName);
+        return num;
     }
 
 

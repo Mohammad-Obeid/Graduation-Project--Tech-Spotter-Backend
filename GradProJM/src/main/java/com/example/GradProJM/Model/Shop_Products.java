@@ -37,6 +37,8 @@ public class Shop_Products {
     private String productDescription;
     private String productPublishDate  = String.valueOf(LocalDateTime.now());
 
+    private int numOfSales=0;
+
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
 //    private Order order;
@@ -148,6 +150,14 @@ public class Shop_Products {
 
     public void setNumOfRates(int numOfRates) {
         this.numOfRates = numOfRates;
+    }
+
+    public int getNumOfSales() {
+        return numOfSales;
+    }
+
+    public void setNumOfSales(int numOfSales) {
+        this.numOfSales = numOfSales;
     }
 
     //    public List<orderItems> getOrderItem() {

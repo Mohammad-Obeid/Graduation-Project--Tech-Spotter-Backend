@@ -20,6 +20,7 @@ public class Shop_Product_Serializer extends JsonSerializer<Shop_Products> {
         jsonGenerator.writeObjectField("ProductCategory", shopProducts.getProduct().getProductCategory());
         jsonGenerator.writeObjectField("ProductDescription", shopProducts.getProductDescription());
         jsonGenerator.writeObjectField("ProductPublishDate", shopProducts.getProductPublishDate());
+        jsonGenerator.writeObjectField("NumOfSales", shopProducts.getNumOfSales());
         jsonGenerator.writeEndObject();
     }
 }

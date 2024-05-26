@@ -79,7 +79,7 @@ public class orderItemService {
                 orditm.setOrder(ord);
                 orditm.setProduct(shopProduct.get());
                 orditm.setItemQuantity(order.getOrderItem().get(i).getItemQuantity());
-                orditm.setOrderItemStats("Delivered To "+ shopProduct.get().getShop().getShopName());
+                orditm.setOrderItemStats("Pending");
                 orderItems.add(orditm);
             }
             else{
