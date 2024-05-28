@@ -37,12 +37,12 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
 
     default Optional<List<Shop_Products>> findTopByNumOfSales() {
         List<Shop_Products> topProducts = findTop10ByOrderByNumOfSalesDesc();
-        return topProducts.size() > 0 ? Optional.of(topProducts.subList(0, Math.min(topProducts.size(), 10))) : Optional.empty();
+        return topProducts.size() > 0 ? Optional.of(topProducts.subList(0, Math.min(topProducts.size(), 8))) : Optional.empty();
     }
 
     default Optional<List<Shop_Products>> findTopByDate() {
         List<Shop_Products> topProducts = findTop10ByOrderByProductPublishDate();
-        return topProducts.size() > 0 ? Optional.of(topProducts.subList(0, Math.min(topProducts.size(), 10))) : Optional.empty();
+        return topProducts.size() > 0 ? Optional.of(topProducts.subList(0, Math.min(topProducts.size(), 8))) : Optional.empty();
     }
 
 //    Optional<List> findShop_ProductsByProductProductNameAndDeletedFalse(String prodName);

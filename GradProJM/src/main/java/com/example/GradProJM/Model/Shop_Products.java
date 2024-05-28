@@ -39,6 +39,7 @@ public class Shop_Products {
 
     private int numOfSales=0;
 
+
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JsonIgnore
 //    private Order order;

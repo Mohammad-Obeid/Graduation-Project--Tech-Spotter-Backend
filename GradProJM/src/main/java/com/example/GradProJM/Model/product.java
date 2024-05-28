@@ -19,6 +19,7 @@ public class product {
     @JsonIgnore
     private List<Shop_Products> shopProducts;
 
+    private String productCompanyName;
 
 
 
@@ -83,7 +84,13 @@ public class product {
         this.shopProducts = shopProducts;
     }
 
+    public String getProductCompanyName() {
+        return productCompanyName;
+    }
 
+    public void setProductCompanyName(String productCompanyName) {
+        this.productCompanyName = productCompanyName;
+    }
     //    public List<Order_item> getOrderItems() {
 //        return orderItems;
 //    }

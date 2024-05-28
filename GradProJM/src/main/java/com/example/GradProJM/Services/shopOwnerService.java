@@ -40,6 +40,11 @@ public class shopOwnerService {
 
     public ShopOwner getShopOwnerbyId(int shopOwnerID) {
         Optional<ShopOwner> findByShopid=shopOwnerRepo.findById(shopOwnerID);
+        if(findByShopid.isPresent()){
+        int x = findByShopid.get().getNumOfVisits();
+        x+=1;
+        findByShopid.get().setNumOfVisits(x);
+        shopOwnerRepo.save(findByShopid.get());}
         return findByShopid.orElse(null);
     }
 
@@ -125,5 +130,10 @@ public class shopOwnerService {
             return null;
         }
         return null;
+    }
+
+    public ShopOwner getShopProfile(String shopName) {
+        Optional<ShopOwner> shp = shopOwnerRepo.findShopOwnerByShopName(shopName);
+        return getShopOwnerbyId(shp.get().getShopID());
     }
 }

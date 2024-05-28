@@ -14,8 +14,8 @@ import java.util.Optional;
 public class wishListController {
     private final wishListService wishservice;
 
-    public wishListController(wishListService wishservice) {
-        this.wishservice = wishservice;
+    public wishListController(wishListService wishservice){
+    this.wishservice = wishservice;
     }
 
     @GetMapping("getWishListItems/{custID}")
@@ -43,5 +43,6 @@ public class wishListController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
+
 
 }

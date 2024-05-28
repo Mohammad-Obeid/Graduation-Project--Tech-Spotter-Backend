@@ -38,6 +38,11 @@ public class ShopOwnerController {
         return shopOwnerService.getShopOwnerbyId(ShopID);
     }
 
+    @GetMapping("getShopProfile/{shopName}")
+    public ShopOwner getShopProfile(@PathVariable("shopName") String shopName){
+        return shopOwnerService.getShopProfile(shopName);
+    }
+
 //    @PostMapping("addProducts/{shopID}")
 //    public ResponseEntity<ShopOwner> AddProductsToSomeShop(@PathVariable("shopID") int shopID, @RequestBody product prod){
 //        Optional<ShopOwner> shop= Optional.ofNullable(shopOwnerService.AddNewProduct(shopID, prod));

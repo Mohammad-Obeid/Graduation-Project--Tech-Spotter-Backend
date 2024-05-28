@@ -34,6 +34,8 @@ public class ShopOwner{
 //    @JsonIgnore
     private List<Shop_Products> shopProducts;
 
+    private int numOfVisits=0;
+
     public ShopOwner() {
     }
 
@@ -106,6 +108,14 @@ public class ShopOwner{
 
     public void setImageData(ImageData imageData) {
         this.imageData = imageData;
+    }
+
+    public int getNumOfVisits() {
+        return numOfVisits;
+    }
+
+    public void setNumOfVisits(int numOfVisits) {
+        this.numOfVisits = numOfVisits;
     }
 
     //    public Order_item getOrder_item() {
