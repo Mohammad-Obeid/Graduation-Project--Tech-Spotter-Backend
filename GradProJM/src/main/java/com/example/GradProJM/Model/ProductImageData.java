@@ -17,9 +17,10 @@ public class ProductImageData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String barcode;
-    private String type;
-    @Lob
-    @Column(name = "imagedata",length = 100000)
-    private byte[] imageData;
+    @ManyToOne
+    private Shop_Products product;
+    private String contentType;
+    @Lob()
+    @Column(length = 100000000)
+    private String base64;
 }

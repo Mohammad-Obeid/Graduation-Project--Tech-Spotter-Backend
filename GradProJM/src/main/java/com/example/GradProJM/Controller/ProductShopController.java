@@ -89,6 +89,34 @@ public class ProductShopController {
     }
 
 
+    @GetMapping("sortCategsasc/{category}/{shopID}/{field}/{pageNum}")
+    public ResponseEntity<Page<Shop_Products>> sortCategoryPageASC(@PathVariable("category") String category,
+                                                                   @PathVariable("shopID") int shopID,
+                                                                   @PathVariable("field") String field,
+                                                                   @PathVariable("pageNum") int pageNum
+    ){
+        Optional<Page<Shop_Products>> products= Optional.ofNullable(prdShopService.sortCategoryPageASC(category, shopID, field, pageNum));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+    @GetMapping("sortCategsDesc/{category}/{shopID}/{field}/{pageNum}")
+    public ResponseEntity<Page<Shop_Products>> sortCategoryPageDESC(@PathVariable("category") String category,
+                                                                   @PathVariable("shopID") int shopID,
+                                                                    @PathVariable("field") String field,
+                                                                   @PathVariable("pageNum") int pageNum
+    ){
+        Optional<Page<Shop_Products>> products= Optional.ofNullable(prdShopService.sortCategoryPageDESC(category, shopID, field,  pageNum));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+
+
 
     @GetMapping("getNumOfPages/{category}/{shopID}")
     public int getNumOfPagesForaCategory(@PathVariable("category") String category,
@@ -226,6 +254,49 @@ public class ProductShopController {
     ){
         int num= prdShopService.getSearchPagesNum(prodName);
         return num;
+    }
+
+
+    @GetMapping("SearchByCategory/{Category}/{pageNum}")
+    public ResponseEntity<List<Shop_Products>> SearchProductsByCatt(@PathVariable("Category") String Category,
+                                                              @PathVariable("pageNum") int pageNum
+    ){
+        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.SearchProductsByCatt(Category, pageNum));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("getNumOfPagesWhenSearchingByCatteg/{Category}")
+    public int getSearchByCattPagesNum(@PathVariable("Category") String Category
+    ){
+        int num= prdShopService.getSearchByCattPagesNum(Category);
+        return num;
+    }
+
+
+
+    @GetMapping("sortCategoryasc/{category}/{field}/{pageNum}")
+    public ResponseEntity<Page<Shop_Products>> sortCatgeoryASC(@PathVariable("category") String category,
+                                                       @PathVariable("field") String field,
+                                                       @PathVariable("pageNum") int pageNum
+    ){
+        Optional<Page<Shop_Products>> products= Optional.ofNullable(prdShopService.sortCatgeoryASC(category,pageNum,field));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+    @GetMapping("sortCategoryDesc/{category}/{field}/{pageNum}")
+    public ResponseEntity<Page<Shop_Products>> sortCatgeoryDESC(@PathVariable("category") String category,
+                                                               @PathVariable("field") String field,
+                                                               @PathVariable("pageNum") int pageNum
+    ){
+        Optional<Page<Shop_Products>> products= Optional.ofNullable(prdShopService.sortCatgeoryDESC(category,pageNum,field));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
     }
 
 

@@ -18,6 +18,9 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
 
     Optional<List<Shop_Products>> findShop_ProductsByShop_ShopIDAndDeletedFalse(int shopID, PageRequest of);
     Optional<List<Shop_Products>> findShop_ProductsByShop_ShopIDAndProductProductCategoryAndDeletedFalse(int shopID,String category, PageRequest of);
+    Page<Shop_Products> findShop_ProductsByShop_ShopIDAndProductProductCategoryAndDeletedFalse(int shopID,String category, Pageable page);
+    Optional<List<Shop_Products>> findShop_ProductsByProductProductCategoryAndDeletedFalse(String category, PageRequest of);
+    Page<Shop_Products> findShop_ProductsByProductProductCategoryAndDeletedFalse(String category, Pageable page);
 
     Page<Shop_Products> findShop_ProductsByShop_ShopIDAndDeletedFalse(int shopID, Pageable pageable);
 
@@ -27,6 +30,7 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
     Page<Shop_Products> findShop_ProductsByProductProductNameStartingWith(String prodName, Pageable pageable);
     Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWith(String prodName,PageRequest of);
     Long countByShopShopIDAndProductProductCategoryAndDeletedFalse(int shopID, String cat);
+    Long countByProductProductCategoryAndDeletedFalse(String cat);
     Long countByProductProductNameStartingWithAndDeletedFalse(String name);
     Long countByShopShopIDAndDeletedFalse(int shopID);
     @Query("SELECT sp FROM Shop_Products sp ORDER BY sp.numOfSales DESC")

@@ -29,8 +29,8 @@ public class Shop_Products {
 
     private double productPrice;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private ProductImageData img;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    private ProductImageData img;
 
     private boolean deleted=false;
 
@@ -113,13 +113,13 @@ public class Shop_Products {
         this.productPrice = productPrice;
     }
 
-    public ProductImageData getImg() {
-        return img;
-    }
-
-    public void setImg(ProductImageData img) {
-        this.img = img;
-    }
+//    public ProductImageData getImg() {
+//        return img;
+//    }
+//
+//    public void setImg(ProductImageData img) {
+//        this.img = img;
+//    }
 
     public boolean isDeleted() {
         return deleted;
