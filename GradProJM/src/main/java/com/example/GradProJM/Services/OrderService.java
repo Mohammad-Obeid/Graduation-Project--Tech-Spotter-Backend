@@ -21,7 +21,6 @@ public class OrderService {
     private final orderItemRepository ordItmRepo;
 
 
-
     public OrderService(OrderRepository orderRepo,
                         CustomerRepository custRepo,
                         ProductRepository prodRepo,
@@ -30,59 +29,95 @@ public class OrderService {
         this.orderRepo = orderRepo;
         this.custRepo = custRepo;
         this.prodRepo = prodRepo;
-        this.shpRepo=shpRepo;
-        this.ordItmRepo=ordItmRepo;
+        this.shpRepo = shpRepo;
+        this.ordItmRepo = ordItmRepo;
     }
 
     public List getOrdersForACustomer(int custID, int pageNum) {
         Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
-        if(customer.isPresent()){
-            Optional<List<Order>> orders = orderRepo.findOrdersByCustomer_CustID(custID,PageRequest.of(pageNum,2));
+        if (customer.isPresent()) {
+            Optional<List<Order>> orders = orderRepo.findOrdersByCustomer_CustID(custID, PageRequest.of(pageNum, 8));
             return orders.get();
         }
         return null;
     }
+
+
+    public int getNumberOfPagesForCustomerOrders(int custID) {
+        long totalProducts = orderRepo.countOrderByCustomerCustID(custID);
+        return (int) Math.ceil((double) totalProducts / 8);
+    }
+
 
     public List getAllOrdersForAShop(int shopID, int pageNum) {
         Optional<ShopOwner> shop = shpRepo.findById(shopID);
-        if(shop.isPresent()){
-            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopID(shopID,PageRequest.of(pageNum,2));
+        if (shop.isPresent()) {
+            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopID(shopID, PageRequest.of(pageNum, 8));
             return orders.get();
         }
         return null;
     }
+
+    public int getNumberOfPagesForAllShopOrders(String shopName) {
+        long totalProducts = ordItmRepo.countByProduct_ShopShopName(shopName);
+        return (int) Math.ceil((double) totalProducts / 8);
+    }
+
 
     public List getAcceptedOrdersForAShop(int shopID, int pageNum) {
         Optional<ShopOwner> shop = shpRepo.findById(shopID);
-        if(shop.isPresent()){
-            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Accepted",PageRequest.of(pageNum,2));
+        if (shop.isPresent()) {
+            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Accepted", PageRequest.of(pageNum, 8));
             return orders.get();
         }
         return null;
     }
+    public int getNumOfPagesForAcceptedShopOrders(String shopName) {
+        long totalProducts = ordItmRepo.countByProduct_ShopShopNameAndOrderItemStats(shopName,"Accepted");
+        return (int) Math.ceil((double) totalProducts / 8);
+    }
+
+
+
 
     public List getShippedOrdersForAShop(int shopID, int pageNum) {
         Optional<ShopOwner> shop = shpRepo.findById(shopID);
-        if(shop.isPresent()){
-            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Shipped",PageRequest.of(pageNum,2));
+        if (shop.isPresent()) {
+            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Shipped", PageRequest.of(pageNum, 8));
             return orders.get();
         }
         return null;
     }
+    public int getNumOfPagesForShippedShopOrders(String shopName) {
+        long totalProducts = ordItmRepo.countByProduct_ShopShopNameAndOrderItemStats(shopName,"Shipped");
+        return (int) Math.ceil((double) totalProducts / 8);
+    }
+
+
+
+
+
 
     public List getPendingOrdersForAShop(int shopID, int pageNum) {
         Optional<ShopOwner> shop = shpRepo.findById(shopID);
-        if(shop.isPresent()){
-            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Pending",PageRequest.of(pageNum,2));
+        if (shop.isPresent()) {
+            Optional<List<orderItems>> orders = ordItmRepo.findAllByProduct_ShopShopIDAndOrderItemStats(shopID, "Pending", PageRequest.of(pageNum, 8));
             return orders.get();
         }
         return null;
     }
 
+    public int getNumOfPagesForPendingShopOrders(String shopName) {
+        long totalProducts = ordItmRepo.countByProduct_ShopShopNameAndOrderItemStats(shopName,"Pending");
+        return (int) Math.ceil((double) totalProducts / 8);
+    }
+
+
+    //todo: get number of pages for all of these methods
 
     public Order updateOrderStatus(int orderID, Order ord) {
         Optional<Order> order = orderRepo.findById(orderID);
-        if(order.isPresent()){
+        if (order.isPresent()) {
             order.get().setStatus(ord.getStatus());
             orderRepo.save(order.get());
             return order.orElse(null);
@@ -93,7 +128,7 @@ public class OrderService {
 
     public Order updateOrderLocation(int orderID, Order ord) {
         Optional<Order> order = orderRepo.findById(orderID);
-        if(order.isPresent()){
+        if (order.isPresent()) {
             order.get().setOrderAdd(ord.getOrderAdd());
             orderRepo.save(order.get());
             return order.orElse(null);

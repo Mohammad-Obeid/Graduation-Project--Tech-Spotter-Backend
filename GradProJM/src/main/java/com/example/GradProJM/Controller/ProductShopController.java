@@ -1,9 +1,6 @@
 package com.example.GradProJM.Controller;
 
-import com.example.GradProJM.Model.Order;
-import com.example.GradProJM.Model.Shop_Products;
-import com.example.GradProJM.Model.customerRates;
-import com.example.GradProJM.Model.product;
+import com.example.GradProJM.Model.*;
 import com.example.GradProJM.Services.ProductService;
 import com.example.GradProJM.Services.ProductShopService;
 import com.example.GradProJM.Services.shopOwnerService;
@@ -11,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -240,11 +240,12 @@ public class ProductShopController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
-    @GetMapping("getProductsBySearching/{prodName}/{pageNum}")
-    public ResponseEntity<List<Shop_Products>> SearchProducts(@PathVariable("prodName") String prodName,
+    @GetMapping("getProductsBySearching/{custID}/{prodName}/{pageNum}")
+    public ResponseEntity<List<Shop_Products>> SearchProducts(@PathVariable("custID") int custID,
+            @PathVariable("prodName") String prodName,
                                                       @PathVariable("pageNum") int pageNum
     ){
-        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.SearchProducts(prodName, pageNum));
+        Optional<List<Shop_Products>> products= Optional.ofNullable(prdShopService.SearchProducts(custID,prodName, pageNum));
         return products.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
@@ -300,4 +301,28 @@ public class ProductShopController {
     }
 
 
+    @GetMapping("/recommendations/{productId}")
+    public List<Shop_Products> getRecommendations(@PathVariable int productId) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
+        return prdShopService.getRecommendations(productId);
+    }
+
+//    @GetMapping("/relatedProducts/{custID}/{productId}")
+//    public List<Shop_Products> getRelatedProducts(@PathVariable("custID") int custID,
+//            @PathVariable("productId") int productId
+//                                                  ) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
+//        return prdShopService.getRelatedProducts(custID, productId);
+//    }
+
+    @GetMapping("/getRelatedProds/{custID}")
+    public List<Shop_Products> getRelatedProds(@PathVariable("custID") int custID) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
+        List<Shop_Products> recommendedProducts = prdShopService.getRecommendationsBasedOnRecentSearches(custID);
+
+        return recommendedProducts;
+    }
+
+    @GetMapping("/search/{pageNum}")
+    public List<Shop_Products> search(@RequestBody SearchAlgo search, @PathVariable("pageNum") int pageNum) {
+        List<Shop_Products> products = prdShopService.searchProducts(search,pageNum);
+        return products;
+    }
 }

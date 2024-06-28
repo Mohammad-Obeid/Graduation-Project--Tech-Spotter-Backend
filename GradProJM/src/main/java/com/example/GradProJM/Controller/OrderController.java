@@ -27,12 +27,26 @@ public class OrderController {
                         .body(null));
     }
 
+    @GetMapping("getNumOfPagesForCustomerOrders/{custID}")
+    public int getNumberOfPagesForCustomerOrders(@PathVariable("custID") int custID
+    ){
+        int num= orderService.getNumberOfPagesForCustomerOrders(custID);
+        return num;
+    }
+
     @GetMapping("getAllordersforShop/{shopID}/{pageNum}")
     public ResponseEntity<List> getAllOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
         Optional<List> orders= Optional.ofNullable(orderService.getAllOrdersForAShop(shopID, pageNum));
         return orders.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
+    }
+
+    @GetMapping("getNumOfPagesForAllShopOrders/{ShopName}")
+    public int getNumberOfPagesForAllShopOrders(@PathVariable("ShopName") String ShopName
+    ){
+        int num= orderService.getNumberOfPagesForAllShopOrders(ShopName);
+        return num;
     }
 
     @GetMapping("getAcceptedordersforShop/{shopID}/{pageNum}")
@@ -43,6 +57,17 @@ public class OrderController {
                         .body(null));
     }
 
+
+    @GetMapping("getNumOfPagesForAcceptedShopOrders/{ShopName}")
+    public int getNumOfPagesForAcceptedShopOrders(@PathVariable("ShopName") String ShopName
+    ){
+        int num= orderService.getNumOfPagesForAcceptedShopOrders(ShopName);
+        return num;
+    }
+
+
+
+
     @GetMapping("getShippedordersforShop/{shopID}/{pageNum}")
     public ResponseEntity<List> getShippedOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
         Optional<List> orders= Optional.ofNullable(orderService.getShippedOrdersForAShop(shopID, pageNum));
@@ -50,6 +75,15 @@ public class OrderController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
+    @GetMapping("getNumOfPagesForShippedShopOrders/{ShopName}")
+    public int getNumOfPagesForShippedShopOrders(@PathVariable("ShopName") String ShopName
+    ){
+        int num= orderService.getNumOfPagesForShippedShopOrders(ShopName);
+        return num;
+    }
+
+
+
 
     @GetMapping("getPendingordersforShop/{shopID}/{pageNum}")
     public ResponseEntity<List> getPendingOrdersForAShop(@PathVariable("shopID") int shopID, @PathVariable("pageNum") int pageNum){
@@ -57,6 +91,12 @@ public class OrderController {
         return orders.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
+    }
+    @GetMapping("getNumOfPagesForPendingShopOrders/{ShopName}")
+    public int getNumOfPagesForPendingShopOrders(@PathVariable("ShopName") String ShopName
+    ){
+        int num= orderService.getNumOfPagesForPendingShopOrders(ShopName);
+        return num;
     }
 
 

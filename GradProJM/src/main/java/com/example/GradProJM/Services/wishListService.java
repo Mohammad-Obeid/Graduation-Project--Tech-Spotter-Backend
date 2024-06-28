@@ -35,6 +35,7 @@ public class wishListService {
         }
         return null;
     }
+    //todo: make paging
 
     public wishList addProductToWishList(int custID, int prodID) {
         Optional<Customer> cust = custRepo.findCustomerByCustID(custID);

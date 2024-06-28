@@ -15,4 +15,7 @@ public interface orderItemRepository extends JpaRepository<orderItems,Integer> {
     Optional<List<orderItems>> findAllByProduct_ShopShopIDAndOrderItemStats(int shopID, String statss, PageRequest of);
 
     Optional<orderItems> findByOrderOrderIDAndProductId(int orderId, int prodID);
+
+    Long countByProduct_ShopShopName(String shopName);
+    Long countByProduct_ShopShopNameAndOrderItemStats(String shopName,String status);
 }

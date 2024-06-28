@@ -53,4 +53,9 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
     Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String prodName, PageRequest of);
 
 
+    Optional<List<Shop_Products>> findShop_ProductsByProductProductCategoryAndDeletedFalse(String cat);
+    Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String name);
+    Optional<Shop_Products> findFirstByProductProductNameAndDeletedFalse(String name);
+
+
 }

@@ -58,17 +58,17 @@ public class customerService {
     //todo: change page Size to 10;
 
     public List<Shop_Products> Search(String prodName, int pageNum) {
-        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prodName, PageRequest.of(pageNum,2));
+        Optional<List<Shop_Products>> products = prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prodName, PageRequest.of(pageNum,8));
         return products.get();
     }
 
     public Page<Shop_Products> SortASC(String prefix, int page, String sortField) {
-        Pageable pageable = PageRequest.of(page, 2, Sort.by(Sort.Direction.ASC, sortField));
+        Pageable pageable = PageRequest.of(page, 8, Sort.by(Sort.Direction.ASC, sortField));
         return prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prefix, pageable);
     }
 
     public Page<Shop_Products> SortDESC(String prefix, int page, String sortField) {
-        Pageable pageable = PageRequest.of(page, 2, Sort.by(Sort.Direction.DESC, sortField));
+        Pageable pageable = PageRequest.of(page, 8, Sort.by(Sort.Direction.DESC, sortField));
         return prdshpRepo.findShop_ProductsByProductProductNameStartingWith(prefix, pageable);
     }
 

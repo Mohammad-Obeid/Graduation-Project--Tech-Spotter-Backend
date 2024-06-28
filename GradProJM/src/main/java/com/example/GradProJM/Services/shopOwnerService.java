@@ -136,4 +136,8 @@ public class shopOwnerService {
         Optional<ShopOwner> shp = shopOwnerRepo.findShopOwnerByShopName(shopName);
         return getShopOwnerbyId(shp.get().getShopID());
     }
+
+
+
+
 }

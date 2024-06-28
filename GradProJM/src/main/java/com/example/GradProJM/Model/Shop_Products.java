@@ -28,6 +28,8 @@ public class Shop_Products {
     private int numOfRates=0;
 
     private double productPrice;
+    private String prodCondition;
+
 
 //    @OneToOne(cascade = CascadeType.ALL)
 //    private ProductImageData img;
@@ -161,6 +163,13 @@ public class Shop_Products {
         this.numOfSales = numOfSales;
     }
 
+    public String getProdCondition() {
+        return prodCondition;
+    }
+
+    public void setProdCondition(String prodCondition) {
+        this.prodCondition = prodCondition;
+    }
     //    public List<orderItems> getOrderItem() {
 //        return orderItem;
 //    }

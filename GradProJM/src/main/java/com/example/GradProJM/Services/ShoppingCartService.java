@@ -44,6 +44,8 @@ public class ShoppingCartService {
         return null;
     }
 
+
+    //todo: check paging
     public ShoppingCart AddProductToCart(int custID, int prodID) {
         Optional<Customer> customer=custRepo.findCustomerByCustID(custID);
         if(customer.isPresent()){
