@@ -16,6 +16,8 @@ public class SearchAlgo {
     private Integer minPrice, maxPrice;
     private String prodCondition;
     private Integer custID;
+    private String sortBy;
+    private boolean isAscending;
 
 
 }

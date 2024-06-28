@@ -434,7 +434,8 @@ public class ProductShopService {
 
     @PersistenceContext
     private EntityManager entityManager;
-    public List<Shop_Products> searchProducts(SearchAlgo search, int pageNum) {
+
+    public List<Shop_Products> searchProducts(SearchAlgo search, int pageNum,boolean isasc) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Shop_Products> query = cb.createQuery(Shop_Products.class);
         Root<Shop_Products> shopProductRoot = query.from(Shop_Products.class);
@@ -457,28 +458,35 @@ public class ProductShopService {
         if (search.getProdCondition() != null && !search.getProdCondition().isEmpty()) {
             predicates.add(cb.equal(shopProductRoot.get("prodCondition"), search.getProdCondition()));
         }
-
-        if (search.getCustID() != null) {
-            predicates.add(cb.equal(shopProductRoot.get("prodCondition"), search.getProdCondition()));
+        if (search.getCustID() != null && pageNum == 0) {
             Optional<List<SearchQuery>> shs = searchRepo.findByCustID(search.getCustID());
-            if(shs.get().size()==3){
+            if (shs.get().size() == 3) {
                 SearchQuery sh = shs.get().get(0);
-                for(int i=1;i<shs.get().size();i++){
-                    if(shs.get().get(i).getSearchDate().isBefore(sh.getSearchDate()))
+                for (int i = 1; i < shs.get().size(); i++) {
+                    if (shs.get().get(i).getSearchDate().isBefore(sh.getSearchDate()))
                         sh = shs.get().get(i);
                 }
                 searchRepo.delete(sh);
             }
-            SearchQuery sh = new SearchQuery(search.getProductName(),LocalDateTime.now(),search.getCustID());
+            SearchQuery sh = new SearchQuery(search.getProductName(), LocalDateTime.now(), search.getCustID());
             searchRepo.save(sh);
         }
+
         query.select(shopProductRoot)
                 .where(predicates.toArray(new Predicate[0]));
-
+        search.setAscending(isasc);
+        if (search.getSortBy() != null && !search.getSortBy().isEmpty()) {
+            if (search.isAscending()) {
+                query.orderBy(cb.asc(shopProductRoot.get(search.getSortBy())));
+            } else {
+                query.orderBy(cb.desc(shopProductRoot.get(search.getSortBy())));
+            }
+        }
         TypedQuery<Shop_Products> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult((pageNum) * 3);
         typedQuery.setMaxResults(3);
 
         return typedQuery.getResultList();
     }
+
 }

@@ -320,9 +320,11 @@ public class ProductShopController {
         return recommendedProducts;
     }
 
-    @GetMapping("/search/{pageNum}")
-    public List<Shop_Products> search(@RequestBody SearchAlgo search, @PathVariable("pageNum") int pageNum) {
-        List<Shop_Products> products = prdShopService.searchProducts(search,pageNum);
+    @GetMapping("/search/{pageNum}/{isAsc}")
+    public List<Shop_Products> search(@RequestBody SearchAlgo search,
+                                      @PathVariable("pageNum") int pageNum,
+                                      @PathVariable("isAsc") boolean isasc) {
+        List<Shop_Products> products = prdShopService.searchProducts(search, pageNum, isasc);
         return products;
     }
 }
