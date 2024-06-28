@@ -138,6 +138,8 @@ public class shopOwnerService {
     }
 
 
-
-
+    public List<ShopOwner> getTopVisitedShops() {
+        Optional<List<ShopOwner>> shps = Optional.ofNullable(shopOwnerRepo.findTop7ByNumOfVisits());
+        return shps.get();
+    }
 }

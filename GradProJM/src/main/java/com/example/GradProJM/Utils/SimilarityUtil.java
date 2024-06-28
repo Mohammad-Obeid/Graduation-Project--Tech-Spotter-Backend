@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimilarityUtil {
-    private static StandardAnalyzer analyzer = new StandardAnalyzer();
+//    private static
 
     public static List<Integer> findSimilarProducts(String text, List<Shop_Products> products) throws IOException, ParseException {
+        StandardAnalyzer analyzer = new StandardAnalyzer();
         RAMDirectory ramDirectory = new RAMDirectory();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter indexWriter = new IndexWriter(ramDirectory, indexWriterConfig);
@@ -60,6 +61,8 @@ public class SimilarityUtil {
     }
 
     public static List<Integer> findSimilarProducts2(String text, List<Shop_Products> products) throws IOException, ParseException {
+        StandardAnalyzer analyzer = new StandardAnalyzer();
+
         RAMDirectory ramDirectory = new RAMDirectory();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter indexWriter = new IndexWriter(ramDirectory, indexWriterConfig);
@@ -68,28 +71,26 @@ public class SimilarityUtil {
             Document doc = new Document();
             doc.add(new TextField("id", String.valueOf(product.getId()), Field.Store.YES));
             doc.add(new TextField("productCategory", product.getProduct().getProductCategory(), Field.Store.YES));
-//            doc.add(new TextField("productName", product.getProduct().getProductName(), Field.Store.YES));
-//            doc.add(new TextField("name", product.getProduct().getProductName(), Field.Store.YES));
-//            todo: when i add condition
+            doc.add(new TextField("productName", product.getProduct().getProductName(), Field.Store.YES));
             indexWriter.addDocument(doc);
-            System.out.println(String.valueOf(product.getId()));
         }
         indexWriter.close();
 
+        // Print the query being executed
         Query query = new QueryParser("productCategory", analyzer).parse(QueryParser.escape(text));
 
         IndexReader reader = DirectoryReader.open(ramDirectory);
         IndexSearcher searcher = new IndexSearcher(reader);
         searcher.setSimilarity(new BM25Similarity());
 
-        ScoreDoc[] hits = searcher.search(query, 10).scoreDocs;
+        ScoreDoc[] hits = searcher.search(query, 8).scoreDocs;
         List<Integer> similarProductIds = new ArrayList<>();
         for (ScoreDoc hit : hits) {
             Document hitDoc = searcher.doc(hit.doc);
             similarProductIds.add(Integer.valueOf(hitDoc.get("id")));
         }
         reader.close();
-
         return similarProductIds;
     }
+
 }

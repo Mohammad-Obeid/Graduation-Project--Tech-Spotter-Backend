@@ -15,7 +15,7 @@ public class SearchAlgo {
     private String productCategory;
     private Integer minPrice, maxPrice;
     private String prodCondition;
-
+    private Integer custID;
 
 
 }

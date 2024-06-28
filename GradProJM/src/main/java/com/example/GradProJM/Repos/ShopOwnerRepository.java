@@ -2,8 +2,10 @@ package com.example.GradProJM.Repos;
 
 import com.example.GradProJM.Model.ShopOwner;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -11,4 +13,8 @@ public interface ShopOwnerRepository extends JpaRepository<ShopOwner,Integer> {
 //    Optional<User> findByuserEmail(String userEmail);
 //    Optional<User> findByuserid(int userid);
     Optional<ShopOwner> findShopOwnerByShopName(String shopName);
+    @Query("SELECT s FROM ShopOwner s ORDER BY s.numOfVisits DESC")
+    List<ShopOwner> findTop7ByNumOfVisits();
+
+
 }

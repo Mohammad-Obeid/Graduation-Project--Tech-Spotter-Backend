@@ -1,5 +1,6 @@
 package com.example.GradProJM.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -31,7 +32,7 @@ public class ShopOwner{
     private ImageData imageData;
 
     @OneToMany(mappedBy = "shop",cascade = CascadeType.MERGE)
-//    @JsonIgnore
+    @JsonBackReference
     private List<Shop_Products> shopProducts;
 
     private int numOfVisits=0;
