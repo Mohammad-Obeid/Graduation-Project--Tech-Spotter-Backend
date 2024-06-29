@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import javax.swing.text.html.Option;
 
@@ -56,6 +57,52 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
     Optional<List<Shop_Products>> findShop_ProductsByProductProductCategoryAndDeletedFalse(String cat);
     Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String name);
     Optional<Shop_Products> findFirstByProductProductNameAndDeletedFalse(String name);
+//    @Query("SELECT COUNT(sp) FROM Shop_Products sp JOIN sp.product p WHERE " +
+//            "(:prodName IS NULL OR p.productName = :prodName) AND " +
+//            "(:category IS NULL OR p.productCategory = :category) AND " +
+//            "(:minPrice IS NULL OR sp.productPrice >= :minPrice) AND " +
+//            "(:maxPrice IS NULL OR sp.productPrice <= :maxPrice) AND " +
+//            "(:prodCondition IS NULL OR sp.prodCondition = :prodCondition)")
+//    Optional<Integer> countByProductProductNameStartingWithAndProductProductCategoryAndProductPriceBetweenAndProdCondition(
+//            @Param("prodName") String prodName,
+//            @Param("category") String category,
+//            @Param("minPrice") Integer minPrice,
+//            @Param("maxPrice") Integer maxPrice,
+//            @Param("prodCondition") String prodCondition
+//    );
+
+//    @Query("SELECT COUNT(sp) FROM Shop_Products sp  WHERE " +
+//            "(:prodName IS NULL OR sp.product.productName = :prodName)")
+//    Optional<Integer> countByProductProductNameStartingWith(@Param("prodName") String prodName);
+
+
+    @Query("SELECT COUNT(p) FROM Shop_Products p WHERE " +
+            "(:productName IS NULL OR p.product.productName LIKE :productName) AND " +
+            "(:productCategory IS NULL OR p.product.productCategory = :productCategory) AND " +
+            "(:minPrice IS NULL OR p.productPrice >= :minPrice) AND " +
+            "(:maxPrice IS NULL OR p.productPrice <= :maxPrice) AND " +
+            "(:prodCondition IS NULL OR p.prodCondition = :prodCondition)")
+    Optional<Integer> countByProductProductNameStartingWithAndProductProductCategoryAndProductPriceBetweenAndProdCondition(
+            @Param("productName") String productName,
+            @Param("productCategory") String productCategory,
+            @Param("minPrice") Integer minPrice,
+            @Param("maxPrice") Integer maxPrice,
+            @Param("prodCondition") String prodCondition);
+
+
+//    @Query("SELECT COUNT(sp) FROM Shop_Products sp JOIN sp.product p WHERE " +
+//            "(:prodName IS NULL OR p.productName = :prodName)" )
+////            "(:category IS NULL OR p.productCategory = :category) AND " +
+////            "(:minPrice IS NULL OR sp.productPrice >= :minPrice) AND " +
+////            "(:maxPrice IS NULL OR sp.productPrice <= :maxPrice) AND " +
+////            "(:prodCondition IS NULL OR sp.prodCondition = :prodCondition)")
+//    Optional<Integer> countByProductProductName(
+//            @Param("prodName") String prodName
+////            @Param("category") String category,
+////            @Param("minPrice") Integer minPrice,
+////            @Param("maxPrice") Integer maxPrice,
+////            @Param("prodCondition") String prodCondition
+//    );
 
 
 }

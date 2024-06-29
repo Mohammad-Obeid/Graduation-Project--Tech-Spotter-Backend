@@ -326,4 +326,13 @@ public class ProductShopController {
         List<Shop_Products> products = prdShopService.searchProducts(search, pageNum);
         return products;
     }
+
+    @GetMapping("/search/numOfPages")
+    public Integer NumOfPage(@RequestBody SearchAlgo search) {
+        Integer products = prdShopService.NumOfPage(search);
+        return products;
+    }
+
+
+
 }

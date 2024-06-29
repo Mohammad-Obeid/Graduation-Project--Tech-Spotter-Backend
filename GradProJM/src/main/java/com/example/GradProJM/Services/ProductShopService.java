@@ -484,10 +484,23 @@ public class ProductShopService {
             }
         }
         TypedQuery<Shop_Products> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult((pageNum) * 3);
-        typedQuery.setMaxResults(3);
+        typedQuery.setFirstResult((pageNum) * 9);
+        typedQuery.setMaxResults(9);
 
         return typedQuery.getResultList();
     }
 
+    public Integer NumOfPage(SearchAlgo search) {
+        Optional<Integer> x =
+                prdshpRepo.countByProductProductNameStartingWithAndProductProductCategoryAndProductPriceBetweenAndProdCondition(
+                search.getProductName()+"%",
+                search.getProductCategory(),
+                search.getMinPrice(),
+                search.getMaxPrice(),
+                search.getProdCondition()
+        );
+
+        int r = x.get();
+        return (int) Math.ceil((double) r / 9);
+    }
 }
