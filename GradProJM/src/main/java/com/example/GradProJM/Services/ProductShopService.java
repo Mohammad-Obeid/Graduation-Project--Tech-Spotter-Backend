@@ -435,7 +435,7 @@ public class ProductShopService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Shop_Products> searchProducts(SearchAlgo search, int pageNum,boolean isasc) {
+    public List<Shop_Products> searchProducts(SearchAlgo search, int pageNum) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Shop_Products> query = cb.createQuery(Shop_Products.class);
         Root<Shop_Products> shopProductRoot = query.from(Shop_Products.class);
@@ -474,8 +474,9 @@ public class ProductShopService {
 
         query.select(shopProductRoot)
                 .where(predicates.toArray(new Predicate[0]));
-        search.setAscending(isasc);
+
         if (search.getSortBy() != null && !search.getSortBy().isEmpty()) {
+            search.setAscending(Boolean.parseBoolean(search.getIsAsc()));
             if (search.isAscending()) {
                 query.orderBy(cb.asc(shopProductRoot.get(search.getSortBy())));
             } else {

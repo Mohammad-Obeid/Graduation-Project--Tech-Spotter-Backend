@@ -18,6 +18,7 @@ public class SearchAlgo {
     private Integer custID;
     private String sortBy;
     private boolean isAscending;
+    private String isAsc;
 
 
 }
