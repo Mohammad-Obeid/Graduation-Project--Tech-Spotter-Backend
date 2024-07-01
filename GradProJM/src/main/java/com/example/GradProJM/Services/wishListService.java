@@ -2,9 +2,11 @@ package com.example.GradProJM.Services;
 
 import com.example.GradProJM.Model.Customer;
 import com.example.GradProJM.Model.Shop_Products;
+import com.example.GradProJM.Model.User;
 import com.example.GradProJM.Model.wishList;
 import com.example.GradProJM.Repos.CustomerRepository;
 import com.example.GradProJM.Repos.productShopRepository;
+import com.example.GradProJM.Repos.userRepository;
 import com.example.GradProJM.Repos.wishListRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +19,22 @@ public class wishListService {
 
     private final productShopRepository prdshpRepo;
     private final CustomerRepository custRepo;
+    private final userRepository userRepo;
+
 
     public wishListService(wishListRepository wishRepo,
                            productShopRepository prdshpRepo,
-                           CustomerRepository custRepo) {
+                           CustomerRepository custRepo, userRepository userRepo) {
         this.wishRepo = wishRepo;
         this.prdshpRepo = prdshpRepo;
         this.custRepo=custRepo;
+        this.userRepo = userRepo;
     }
 
     public List getWishListItemsForAUser(int custID) {
-        Optional<Customer> cust = custRepo.findCustomerByCustID(custID);
-        if(cust.isPresent()){
+        Optional<User> user = userRepo.findById(custID);
+        if(user.isPresent()){
+            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
             Optional<wishList> wishlst = wishRepo.findById(cust.get().getWishlist().getWishListID());
             List<Shop_Products> products = wishlst.get().getProducts();
             return products;
@@ -38,8 +44,9 @@ public class wishListService {
     //todo: make paging
 
     public wishList addProductToWishList(int custID, int prodID) {
-        Optional<Customer> cust = custRepo.findCustomerByCustID(custID);
-        if(cust.isPresent()){
+        Optional<User> user = userRepo.findById(custID);
+        if(user.isPresent()){
+            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
             Optional<wishList> wishlst = wishRepo.findById(cust.get().getWishlist().getWishListID());
             List<Shop_Products> products = wishlst.get().getProducts();
             Optional<Shop_Products> prod = prdshpRepo.findById(prodID);
@@ -54,8 +61,9 @@ public class wishListService {
     }
 
     public wishList removeProductFromWishList(int custID, int prodID) {
-        Optional<Customer> cust = custRepo.findCustomerByCustID(custID);
-        if(cust.isPresent()){
+        Optional<User> user = userRepo.findById(custID);
+        if(user.isPresent()){
+            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
             Optional<wishList> wishlst = wishRepo.findById(cust.get().getWishlist().getWishListID());
             List<Shop_Products> products = wishlst.get().getProducts();
             Optional<Shop_Products> prod = prdshpRepo.findById(prodID);

@@ -1,14 +1,8 @@
 package com.example.GradProJM.Services;
 
 
-import com.example.GradProJM.Model.Customer;
-import com.example.GradProJM.Model.Shop_Products;
-import com.example.GradProJM.Model.ShoppingCart;
-import com.example.GradProJM.Model.product;
-import com.example.GradProJM.Repos.CustomerRepository;
-import com.example.GradProJM.Repos.ProductRepository;
-import com.example.GradProJM.Repos.ShoppingCartRepository;
-import com.example.GradProJM.Repos.productShopRepository;
+import com.example.GradProJM.Model.*;
+import com.example.GradProJM.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +16,27 @@ public class ShoppingCartService {
     private final CustomerRepository custRepo;
     private final ProductRepository prodRepo;
     private final productShopRepository prodshpRepo;
+    private final userRepository userRepo;
+
 
 
     public ShoppingCartService(ShoppingCartRepository shpCrtRepo,
                                CustomerRepository custRepo,
                                ProductRepository prodRepo,
-                               productShopRepository prodshpRepo) {
+                               productShopRepository prodshpRepo, userRepository userRepo) {
         this.shpCrtRepo = shpCrtRepo;
         this.custRepo=custRepo;
         this.prodRepo=prodRepo;
         this.prodshpRepo=prodshpRepo;
+        this.userRepo = userRepo;
     }
 
 
     public List getCartProducts(int custID) {
-        Optional<Customer> customer=custRepo.findCustomerByCustID(custID);
-        if(customer.isPresent()){
-            ShoppingCart shpcrt=customer.get().getShoppingCart();
+        Optional<User> user=userRepo.findById(custID);
+        if(user.isPresent()){
+            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
+            ShoppingCart shpcrt=cust.get().getShoppingCart();
             return shpcrt.getProducts();
         }
         return null;
@@ -47,9 +45,10 @@ public class ShoppingCartService {
 
     //todo: check paging
     public ShoppingCart AddProductToCart(int custID, int prodID) {
-        Optional<Customer> customer=custRepo.findCustomerByCustID(custID);
-        if(customer.isPresent()){
-            ShoppingCart shpcrt=customer.get().getShoppingCart();
+        Optional<User> user=userRepo.findById(custID);
+        if(user.isPresent()){
+            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
+            ShoppingCart shpcrt=cust.get().getShoppingCart();
             Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
             if(prod.isPresent()){
                 double totprice= shpcrt.getTotalPrice();
@@ -80,8 +79,9 @@ public class ShoppingCartService {
 
 
     public ShoppingCart DeleteProductFromCart(int custID, int prodID) {
-        Optional<Customer> customer=custRepo.findCustomerByCustID(custID);
-        if(customer.isPresent()) {
+        Optional<User> user=userRepo.findById(custID);
+        if(user.isPresent()) {
+            Optional<Customer> customer = custRepo.findById(user.get().getUserid());
             ShoppingCart shpcrt = customer.get().getShoppingCart();
             Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
             if (prod.isPresent()) {
