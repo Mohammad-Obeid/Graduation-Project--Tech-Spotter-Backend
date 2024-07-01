@@ -1,8 +1,12 @@
 package com.example.GradProJM.Services;
 
+import com.example.GradProJM.Authentication.AuthenticationResponse;
+import com.example.GradProJM.Authentication.AuthenticationService;
+import com.example.GradProJM.Confiuration.JwtService;
 import com.example.GradProJM.Model.*;
 import com.example.GradProJM.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +37,9 @@ public class userService {
     private final wishListRepository wishlstRepository;
     private static tempRepository tempRepo;
     private final ShopOwnerRepository shopRepo;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final AuthenticationService authserv;
 
     @Autowired
     public userService(userRepository userRepo,
@@ -44,7 +51,10 @@ public class userService {
                        userRepository userRepo1,
                        tempRepository tempRepo,
                        wishListRepository wishlstRepository,
-                       ShopOwnerRepository shopRepo
+                       ShopOwnerRepository shopRepo,
+                       JwtService jwtService,
+                       AuthenticationManager authenticationManager,
+                       AuthenticationService authserv
                        ) {
         this.userRepo = userRepo;
         this.addRepo = addRepo;
@@ -56,6 +66,9 @@ public class userService {
         this.tempRepo=tempRepo;
         this.wishlstRepository=wishlstRepository;
         this.shopRepo=shopRepo;
+        this.jwtService=jwtService;
+        this.authenticationManager=authenticationManager;
+        this.authserv=authserv;
     }
 
 
@@ -135,6 +148,7 @@ public class userService {
                 cust = user.getCustomer();
                 user.setCustomer(cust);
                 cust.setUser(user);
+                user.setRole(Role.CUSTOMER);
             } else if (user.getStatus() == 1) {
                 Optional<ShopOwner> sh = shopRepo.findShopOwnerByShopName(
                         user.getShopowner().getShopName()
@@ -144,6 +158,7 @@ public class userService {
                 shop = user.getShopowner();
                 user.setShopowner(shop);
                 shop.setUser(user);
+                user.setRole(Role.SHOP);
             }
             userRepo.save(user);
             BCryptPasswordEncoder bCryptCodeEncoder = new BCryptPasswordEncoder();
@@ -185,7 +200,15 @@ public class userService {
             if (user.getUserEmail().equals(tmp.get().getUserEmail())) {
 //                user.setJoinDate(String.valueOf(LocalDate.now()));
                 user.setVerified(true);
-                userRepo.saveAndFlush(user);
+                User uss =userRepo.saveAndFlush(user);
+
+                var jwtToken = jwtService.generateToken(uss);
+                var refreshToken = jwtService.generateRefreshToken(uss);
+                authserv.saveUserToken(uss, jwtToken);
+                AuthenticationResponse.builder()
+                        .accessToken(jwtToken)
+                        .refreshToken(refreshToken)
+                        .build();
                 Optional<tempDataBaseForVerificationCode> tmpchk = tempRepository.findByUserEmail(user.getUserEmail());
                 tempRepository.delete(tmpchk.get());
 
@@ -562,7 +585,8 @@ public class userService {
             if(user.get().isVerified()){
                 if((loginreq.getUserNameOrEmail().equals(user.get().getUserEmail()) || loginreq.getUserNameOrEmail().equals(user.get().getUserName()))
                         && bCryptPasswordEncoder.matches(loginreq.getPassword(), user.get().getUserPass())){
-                    return "Success";
+                    String x = (authserv.authenticate(loginreq).getAccessToken());
+                    return x;
                 }
                 return "Check Email or Password";
             }

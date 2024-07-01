@@ -314,17 +314,21 @@ public class ProductShopController {
 //    }
 
     @GetMapping("/getRelatedProds/{custID}")
-    public List<Shop_Products> getRelatedProds(@PathVariable("custID") int custID) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
-        List<Shop_Products> recommendedProducts = prdShopService.getRecommendationsBasedOnRecentSearches(custID);
+    public ResponseEntity<List<Shop_Products>> getRelatedProds(@PathVariable("custID") int custID) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
+        Optional<List<Shop_Products>> recommendedProducts = Optional.ofNullable(prdShopService.getRecommendationsBasedOnRecentSearches(custID));
 
-        return recommendedProducts;
+        return recommendedProducts.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
     }
 
-    @GetMapping("/search/{pageNum}")
-    public List<Shop_Products> search(@RequestBody SearchAlgo search,
+    @PostMapping("/search/{pageNum}")
+    public ResponseEntity<List<Shop_Products>> search(@RequestBody SearchAlgo search,
                                       @PathVariable("pageNum") int pageNum) {
-        List<Shop_Products> products = prdShopService.searchProducts(search, pageNum);
-        return products;
+        Optional<List<Shop_Products>> products = Optional.ofNullable(prdShopService.searchProducts(search, pageNum));
+        return  products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
     }
 
     @GetMapping("/search/numOfPages")

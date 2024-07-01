@@ -402,20 +402,27 @@ public class ProductShopService {
     public List<Shop_Products> getRecommendationsBasedOnRecentSearches(int custID) throws IOException,
             ParseException, org.apache.lucene.queryparser.classic.ParseException {
         Optional<List<SearchQuery>> recentSearches = searchRepo.findByCustID(custID);
-        int i=0;
-        for(int k=0;k<recentSearches.get().size();k++){
-            i+=1;
+        int i = 0;
+        for (int k = 0; k < recentSearches.get().size(); k++) {
+            i += 1;
         }
-        Optional<Shop_Products> product = prdshpRepo.findFirstByProductProductNameAndDeletedFalse(recentSearches.get().get(i-1).getQuery());
-        if (product.isEmpty()) {
-            return null;
-        }
-        Optional<List<Shop_Products>> allProducts = prdshpRepo.findShop_ProductsByProductProductCategoryAndDeletedFalse(product.get().getProduct().getProductCategory());
-        List<Integer> similarProductIds = SimilarityUtil.findSimilarProducts2(product.get().getProduct().getProductCategory(), allProducts.get());
 
-        return similarProductIds.stream()
-                .map(id -> prdshpRepo.findById(id).orElse(null))
-                .collect(Collectors.toList());
+        System.out.println(recentSearches.get().size());
+        if (!recentSearches.get().isEmpty()) {
+            Optional<product> product = prdRepo.findByProductName(recentSearches.get().get(i - 1).getQuery());
+            if (product.isEmpty()) {
+                return null;
+            }
+            Optional<List<Shop_Products>> allProducts = prdshpRepo.findShop_ProductsByProductProductCategoryAndDeletedFalse(product.get().getProductCategory());
+            List<Integer> similarProductIds = SimilarityUtil.findSimilarProducts2(product.get().getProductCategory(), allProducts.get());
+
+
+
+            return similarProductIds.stream()
+                    .map(id -> prdshpRepo.findById(id).orElse(null))
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 
 
@@ -458,7 +465,8 @@ public class ProductShopService {
         if (search.getProdCondition() != null && !search.getProdCondition().isEmpty()) {
             predicates.add(cb.equal(shopProductRoot.get("prodCondition"), search.getProdCondition()));
         }
-        if (search.getCustID() != null && pageNum == 0) {
+        if (search.getCustID() != null && pageNum == 0 && search.getSortBy()==null) {
+
             Optional<List<SearchQuery>> shs = searchRepo.findByCustID(search.getCustID());
             if (shs.get().size() == 3) {
                 SearchQuery sh = shs.get().get(0);
@@ -468,8 +476,15 @@ public class ProductShopService {
                 }
                 searchRepo.delete(sh);
             }
-            SearchQuery sh = new SearchQuery(search.getProductName(), LocalDateTime.now(), search.getCustID());
-            searchRepo.save(sh);
+            Optional<Customer> cust = custRepo.findById(search.getCustID());
+            if(cust.isPresent()) {
+                SearchQuery sh = new SearchQuery();
+                sh.setQuery(search.getProductName());
+                sh.setCustID(cust.get().getCustID());
+                sh.setSearchDate(LocalDateTime.now());
+                searchRepo.save(sh);
+
+            }
         }
 
         query.select(shopProductRoot)
