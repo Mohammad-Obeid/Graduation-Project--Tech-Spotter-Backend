@@ -17,17 +17,20 @@ public class ShoppingCartService {
     private final productShopRepository prodshpRepo;
     private final userRepository userRepo;
 
+    private final CartItemRepository cartItmRepo;
+
 
 
     public ShoppingCartService(ShoppingCartRepository shpCrtRepo,
                                CustomerRepository custRepo,
                                ProductRepository prodRepo,
-                               productShopRepository prodshpRepo, userRepository userRepo) {
+                               productShopRepository prodshpRepo, userRepository userRepo, CartItemRepository cartItmRepo) {
         this.shpCrtRepo = shpCrtRepo;
         this.custRepo=custRepo;
         this.prodRepo=prodRepo;
         this.prodshpRepo=prodshpRepo;
         this.userRepo = userRepo;
+        this.cartItmRepo = cartItmRepo;
     }
 
 
@@ -62,6 +65,7 @@ public class ShoppingCartService {
                     item.setProduct(prod.get());
                     item.setQuantity(1);
                     item.setProductTotalPrice(prod.get().getProductPrice());
+                    item.setCartID(shpcrt.getCartID());
                     products.add(item);
                     shpcrt.setCartItems(products);
                     shpcrt.setTotalPrice(totprice);
@@ -86,19 +90,27 @@ public class ShoppingCartService {
         Optional<User> user=userRepo.findById(custID);
         if(user.isPresent()) {
             Optional<Customer> customer = custRepo.findById(user.get().getUserid());
-            ShoppingCart shpcrt = customer.get().getShoppingCart();
+            Optional<ShoppingCart> shpcrt = shpCrtRepo.findById(customer.get().getShoppingCart().getCartID());
             Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
             if (prod.isPresent()) {
+                Optional<CartItems> ct = cartItmRepo.findByProductIdAndCartID(prodID,shpcrt.get().getCartID());
                 double totPrice=0;
-                totPrice=shpcrt.getTotalPrice();
-                totPrice-=prod.get().getProductPrice();
-                List<CartItems> products=shpcrt.getCartItems();
-                products.remove(prod.get());
-                shpcrt.setTotalPrice(totPrice);
+                totPrice=shpcrt.get().getTotalPrice();
+                totPrice-=prod.get().getProductPrice()*ct.get().getQuantity();
+                List<CartItems> products=shpcrt.get().getCartItems();
+                products.remove(ct.get());
+                shpcrt.get().setTotalPrice(totPrice);
+                ct.get().setProduct(null);
 
-                shpcrt.setCartItems(products);
-                shpCrtRepo.save(shpcrt);
-                return shpcrt;
+                cartItmRepo.delete(ct.get());
+
+                System.out.println(".////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+                System.out.println(prodID+",,"+shpcrt.get().getCartID());
+                System.out.println(".////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+                System.out.println(ct.get().toString());
+                shpcrt.get().setCartItems(products);
+                shpCrtRepo.save(shpcrt.get());
+                return shpcrt.get();
 
             }
 

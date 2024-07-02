@@ -13,6 +13,8 @@ public class CartItems {
 
     private int quantity;
     private double productTotalPrice;
+    @JoinColumn(name = "cartID")
+    private int cartID;
 
     public CartItems() {
     }
@@ -50,6 +52,14 @@ public class CartItems {
 
     public double getProductTotalPrice() {
         return productTotalPrice;
+    }
+
+    public int getCartID() {
+        return cartID;
+    }
+
+    public void setCartID(int cartID) {
+        this.cartID = cartID;
     }
 
     public void setProductTotalPrice(double productTotalPrice) {
