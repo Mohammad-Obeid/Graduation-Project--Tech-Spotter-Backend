@@ -94,7 +94,7 @@ public class ProductShopService {
 
     public Boolean AddAnExistingProductByBarcodetoaShop(Shop_Products shopProducts) {
         Optional<product> product = prdRepo.findByproductBarcode(shopProducts.getProduct().getProductBarcode());
-        Optional<Shop_Products> shsh = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopProducts.getShop().getShopName(),
+        Optional<Shop_Products> shsh = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopProducts.getShop().getShopName(),
                 shopProducts.getProduct().getProductBarcode());
         int flag = 0;
         List<Shop_Products> chk = prdshpRepo.findAll();
@@ -161,7 +161,7 @@ public class ProductShopService {
         Optional<ShopOwner> shop = shpRepo.findShopOwnerByShopName(shopName);
         if (shop.isPresent()) {
             List<Shop_Products> products = shop.get().getShopProducts();
-            Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(
+            Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(
                     shopName, prodBarcode
             );
             if (prod.isPresent()) {
@@ -230,7 +230,7 @@ public class ProductShopService {
         Optional<ShopOwner> shop = shpRepo.findById(custRate.getProducts().getShop().getShopID());
         Optional<product> product = prdRepo.findById(custRate.getProducts().getProduct().getProductId());
         if (shop.isPresent() && product.isPresent()) {
-            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shop.get().getShopName(), product.get().getProductBarcode());
+            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shop.get().getShopName(), product.get().getProductBarcode());
             if (shopProduct.isPresent()) {
                 Optional<product> prod = prdRepo.findByproductBarcode(product.get().getProductBarcode());
                 double rt = shopProduct.get().getRate();
@@ -262,7 +262,7 @@ public class ProductShopService {
     }
 
     public Shop_Products rateAProduct(int custID, String shopName, String prodBarcode, customerRates custRate) {
-        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
         Optional<Customer> customer = custRepo.findById(custID);
         custRate.setCustomer(customer.get());
         custRate.setProducts(shopProduct.get());
@@ -304,7 +304,7 @@ public class ProductShopService {
     }
 
     public Shop_Products updateProduct(Shop_Products product, String shopName, String prodBarcode) {
-        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
         if (shopProduct.isPresent()) {
             shopProduct.get().setProductPrice(product.getProductPrice());
             shopProduct.get().setQuantity(product.getQuantity());
@@ -315,7 +315,7 @@ public class ProductShopService {
     }
 
     public Shop_Products getProductForAShop(String shopName, String barcode) {
-        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, barcode);
+        Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, barcode);
         return shopProduct.orElse(null);
     }
 

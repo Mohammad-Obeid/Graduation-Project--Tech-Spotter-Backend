@@ -30,7 +30,7 @@ public class ProductImgService {
     public List<ProductImageData> saveImagesForProduct(List<MultipartFile> imageFiles, String shopName, String prodBarcode) throws IOException {
         List<ProductImageData> savedImages = new ArrayList<>();
 
-        Optional<Shop_Products> productOptional = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        Optional<Shop_Products> productOptional = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
         if (!productOptional.isPresent()) {
             throw new IllegalArgumentException("Product not found for shopName: " + shopName + " and prodBarcode: " + prodBarcode);
         }
@@ -60,7 +60,7 @@ public class ProductImgService {
 
     public  List<String> getImagesForProduct(String prodBarcode, String shopName) {
         List<String> base64Images = new ArrayList<>();
-        Optional<Shop_Products> product = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName,prodBarcode);
+        Optional<Shop_Products> product = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName,prodBarcode);
         Optional<List<ProductImageData>> imageList = repository.findProductImageDataByProduct_Product_productBarcodeAndProduct_Shop_ShopName(prodBarcode,shopName);
         for (ProductImageData imageData : imageList.get()) {
             if (imageData.getProduct()==(product.get())) {

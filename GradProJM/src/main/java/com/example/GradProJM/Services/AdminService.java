@@ -56,7 +56,7 @@ public class AdminService
 
 
     public ShopOwner DeleteProductfromShop(String shopName, String prodBarcode) {
-        Optional<Shop_Products> prod = shpprdRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName,prodBarcode);
+        Optional<Shop_Products> prod = shpprdRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName,prodBarcode);
         prod.ifPresent(shpprdRepo::delete);
         Optional<ShopOwner> shp = shpRepo.findShopOwnerByShopName(shopName);
 //        emailService.sendDeletionEmailForShop(shp.get().getShopName(),shp.get().getUser().getUserEmail(),prodBarcode);

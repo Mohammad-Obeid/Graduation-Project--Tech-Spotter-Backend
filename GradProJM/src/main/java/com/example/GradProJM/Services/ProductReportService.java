@@ -27,7 +27,7 @@ public class ProductReportService {
     public ProductReport SubmitNewReport(ProductReport rep) {
         Optional<Customer> cust = custRepo.findCustomerByCustID(rep.getCust().getCustID());
         if(cust.isPresent()){
-            Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(
+            Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(
                     rep.getProduct().getShop().getShopName(),
                     rep.getProduct().getProduct().getProductBarcode()
             );

@@ -46,10 +46,18 @@ public class ShoppingCartService {
 
 
     //todo: check paging
-    public ShoppingCart AddProductToCart(int custID, int prodID) {
-        Optional<User> user=userRepo.findById(custID);
-        if(user.isPresent()){
-            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
+    public ShoppingCart AddProductToCart(int userID, int prodID) {
+        Optional<User> user=userRepo.findById(userID);
+        if(user.isPresent() && user.get().getStatus()==0){
+            System.out.println("/////////////////////////////////////////////////////////");
+            System.out.println("/////////////////////////////////////////////////////////");
+            System.out.println("/////////////////////////////////////////////////////////");
+            System.out.println("/////////////////////////////////////////////////////////");
+            System.out.println("/////////////////////////////////////////////////////////");
+            System.out.println("/////////////////////////////////////////////////////////");
+            System.out.println("/////////////////////////////////////////////////////////");
+            System.out.println("/////////////////////////////////////////////////////////");
+            Optional<Customer> cust = custRepo.findById(user.get().getCustomer().getCustID());
             ShoppingCart shpcrt=cust.get().getShoppingCart();
             Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
             if(prod.isPresent()){
@@ -81,14 +89,14 @@ public class ShoppingCartService {
 
 
     public ShoppingCart AddProductToCart(int custID, String shopName, String prodBarcode) {
-        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
         return AddProductToCart(custID, product.get().getId());
     }
 
 
     public ShoppingCart DeleteProductFromCart(int custID, int prodID) {
         Optional<User> user=userRepo.findById(custID);
-        if(user.isPresent()) {
+        if(user.isPresent() && user.get().getStatus()==0) {
             Optional<Customer> customer = custRepo.findById(user.get().getUserid());
             Optional<ShoppingCart> shpcrt = shpCrtRepo.findById(customer.get().getShoppingCart().getCartID());
             Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
@@ -119,7 +127,7 @@ public class ShoppingCartService {
         return null;
     }
     public ShoppingCart DeleteProductFromCart(int custID, String shopName, String prodBarcode) {
-        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(shopName, prodBarcode);
+        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
         return DeleteProductFromCart(custID, product.get().getId());
     }
 }

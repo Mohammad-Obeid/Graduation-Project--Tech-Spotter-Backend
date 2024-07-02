@@ -70,7 +70,7 @@ public class orderItemService {
         List<Shop_Products> ll = new ArrayList<>();
         List<orderItems> orderItems = new ArrayList<>();
         for(int i=0;i<order.getOrderItem().size();i++){
-            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcode(
+            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(
                     order.getOrderItem().get(i).getProduct().getShop().getShopName(),
                     order.getOrderItem().get(i).getProduct().getProduct().getProductBarcode());
             if(shopProduct.get().getQuantity()>=order.getOrderItem().get(i).getItemQuantity()){

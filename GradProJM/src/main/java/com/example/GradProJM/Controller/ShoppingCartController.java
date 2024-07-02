@@ -37,7 +37,7 @@ public class ShoppingCartController {
                                                                  @PathVariable("productBarcode") String prodBarcode){
         Optional<ShoppingCart> cart= Optional.ofNullable(shpCartServ.AddProductToCart(custID, shopName, prodBarcode));
         return cart.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .orElse(ResponseEntity.status(HttpStatus.FOUND)
                         .body(null));
     }
     @DeleteMapping("deleteProductFromACart/{custID}/{shopName}/{productBarcode}")
