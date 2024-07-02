@@ -109,9 +109,7 @@ public class ShoppingCartService {
                 products.remove(ct.get());
                 shpcrt.get().setTotalPrice(totPrice);
                 ct.get().setProduct(null);
-
                 cartItmRepo.delete(ct.get());
-
                 System.out.println(".////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
                 System.out.println(prodID+",,"+shpcrt.get().getCartID());
                 System.out.println(".////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
