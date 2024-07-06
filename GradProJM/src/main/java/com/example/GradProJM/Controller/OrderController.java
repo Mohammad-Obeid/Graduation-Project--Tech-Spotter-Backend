@@ -26,7 +26,6 @@ public class OrderController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
-
     @GetMapping("getNumOfPagesForCustomerOrders/{custID}")
     public int getNumberOfPagesForCustomerOrders(@PathVariable("custID") int custID
     ){

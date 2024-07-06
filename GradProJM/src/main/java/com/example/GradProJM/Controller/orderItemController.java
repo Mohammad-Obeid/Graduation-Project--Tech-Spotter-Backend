@@ -25,7 +25,6 @@ public class orderItemController {
         return ord.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
-
     }
 
     @PatchMapping("updateOrderItemStatus/{orderID}/{productID}/{status}")

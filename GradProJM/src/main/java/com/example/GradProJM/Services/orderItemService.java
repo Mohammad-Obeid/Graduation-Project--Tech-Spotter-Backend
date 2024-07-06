@@ -67,11 +67,13 @@ public class orderItemService {
         ord.setOrderDate(String.valueOf(LocalDate.now()));
         List<Shop_Products> ll = new ArrayList<>();
         List<orderItems> orderItems = new ArrayList<>();
+        double totprice=0;
         for(int i=0;i<order.getOrderItem().size();i++){
+
             Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(
                     order.getOrderItem().get(i).getProduct().getShop().getShopName(),
                     order.getOrderItem().get(i).getProduct().getProduct().getProductBarcode());
-            if(shopProduct.get().getQuantity()>=order.getOrderItem().get(i).getItemQuantity()){
+            if(shopProduct.isPresent() && shopProduct.get().getQuantity()>=order.getOrderItem().get(i).getItemQuantity()){
 //              todo:  shopProduct.get().setQuantity(shopProduct.get().getQuantity()-order.getOrderItem().get(i).getItemQuantity()); after payment verification
                 orderItems orditm=new orderItems();
                 orditm.setOrder(ord);
@@ -79,12 +81,14 @@ public class orderItemService {
                 orditm.setItemQuantity(order.getOrderItem().get(i).getItemQuantity());
                 orditm.setOrderItemStats("Pending");
                 orderItems.add(orditm);
+                totprice+=shopProduct.get().getProductPrice();
             }
             else{
                 System.out.println("Product: "+shopProduct.get().getProduct().getProductName()+" is Out of Stock");
             }
         }
         ord.setStatus("Processing");
+        ord.setTotPrice(totprice);
         ord.setOrderItem(orderItems);
         ordRepo.save(ord);
         return ord;

@@ -62,11 +62,9 @@ public class SimilarityUtil {
 
     public static List<Integer> findSimilarProducts2(String text, List<Shop_Products> products) throws IOException, ParseException {
         StandardAnalyzer analyzer = new StandardAnalyzer();
-
         RAMDirectory ramDirectory = new RAMDirectory();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter indexWriter = new IndexWriter(ramDirectory, indexWriterConfig);
-
         for (Shop_Products product : products) {
             Document doc = new Document();
             doc.add(new TextField("id", String.valueOf(product.getId()), Field.Store.YES));
@@ -76,7 +74,6 @@ public class SimilarityUtil {
             indexWriter.addDocument(doc);
         }
         indexWriter.close();
-
         // Print the query being executed
         Query query = new QueryParser("productCategory", analyzer).parse(QueryParser.escape(text));
 

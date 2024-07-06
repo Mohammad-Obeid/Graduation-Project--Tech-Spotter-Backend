@@ -19,9 +19,11 @@ public class Order {
     private List<orderItems> orderItem;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Address address;
+//    @OneToOne(cascade = CascadeType.ALL)
+    private String address;
     private String status;
+
+    private double totPrice=0;
 
     public Order() {
     }
@@ -61,7 +63,13 @@ public class Order {
         this.user = user;
     }
 
+    public double getTotPrice() {
+        return totPrice;
+    }
 
+    public void setTotPrice(double totPrice) {
+        this.totPrice = totPrice;
+    }
     //    public List<Shop_Products> getProducts() {
 //        return products;
 //    }
@@ -96,11 +104,11 @@ public class Order {
         this.status = status;
     }
 
-    public Address getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
