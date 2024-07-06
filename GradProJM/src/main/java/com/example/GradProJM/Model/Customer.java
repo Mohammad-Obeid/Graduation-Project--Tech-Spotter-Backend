@@ -20,8 +20,7 @@ public class Customer{
     @OneToOne(cascade = CascadeType.ALL)
     private wishList wishlist;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.MERGE)
-    private List<Order> orders;
+
 
     public Customer() {
     }

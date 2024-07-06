@@ -1,5 +1,6 @@
 package com.example.GradProJM.Controller;
 
+import com.example.GradProJM.Model.ShoppingCart;
 import com.example.GradProJM.Model.wishList;
 import com.example.GradProJM.Services.wishListService;
 import org.springframework.http.HttpStatus;
@@ -18,18 +19,27 @@ public class wishListController {
     this.wishservice = wishservice;
     }
 
-    @GetMapping("getWishListItems/{custID}")
-    public ResponseEntity<List> getWishListItemsForAUser(@PathVariable("custID") int custID){
-        Optional<List> products= Optional.ofNullable(wishservice.getWishListItemsForAUser(custID));
+    @GetMapping("getWishListItems/{userID}")
+    public ResponseEntity<List> getWishListItemsForAUser(@PathVariable("userID") int userID){
+        Optional<List> products= Optional.ofNullable(wishservice.getWishListItemsForAUser(userID));
         return products.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
 
-    @PostMapping("addProductToWishList/{custID}/{prodID}")
-    public ResponseEntity<wishList> addProductToWishList(@PathVariable("custID") int custID,
+    @PostMapping("addProductToWishList/{userID}/{prodID}")
+    public ResponseEntity<wishList> addProductToWishList(@PathVariable("userID") int userID,
                                                          @PathVariable("prodID") int prodID){
-        Optional<wishList> addProduct= Optional.ofNullable(wishservice.addProductToWishList(custID, prodID));
+        Optional<wishList> addProduct= Optional.ofNullable(wishservice.addProductToWishList(userID, prodID));
+        return addProduct.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+    @PostMapping("addProductToWishList/{userID}/{shopName}/{productBarcode}")
+    public ResponseEntity<wishList> addToWishList(@PathVariable("userID") int userID,
+                                                                @PathVariable("shopName") String shopName,
+                                                                @PathVariable("productBarcode") String prodBarcode){
+        Optional<wishList> addProduct= Optional.ofNullable(wishservice.addProductToWishList(userID, shopName, prodBarcode));
         return addProduct.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

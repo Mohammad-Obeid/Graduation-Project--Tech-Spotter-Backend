@@ -36,8 +36,8 @@ public class ShoppingCartService {
 
     public List getCartProducts(int custID) {
         Optional<User> user=userRepo.findById(custID);
-        if(user.isPresent()){
-            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
+        if(user.isPresent() && user.get().getStatus()==0){
+            Optional<Customer> cust = custRepo.findById(user.get().getCustomer().getCustID());
             ShoppingCart shpcrt=cust.get().getShoppingCart();
             return shpcrt.getCartItems();
         }
@@ -97,7 +97,7 @@ public class ShoppingCartService {
     public ShoppingCart DeleteProductFromCart(int custID, int prodID) {
         Optional<User> user=userRepo.findById(custID);
         if(user.isPresent() && user.get().getStatus()==0) {
-            Optional<Customer> customer = custRepo.findById(user.get().getUserid());
+            Optional<Customer> customer = custRepo.findById(user.get().getCustomer().getCustID());
             Optional<ShoppingCart> shpcrt = shpCrtRepo.findById(customer.get().getShoppingCart().getCartID());
             Optional<Shop_Products> prod=prodshpRepo.findById(prodID);
             if (prod.isPresent()) {

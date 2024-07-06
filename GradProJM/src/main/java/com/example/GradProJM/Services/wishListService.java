@@ -31,10 +31,10 @@ public class wishListService {
         this.userRepo = userRepo;
     }
 
-    public List getWishListItemsForAUser(int custID) {
-        Optional<User> user = userRepo.findById(custID);
-        if(user.isPresent()){
-            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
+    public List getWishListItemsForAUser(int userID) {
+        Optional<User> user = userRepo.findById(userID);
+        if(user.isPresent() && user.get().getStatus()==0){
+            Optional<Customer> cust = custRepo.findById(user.get().getCustomer().getCustID());
             Optional<wishList> wishlst = wishRepo.findById(cust.get().getWishlist().getWishListID());
             List<Shop_Products> products = wishlst.get().getProducts();
             return products;
@@ -43,10 +43,14 @@ public class wishListService {
     }
     //todo: make paging
 
-    public wishList addProductToWishList(int custID, int prodID) {
-        Optional<User> user = userRepo.findById(custID);
-        if(user.isPresent()){
-            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
+    public wishList addProductToWishList(int userID, int prodID) {
+        System.out.println("///////////////////////////////////////////////////////////////");
+        System.out.println("///////////////////////////////////////////////////////////////");
+        System.out.println("///////////////////////////////////////////////////////////////");
+        System.out.println("///////////////////////////////////////////////////////////////");
+        Optional<User> user = userRepo.findById(userID);
+        if(user.isPresent() && user.get().getStatus()==0){
+            Optional<Customer> cust = custRepo.findById(user.get().getCustomer().getCustID());
             Optional<wishList> wishlst = wishRepo.findById(cust.get().getWishlist().getWishListID());
             List<Shop_Products> products = wishlst.get().getProducts();
             Optional<Shop_Products> prod = prdshpRepo.findById(prodID);
@@ -60,10 +64,11 @@ public class wishListService {
         return null;
     }
 
-    public wishList removeProductFromWishList(int custID, int prodID) {
-        Optional<User> user = userRepo.findById(custID);
-        if(user.isPresent()){
-            Optional<Customer> cust = custRepo.findById(user.get().getUserid());
+    public wishList removeProductFromWishList(int userID, int prodID) {
+
+        Optional<User> user = userRepo.findById(userID);
+        if(user.isPresent() && user.get().getStatus()==0){
+            Optional<Customer> cust = custRepo.findById(user.get().getCustomer().getCustID());
             Optional<wishList> wishlst = wishRepo.findById(cust.get().getWishlist().getWishListID());
             List<Shop_Products> products = wishlst.get().getProducts();
             Optional<Shop_Products> prod = prdshpRepo.findById(prodID);
@@ -75,5 +80,10 @@ public class wishListService {
             return null;
         }
         return null;
+    }
+
+    public wishList addProductToWishList(int userID, String shopName, String prodBarcode) {
+        Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName,prodBarcode);
+        return addProductToWishList(userID,prod.get().getId());
     }
 }

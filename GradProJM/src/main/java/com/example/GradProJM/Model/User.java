@@ -52,6 +52,9 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
+    private List<Order> orders;
+
     public User() {
         this.verified=false;
     }

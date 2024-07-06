@@ -72,6 +72,7 @@ public class SimilarityUtil {
             doc.add(new TextField("id", String.valueOf(product.getId()), Field.Store.YES));
             doc.add(new TextField("productCategory", product.getProduct().getProductCategory(), Field.Store.YES));
             doc.add(new TextField("productName", product.getProduct().getProductName(), Field.Store.YES));
+            doc.add(new TextField("productCompanyName", product.getProduct().getProductCompanyName(), Field.Store.YES));
             indexWriter.addDocument(doc);
         }
         indexWriter.close();

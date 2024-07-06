@@ -16,6 +16,7 @@ public class SearchQuery {
     private LocalDateTime searchDate;
 
     private int custID;
+    private int numOfClicks=0;
 
 
     public SearchQuery() {
@@ -58,5 +59,14 @@ public class SearchQuery {
     public void setCustID(int custID) {
         this.custID = custID;
     }
+
+    public int getNumOfClicks() {
+        return numOfClicks;
+    }
+
+    public void setNumOfClicks(int numOfClicks) {
+        this.numOfClicks = numOfClicks;
+    }
+
 }
 

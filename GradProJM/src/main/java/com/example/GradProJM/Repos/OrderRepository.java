@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order,Integer> {
-    Optional<List<Order>> findOrdersByCustomer_CustID(int custID, PageRequest of);
+    Optional<List<Order>> findOrdersByUserUserid(int userID, PageRequest of);
     Optional<List<Order>> findOrdersByStatus(String status);
-    Long countOrderByCustomerCustID(int custID);
+    Long countOrderByUserUserid(int userID);
 }

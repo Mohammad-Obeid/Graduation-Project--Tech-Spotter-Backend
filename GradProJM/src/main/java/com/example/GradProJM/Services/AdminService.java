@@ -10,7 +10,6 @@ import java.util.Optional;
 @Service
 public class AdminService
 {
-    private final AdminRepository adminRepo;
     private final ProductReportRepository reportRepo;
     private final productShopRepository shpprdRepo;
     private final ShopOwnerRepository shpRepo;
@@ -33,7 +32,6 @@ public class AdminService
 
 
                         ) {
-        this.adminRepo = adminRepo;
         this.reportRepo=reportRepo;
         this.shpprdRepo=shpprdRepo;
         this.shpRepo=shpRepo;
@@ -96,7 +94,7 @@ public class AdminService
 //            orderRepo.delete(order.get());
             for(int i = 0; i < order.get().getOrderItem().size(); i++) {
                 emailService.sendOrderDeletionEmailForShop(order.get().getOrderItem().get(i).getProduct()
-                , order.get().getCustomer());
+                , order.get().getUser().getCustomer());
             }
             return order.get();
         }

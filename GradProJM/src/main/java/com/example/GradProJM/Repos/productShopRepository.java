@@ -28,8 +28,8 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
 //    Optional<Shop_Products> findShop_ProductsByShop_ShopIDAndProduct_ProductId(int shopID,int ProdID);
 
     Optional<Shop_Products> findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(String shpName, String brcode);
-    Page<Shop_Products> findShop_ProductsByProductProductNameStartingWith(String prodName, Pageable pageable);
-    Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWith(String prodName,PageRequest of);
+    Page<Shop_Products> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String prodName, Pageable pageable);
+    Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String prodName,PageRequest of);
     Long countByShopShopIDAndProductProductCategoryAndDeletedFalse(int shopID, String cat);
     Long countByProductProductCategoryAndDeletedFalse(String cat);
     Long countByProductProductNameStartingWithAndDeletedFalse(String name);
@@ -51,10 +51,10 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
     }
 
 //    Optional<List> findShop_ProductsByProductProductNameAndDeletedFalse(String prodName);
-    Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String prodName, PageRequest of);
+//    Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String prodName, PageRequest of);
 
 
-    Optional<List<Shop_Products>> findShop_ProductsByProductProductCategoryAndDeletedFalse(String cat);
+    Optional<List<Shop_Products>> findShop_ProductsByProductProductCategoryAndProductProductCompanyNameAndDeletedFalse(String cat,String name);
     Optional<List<Shop_Products>> findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(String name);
     Optional<Shop_Products> findFirstByProductProductNameAndDeletedFalse(String name);
 //    @Query("SELECT COUNT(sp) FROM Shop_Products sp JOIN sp.product p WHERE " +
@@ -81,8 +81,9 @@ public interface productShopRepository extends JpaRepository<Shop_Products,Integ
             "(:productCategory IS NULL OR p.product.productCategory = :productCategory) AND " +
             "(:minPrice IS NULL OR p.productPrice >= :minPrice) AND " +
             "(:maxPrice IS NULL OR p.productPrice <= :maxPrice) AND " +
-            "(:prodCondition IS NULL OR p.prodCondition = :prodCondition)")
-    Optional<Integer> countByProductProductNameStartingWithAndProductProductCategoryAndProductPriceBetweenAndProdCondition(
+            "(:prodCondition IS NULL OR p.prodCondition = :prodCondition) AND " +
+            "p.deleted = FALSE")
+    Optional<Integer> countByProductProductNameStartingWithAndProductProductCategoryAndProductPriceBetweenAndProdConditionAndDeletedFalse(
             @Param("productName") String productName,
             @Param("productCategory") String productCategory,
             @Param("minPrice") Integer minPrice,

@@ -8,10 +8,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderID;
     private String orderDate;
-    private String orderAdd;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    private Customer customer;
+    private User user;
 
 //    @OneToMany(cascade = CascadeType.ALL)
 //    private List<Shop_Products> products;
@@ -19,20 +18,22 @@ public class Order {
     @OneToMany(mappedBy = "order",cascade=CascadeType.ALL)
     private List<orderItems> orderItem;
 
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
     private String status;
+
     public Order() {
     }
 
     public Order(int orderID, String orderDate, String orderAdd,String status) {
         this.orderID = orderID;
         this.orderDate = orderDate;
-        this.orderAdd = orderAdd;
         this.status=status;
     }
 
     public Order(String orderDate, String orderAdd,String status) {
         this.orderDate = orderDate;
-        this.orderAdd = orderAdd;
         this.status=status;
     }
 
@@ -52,26 +53,16 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-
-    public String getOrderAdd() {
-        return orderAdd;
+    public User getUser() {
+        return user;
     }
 
-    public void setOrderAdd(String orderAdd) {
-        this.orderAdd = orderAdd;
+    public void setUser(User user) {
+        this.user = user;
     }
 
 
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-//    public List<Shop_Products> getProducts() {
+    //    public List<Shop_Products> getProducts() {
 //        return products;
 //    }
 //
@@ -105,12 +96,19 @@ public class Order {
         this.status = status;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "orderID=" + orderID +
                 ", orderDate='" + orderDate + '\'' +
-                ", Address='" + orderAdd + '\'' +
                 '}';
     }
 }

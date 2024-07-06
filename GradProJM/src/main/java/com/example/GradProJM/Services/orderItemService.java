@@ -1,13 +1,7 @@
 package com.example.GradProJM.Services;
 
-import com.example.GradProJM.Model.Customer;
-import com.example.GradProJM.Model.Order;
-import com.example.GradProJM.Model.Shop_Products;
-import com.example.GradProJM.Model.orderItems;
-import com.example.GradProJM.Repos.CustomerRepository;
-import com.example.GradProJM.Repos.OrderRepository;
-import com.example.GradProJM.Repos.orderItemRepository;
-import com.example.GradProJM.Repos.productShopRepository;
+import com.example.GradProJM.Model.*;
+import com.example.GradProJM.Repos.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,16 +15,18 @@ public class orderItemService {
     private final OrderRepository ordRepo;
     private final productShopRepository prdshpRepo;
     private final CustomerRepository custRepo;
+    private final userRepository userRepo;
 
 
     public orderItemService(orderItemRepository ordItmRepo,
                             OrderRepository ordRepo,
                             productShopRepository prdshpRepo,
-                            CustomerRepository custRepo) {
+                            CustomerRepository custRepo, userRepository userRepo) {
         this.ordItmRepo = ordItmRepo;
         this.ordRepo=ordRepo;
         this.prdshpRepo=prdshpRepo;
         this.custRepo=custRepo;
+        this.userRepo = userRepo;
     }
 
 
@@ -62,9 +58,11 @@ public class orderItemService {
 
     public Order MakeNewOrder(Order order) {
         Order ord=new Order();
-        Optional<Customer> cust = custRepo.findCustomerByCustID(order.getCustomer().getCustID());
-        ord.setCustomer(cust.get());
-        ord.setOrderAdd(order.getOrderAdd());
+        //todo: kadoumi order modification,,,,, important.............
+
+        Optional<User> cust = userRepo.findById(order.getUser().getUserid());
+        ord.setUser(cust.get());
+        ord.setAddress(order.getAddress());
 //        ord.setCustomer(order.getCustomer());
         ord.setOrderDate(String.valueOf(LocalDate.now()));
         List<Shop_Products> ll = new ArrayList<>();

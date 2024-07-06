@@ -39,6 +39,17 @@ public class ProductShopController {
                         .body(null));
     }
 
+    @PostMapping("saveRecommended/{userID}/{shopName}/{prodBarcode}")
+    public ResponseEntity<Boolean> SaveRecommended(@PathVariable("userID") int userID,
+                                                   @PathVariable("shopName") String shopName,
+                                                   @PathVariable("prodBarcode") String prodBarcode){
+        Optional<Boolean> products= Optional.ofNullable(prdShopService.SaveRecommended(userID, shopName, prodBarcode));
+        return products.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
     @GetMapping("getProducts/{shopID}/{pageNum}")
     public ResponseEntity<List<Shop_Products>> Search(@PathVariable("shopID") int shopID,
                                                       @PathVariable("pageNum") int pageNum
@@ -225,14 +236,14 @@ public class ProductShopController {
                         .body(null));
     }
 
-    @PatchMapping("rateAProduct/{custID}/{shopName}/{prodBarcode}")
-    public ResponseEntity<Shop_Products> rateAProduct(@PathVariable("custID") int custID,
+    @PatchMapping("rateAProduct/{userID}/{shopName}/{prodBarcode}")
+    public ResponseEntity<Shop_Products> rateAProduct(@PathVariable("userID") int userID,
                                                       @PathVariable("shopName") String shopName,
                                                       @PathVariable("prodBarcode") String prodBarcode,
                                                       @RequestBody customerRates custRate){
 
 
-        Optional<Shop_Products> productRate= Optional.ofNullable(prdShopService.rateAProduct(custID,
+        Optional<Shop_Products> productRate= Optional.ofNullable(prdShopService.rateAProduct(userID,
                 shopName,
                 prodBarcode,
                 custRate));

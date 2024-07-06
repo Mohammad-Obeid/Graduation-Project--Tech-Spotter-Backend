@@ -36,7 +36,7 @@ public class OrderService {
     public List getOrdersForACustomer(int custID, int pageNum) {
         Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
         if (customer.isPresent()) {
-            Optional<List<Order>> orders = orderRepo.findOrdersByCustomer_CustID(custID, PageRequest.of(pageNum, 8));
+            Optional<List<Order>> orders = orderRepo.findOrdersByUserUserid(custID, PageRequest.of(pageNum, 8));
             return orders.get();
         }
         return null;
@@ -44,7 +44,7 @@ public class OrderService {
 
 
     public int getNumberOfPagesForCustomerOrders(int custID) {
-        long totalProducts = orderRepo.countOrderByCustomerCustID(custID);
+        long totalProducts = orderRepo.countOrderByUserUserid(custID);
         return (int) Math.ceil((double) totalProducts / 8);
     }
 
@@ -129,7 +129,7 @@ public class OrderService {
     public Order updateOrderLocation(int orderID, Order ord) {
         Optional<Order> order = orderRepo.findById(orderID);
         if (order.isPresent()) {
-            order.get().setOrderAdd(ord.getOrderAdd());
+            order.get().setAddress(ord.getAddress());
             orderRepo.save(order.get());
             return order.orElse(null);
         }

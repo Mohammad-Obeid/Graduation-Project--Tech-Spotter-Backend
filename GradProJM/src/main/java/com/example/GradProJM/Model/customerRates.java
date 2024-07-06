@@ -9,7 +9,7 @@ public class customerRates {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rateFeedbackID;
     @ManyToOne(cascade = CascadeType.MERGE)
-    private Customer customer;
+    private User customer;
     @ManyToOne(cascade = CascadeType.MERGE)
     private Shop_Products products;
 
@@ -37,11 +37,11 @@ public class customerRates {
         this.rateFeedbackID = rateFeedbackID;
     }
 
-    public Customer getCustomer() {
+    public User getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(User customer) {
         this.customer = customer;
     }
 
