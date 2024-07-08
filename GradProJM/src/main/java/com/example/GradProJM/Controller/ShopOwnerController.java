@@ -28,6 +28,12 @@ public class ShopOwnerController {
         return shopOwnerService.getCustomers();
     }
 
+    @GetMapping("/getshop/{userID}")
+    public Integer getShopID(@PathVariable("userID") int userID){
+        return shopOwnerService.getShopID(userID);
+    }
+
+
     @PostMapping
     public void addNewShop(@RequestBody ShopOwner shopOwner){
         shopOwnerService.addNewShopOwner(shopOwner);

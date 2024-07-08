@@ -2,10 +2,12 @@ package com.example.GradProJM.Services;
 
 import com.example.GradProJM.Model.Customer;
 import com.example.GradProJM.Model.ShopOwner;
+import com.example.GradProJM.Model.User;
 import com.example.GradProJM.Model.product;
 import com.example.GradProJM.Repos.CustomerRepository;
 import com.example.GradProJM.Repos.ProductRepository;
 import com.example.GradProJM.Repos.ShopOwnerRepository;
+import com.example.GradProJM.Repos.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +19,13 @@ public class shopOwnerService {
     private final ShopOwnerRepository shopOwnerRepo;
     private final ProductRepository prodRepo;
     private final CustomerRepository custRepo;
+    private final userRepository userRepo;
 
-    public shopOwnerService(ShopOwnerRepository shopOwnerRepo,ProductRepository prodRepo, CustomerRepository custRepo) {
+    public shopOwnerService(ShopOwnerRepository shopOwnerRepo, ProductRepository prodRepo, CustomerRepository custRepo, userRepository userRepo) {
         this.shopOwnerRepo = shopOwnerRepo;
         this.prodRepo=prodRepo;
         this.custRepo=custRepo;
+        this.userRepo = userRepo;
     }
 
     public List<ShopOwner> getCustomers(){
@@ -141,5 +145,13 @@ public class shopOwnerService {
     public List<ShopOwner> getTopVisitedShops() {
         Optional<List<ShopOwner>> shps = Optional.ofNullable(shopOwnerRepo.findTop7ByNumOfVisits());
         return shps.get();
+    }
+
+    public Integer getShopID(int userID) {
+        Optional<User> x = userRepo.findById(userID);
+        if(x.isPresent() && x.get().getStatus()==1){
+        return x.get().getShopowner().getShopID();}
+        return null;
+
     }
 }

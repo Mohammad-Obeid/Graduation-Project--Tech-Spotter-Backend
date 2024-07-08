@@ -52,13 +52,12 @@ public class AdminService
         return reports.orElse(null);
     }
 
-
     public ShopOwner DeleteProductfromShop(String shopName, String prodBarcode) {
         Optional<Shop_Products> prod = shpprdRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName,prodBarcode);
-        prod.ifPresent(shpprdRepo::delete);
         Optional<ShopOwner> shp = shpRepo.findShopOwnerByShopName(shopName);
-//        emailService.sendDeletionEmailForShop(shp.get().getShopName(),shp.get().getUser().getUserEmail(),prodBarcode);
         if(prod.isPresent() && shp.isPresent()){
+            prod.get().setDeleted(true);
+            shpprdRepo.save(prod.get());
             shp.ifPresent(shopOwner -> emailService.sendDeletionEmailForShop(shopOwner.getShopName(), "mohammadkadoumi77@yahoo.com", prodBarcode));
         return shp.get();}
         return null;
@@ -95,6 +94,7 @@ public class AdminService
             for(int i = 0; i < order.get().getOrderItem().size(); i++) {
                 emailService.sendOrderDeletionEmailForShop(order.get().getOrderItem().get(i).getProduct()
                 , order.get().getUser().getCustomer());
+                order.get().getOrderItem().get(i).setOrderItemStats("Cancelled");
             }
             return order.get();
         }
@@ -105,7 +105,7 @@ public class AdminService
         Optional<ProductReport> rep = reportRepo.findById(repID);
         if(rep.isPresent()){
             rep.get().setReportStatus("Processing Report");
-            Optional<Customer> cust = custRepo.findCustomerByCustID(rep.get().getCust().getCustID());
+            Optional<Customer> cust = custRepo.findCustomerByCustID(rep.get().getUser().getCustomer().getCustID());
             if(cust.isPresent()) {
                 emailService.sendReportAcceptionEmail(cust, rep);
                 reportRepo.save(rep.get());

@@ -2,12 +2,14 @@ package com.example.GradProJM.Controller;
 
 
 import com.example.GradProJM.Model.Order;
+import com.example.GradProJM.Model.Sales;
 import com.example.GradProJM.Model.orderItems;
 import com.example.GradProJM.Services.orderItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,6 +35,16 @@ public class orderItemController {
                                                    @PathVariable("status") String status){
         Optional<orderItems> ordItm= Optional.ofNullable(ordItmSrv.changeStatus(orderID,prodID, status));
         return ordItm.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+
+    @GetMapping("getMonthlySales/{userID}/{month}")
+    public ResponseEntity<List<Sales>> getMonthlySales(@PathVariable("userID") int userID
+            , @PathVariable("month") String month){
+        Optional<List<Sales>> sales= Optional.ofNullable(ordItmSrv.getMonthlySales(userID, month));
+        return sales.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }

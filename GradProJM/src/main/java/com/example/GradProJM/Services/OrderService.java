@@ -19,24 +19,27 @@ public class OrderService {
     private final ProductRepository prodRepo;
     private final ShopOwnerRepository shpRepo;
     private final orderItemRepository ordItmRepo;
+    private final userRepository userRepo;
 
 
     public OrderService(OrderRepository orderRepo,
                         CustomerRepository custRepo,
                         ProductRepository prodRepo,
                         ShopOwnerRepository shpRepo,
-                        orderItemRepository ordItmRepo) {
+                        orderItemRepository ordItmRepo, userRepository userRepo) {
         this.orderRepo = orderRepo;
         this.custRepo = custRepo;
         this.prodRepo = prodRepo;
         this.shpRepo = shpRepo;
         this.ordItmRepo = ordItmRepo;
+        this.userRepo = userRepo;
     }
 
-    public List getOrdersForACustomer(int custID, int pageNum) {
-        Optional<Customer> customer = custRepo.findCustomerByCustID(custID);
-        if (customer.isPresent()) {
-            Optional<List<Order>> orders = orderRepo.findOrdersByUserUserid(custID, PageRequest.of(pageNum, 8));
+    public List getOrdersForACustomer(int userID, int pageNum) {
+        Optional<User> user = userRepo.findById(userID);
+        if (user.isPresent() && user.get().getStatus()==0) {
+        Optional<Customer> customer = custRepo.findById(user.get().getCustomer().getCustID());
+            Optional<List<Order>> orders = orderRepo.findOrdersByUserUserid(userID, PageRequest.of(pageNum, 8));
             return orders.get();
         }
         return null;
@@ -96,8 +99,6 @@ public class OrderService {
 
 
 
-
-
     public List getPendingOrdersForAShop(int shopID, int pageNum) {
         Optional<ShopOwner> shop = shpRepo.findById(shopID);
         if (shop.isPresent()) {
@@ -111,8 +112,6 @@ public class OrderService {
         long totalProducts = ordItmRepo.countByProduct_ShopShopNameAndOrderItemStats(shopName,"Pending");
         return (int) Math.ceil((double) totalProducts / 8);
     }
-
-
     //todo: get number of pages for all of these methods
 
     public Order updateOrderStatus(int orderID, Order ord) {

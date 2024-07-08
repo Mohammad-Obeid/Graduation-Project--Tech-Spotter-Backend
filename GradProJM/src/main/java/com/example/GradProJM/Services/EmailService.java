@@ -87,7 +87,8 @@ public class EmailService {
                 + "Thank you for submitting a report regarding the following product: "
                 +"{ Product Barcode: "+rep.get().getProduct().getProduct().getProductBarcode()+
                 ", Product Name: "+rep.get().getProduct().getProduct().getProductName()+
-                ", Product Category: "+rep.get().getProduct().getProduct().getProductCategory()+"}\n\n"
+                ", Product Category: "+rep.get().getProduct().getProduct().getProductCategory()+
+        ", Shop Name: "+rep.get().getProduct().getShop().getShopName()+"}\n\n"
                 + "We want to assure you that your report is currently under processing. We appreciate your patience and will keep you updated on any progress.\n\n"
                 + "If you have any questions or need further assistance, please do not hesitate to contact our support team.\n\n"
                 + "Best regards,\n"

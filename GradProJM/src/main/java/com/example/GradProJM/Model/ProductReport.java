@@ -14,7 +14,7 @@ public class ProductReport{
     private String reportContent;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Customer cust;
+    private User user;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Shop_Products product;
@@ -23,17 +23,17 @@ public class ProductReport{
     public ProductReport() {
     }
 
-    public ProductReport(int id, String reportTitle, String reportContent, Customer cust) {
+    public ProductReport(int id, String reportTitle, String reportContent, User user) {
         this.id = id;
         this.reportTitle = reportTitle;
         this.reportContent = reportContent;
-        this.cust = cust;
+        this.user = user;
     }
 
-    public ProductReport(String reportTitle, String reportContent, Customer cust) {
+    public ProductReport(String reportTitle, String reportContent, User user) {
         this.reportTitle = reportTitle;
         this.reportContent = reportContent;
-        this.cust = cust;
+        this.user = user;
     }
 
     public int getId() {
@@ -60,12 +60,12 @@ public class ProductReport{
         this.reportContent = reportContent;
     }
 
-    public Customer getCust() {
-        return cust;
+    public User getUser() {
+        return user;
     }
 
-    public void setCust(Customer cust) {
-        this.cust = cust;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getReportStatus() {

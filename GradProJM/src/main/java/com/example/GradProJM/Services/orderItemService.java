@@ -4,7 +4,7 @@ import com.example.GradProJM.Model.*;
 import com.example.GradProJM.Repos.*;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,17 +16,19 @@ public class orderItemService {
     private final productShopRepository prdshpRepo;
     private final CustomerRepository custRepo;
     private final userRepository userRepo;
+    private final ShopOwnerRepository shopRepo;
 
 
     public orderItemService(orderItemRepository ordItmRepo,
                             OrderRepository ordRepo,
                             productShopRepository prdshpRepo,
-                            CustomerRepository custRepo, userRepository userRepo) {
+                            CustomerRepository custRepo, userRepository userRepo, ShopOwnerRepository shopRepo) {
         this.ordItmRepo = ordItmRepo;
         this.ordRepo=ordRepo;
         this.prdshpRepo=prdshpRepo;
         this.custRepo=custRepo;
         this.userRepo = userRepo;
+        this.shopRepo = shopRepo;
     }
 
 
@@ -143,6 +145,41 @@ public class orderItemService {
         return item.get();
     }
 
+    public List<Sales> getMonthlySales(int userID, String month) {
+        Optional<User> user = userRepo.findById(userID);
+            if(user.isPresent() && user.get().getStatus()==1) {
+                Optional<ShopOwner> shop = shopRepo.findById(user.get().getShopowner().getShopID());
+                List<Sales> sales = new ArrayList<>();
+                for (int j = 1; j < 30; j++) {
+                    String date = "";
+                    if(j<10) date = "2024-"+month+"-"+"0"+j;
+                    else date = "2024-"+month+"-"+j;
+                    Optional<List<orderItems>> items = ordItmRepo.findByProductShopShopNameAndOrderOrderDate(shop.get().getShopName(), date);
+                    if(!items.get().isEmpty()) {
+                        for (int i = 0; i < items.get().size(); i++) {
+                            Optional<Order> order = ordRepo.findById(items.get().get(i).getOrder().getOrderID());
+
+                            LocalDate orderDate = LocalDate.parse(order.get().getOrderDate());
+
+                            if (!sales.isEmpty() && MonthDay.from(orderDate).getDayOfMonth() == sales.get(sales.size() - 1).getDay()) {
+                                double x = sales.get(sales.size() - 1).getTotalPrice() + items.get().get(i).getProduct().getProductPrice();
+                                sales.get(sales.size() - 1).setTotalPrice(x);
+                            } else {
+                                Sales s = new Sales();
+                                s.setDay(MonthDay.from(orderDate).getDayOfMonth());
+                                s.setTotalPrice(items.get().get(i).getProduct().getProductPrice());
+                                sales.add(s);
+                            }
+
+                        }
+
+                    }
+                }
+                return sales;
+            }
+            return null;
+
+    }
 
 //    public Order MakeNewOrder(int custID, String shopName, String prodBarcode, Order order) {
 //        List<>

@@ -19,7 +19,7 @@ public class ReportSerializer extends JsonSerializer<ProductReport> {
         reportData.put("status", productReport.getReportStatus());
         reportData.put("shopName", productReport.getProduct().getShop().getShopName());
         reportData.put("productBarcode", productReport.getProduct().getProduct().getProductBarcode());
-        reportData.put("customerID", productReport.getCust().getCustID());
+        reportData.put("customerID", productReport.getUser().getCustomer().getCustID());
         jsonGenerator.writeObjectField("Report", reportData);
 
 //        jsonGenerator.writeEndObject();

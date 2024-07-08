@@ -19,9 +19,9 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("getordersforCust/{custID}/{pageNum}")
-    public ResponseEntity<List> getOrdersForACustomer(@PathVariable("custID") int custID, @PathVariable("pageNum") int pageNum){
-        Optional<List> orders= Optional.ofNullable(orderService.getOrdersForACustomer(custID, pageNum));
+    @GetMapping("getordersforCust/{userID}/{pageNum}")
+    public ResponseEntity<List> getOrdersForACustomer(@PathVariable("userID") int userID, @PathVariable("pageNum") int pageNum){
+        Optional<List> orders= Optional.ofNullable(orderService.getOrdersForACustomer(userID, pageNum));
         return orders.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));

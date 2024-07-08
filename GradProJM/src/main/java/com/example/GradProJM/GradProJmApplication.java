@@ -16,7 +16,4 @@ public class GradProJmApplication {
 //		System.out.println(bb.encode(""));
 
 	}
-
-
-
 }
