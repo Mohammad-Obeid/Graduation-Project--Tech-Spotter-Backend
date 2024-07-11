@@ -19,9 +19,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 import com.example.GradProJM.Model.Shop_Products;
@@ -34,7 +32,6 @@ public class ProductShopService {
     private final productShopRepository prdshpRepo;
     private final ProductRepository prdRepo;
     private final ShopOwnerRepository shpRepo;
-    private final OrderRepository ordRepo;
     private final customerFeedbackRepository custfeedbkRepo;
     private final CustomerRepository custRepo;
     private final SearchQueryRepository searchRepo;
@@ -44,14 +41,12 @@ public class ProductShopService {
     public ProductShopService(productShopRepository prdshpRepo,
                               ProductRepository prdRepo,
                               ShopOwnerRepository shpRepo,
-                              OrderRepository ordRepo,
                               customerFeedbackRepository custfeedbkRepo,
                               CustomerRepository custRepo,
                               SearchQueryRepository searchRepo, userRepository userRepo) {
         this.prdshpRepo = prdshpRepo;
         this.prdRepo = prdRepo;
         this.shpRepo = shpRepo;
-        this.ordRepo = ordRepo;
         this.custfeedbkRepo = custfeedbkRepo;
         this.custRepo = custRepo;
         this.searchRepo=searchRepo;
@@ -330,34 +325,36 @@ public class ProductShopService {
     }
 
     public Boolean SaveRecommended(int userID, String shopName, String prodBarcode) {
-        System.out.println("//////////////////////////////////////////");
-        System.out.println("//////////////////////////////////////////");
-        System.out.println("//////////////////////////////////////////");
-        System.out.println("//////////////////////////////////////////");
-        System.out.println("//////////////////////////////////////////");
-        System.out.println("//////////////////////////////////////////");
-        System.out.println("//////////////////////////////////////////");
-        System.out.println("//////////////////////////////////////////");
         Optional<User> user = userRepo.findById(userID);
+
         if(user.isPresent() && user.get().getStatus()==0){
             Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
             Optional<Customer> cust = custRepo.findById(user.get().getCustomer().getCustID());
             Optional<List<SearchQuery>> shs = searchRepo.findByCustID(cust.get().getCustID());
-            if (shs.get().size() == 3) {
-                SearchQuery sh = shs.get().get(0);
-                for (int i = 1; i < shs.get().size(); i++) {
-                    if (shs.get().get(i).getSearchDate().isBefore(sh.getSearchDate()))
-                        sh = shs.get().get(i);
-                }
-                searchRepo.delete(sh);
-            }
+            Optional<SearchQuery> checkexist = searchRepo.findByCustIDAndQuery(cust.get().getCustID(), String.valueOf(shopProduct.get().getId()));
+            if(checkexist.isEmpty()) {
+
+//            if (shs.get().size() == 3) {
+//                SearchQuery sh = shs.get().get(0);
+//                for (int i = 1; i < shs.get().size(); i++) {
+//                    if (shs.get().get(i).getSearchDate().isBefore(sh.getSearchDate()))
+//                        sh = shs.get().get(i);
+//                }
+//                searchRepo.delete(sh);
+//            }
+
                 SearchQuery sh = new SearchQuery();
-                sh.setQuery(shopProduct.get().getProduct().getProductId()+"");
+                sh.setQuery(shopProduct.get().getProduct().getProductId() + "");
                 sh.setCustID(cust.get().getCustID());
                 sh.setSearchDate(LocalDateTime.now());
                 searchRepo.save(sh);
-                return true;
-
+            }
+            else{
+                checkexist.get().setSearchDate(LocalDateTime.now());
+                checkexist.get().setNumOfClicks(checkexist.get().getNumOfClicks()+1);
+                searchRepo.save(checkexist.get());
+            }
+            return true;
         }
         return false;
 
@@ -443,48 +440,128 @@ public class ProductShopService {
                 .collect(Collectors.toList());
     }
 
-    public List<Shop_Products> getRecommendationsBasedOnRecentSearches(int custID) throws IOException,
+
+
+    public List<Shop_Products> getRecommendationsBasedOnRecentSearches(int userID) throws IOException,
             ParseException, org.apache.lucene.queryparser.classic.ParseException {
-        Optional<List<SearchQuery>> recentSearches = searchRepo.findByCustID(custID);
-        int i = 0;
-        for (int k = 0; k < recentSearches.get().size(); k++) {
-            i += 1;
-        }
+        Optional<User> user = userRepo.findById(userID);
+        if(user.isPresent() && user.get().getStatus()==0) {
+            Optional<Customer> cust= custRepo.findById(user.get().getCustomer().getCustID());
+            Optional<List<SearchQuery>> recentSearches = searchRepo.findByCustIDOrderByNumOfClicksDesc(cust.get().getCustID());
 
-        System.out.println(recentSearches.get().size());
-        if (!recentSearches.get().isEmpty()) {
-            Optional<product> product = prdRepo.findById(Integer.valueOf(recentSearches.get().get(i - 1).getQuery()));
-            if (product.isEmpty()) {
-                return null;
+            if (recentSearches.isPresent() && !recentSearches.get().isEmpty()) {
+                List<Integer> simProds = new ArrayList<>();
+                List<SearchQuery> searches = recentSearches.get();
+
+                // Calculate the total number of clicks
+                int totalClicks = searches.stream().mapToInt(SearchQuery::getNumOfClicks).sum();
+
+                int totalProducts = 10;
+                Map<SearchQuery, Integer> queryProductCount = new LinkedHashMap<>();
+
+                for (SearchQuery search : searches) {
+                    int count = Math.round((float) search.getNumOfClicks() / totalClicks * totalProducts);
+                    queryProductCount.put(search, count);
+                }
+
+                int currentTotal = queryProductCount.values().stream().mapToInt(Integer::intValue).sum();
+                while (currentTotal != totalProducts) {
+                    for (Map.Entry<SearchQuery, Integer> entry : queryProductCount.entrySet()) {
+                        if (currentTotal < totalProducts) {
+                            queryProductCount.put(entry.getKey(), entry.getValue() + 1);
+                            currentTotal++;
+                            if (currentTotal == totalProducts) break;
+                        } else if (currentTotal > totalProducts && entry.getValue() > 0) {
+                            queryProductCount.put(entry.getKey(), entry.getValue() - 1);
+                            currentTotal--;
+                            if (currentTotal == totalProducts) break;
+                        }
+                    }
+                }
+
+                // Collect recommended products
+                for (Map.Entry<SearchQuery, Integer> entry : queryProductCount.entrySet()) {
+                    SearchQuery search = entry.getKey();
+                    int count = entry.getValue();
+
+                    Optional<product> product = prdRepo.findById(Integer.valueOf(search.getQuery()));
+                    if (product.isPresent()) {
+                        Optional<List<Shop_Products>> allProducts = prdshpRepo.findShop_ProductsByProductProductCategoryAndProductProductCompanyNameAndDeletedFalse(
+                                product.get().getProductCategory(), product.get().getProductCompanyName());
+
+                        if (allProducts.isPresent()) {
+                            List<Integer> similarProductIds = SimilarityUtil.findSimilarProducts2(product.get().getProductCategory(), allProducts.get());
+                            for (int i = 0; i < count && i < similarProductIds.size(); i++) {
+                                simProds.add(similarProductIds.get(i));
+                            }
+                        }
+                    }
+                }
+
+                // Return the list of Shop_Products
+                return simProds.stream()
+                        .limit(totalProducts)
+                        .map(id -> prdshpRepo.findById(id).orElse(null))
+                        .collect(Collectors.toList());
             }
-            Optional<List<Shop_Products>> allProducts = prdshpRepo.findShop_ProductsByProductProductCategoryAndProductProductCompanyNameAndDeletedFalse(product.get().getProductCategory(),product.get().getProductCompanyName());
-            System.out.println("////////////////////////////////////////////////////////////////////////////////////////////////////////////");
-            System.out.println("////////////////////////////////////////////////////////////////////////////////////////////////////////////");
-            System.out.println("////////////////////////////////////////////////////////////////////////////////////////////////////////////");
-            System.out.println("////////////////////////////////////////////////////////////////////////////////////////////////////////////");
-            System.out.println(allProducts.get().size());
-            List<Integer> similarProductIds = SimilarityUtil.findSimilarProducts2(product.get().getProductCategory(), allProducts.get());
-
-
-
-            return similarProductIds.stream()
-                    .map(id -> prdshpRepo.findById(id).orElse(null))
-                    .collect(Collectors.toList());
         }
-        return null;
+
+        Pageable topThree = PageRequest.of(0, 3);
+        Optional<List> recentSearches = Optional.ofNullable(searchRepo.findTop3ByNumOfClicks(topThree));
+        List<Integer> simProds = new ArrayList<>();
+        List<SearchQuery> searches = recentSearches.get();
+
+        // Calculate the total number of clicks
+        int totalClicks = searches.stream().mapToInt(SearchQuery::getNumOfClicks).sum();
+
+        int totalProducts = 10;
+        Map<SearchQuery, Integer> queryProductCount = new LinkedHashMap<>();
+
+        for (SearchQuery search : searches) {
+            int count = Math.round((float) search.getNumOfClicks() / totalClicks * totalProducts);
+            queryProductCount.put(search, count);
+        }
+
+        int currentTotal = queryProductCount.values().stream().mapToInt(Integer::intValue).sum();
+        while (currentTotal != totalProducts) {
+            for (Map.Entry<SearchQuery, Integer> entry : queryProductCount.entrySet()) {
+                if (currentTotal < totalProducts) {
+                    queryProductCount.put(entry.getKey(), entry.getValue() + 1);
+                    currentTotal++;
+                    if (currentTotal == totalProducts) break;
+                } else if (currentTotal > totalProducts && entry.getValue() > 0) {
+                    queryProductCount.put(entry.getKey(), entry.getValue() - 1);
+                    currentTotal--;
+                    if (currentTotal == totalProducts) break;
+                }
+            }
+        }
+
+        // Collect recommended products
+        for (Map.Entry<SearchQuery, Integer> entry : queryProductCount.entrySet()) {
+            SearchQuery search = entry.getKey();
+            int count = entry.getValue();
+
+            Optional<product> product = prdRepo.findById(Integer.valueOf(search.getQuery()));
+            if (product.isPresent()) {
+                Optional<List<Shop_Products>> allProducts = prdshpRepo.findShop_ProductsByProductProductCategoryAndProductProductCompanyNameAndDeletedFalse(
+                        product.get().getProductCategory(), product.get().getProductCompanyName());
+
+                if (allProducts.isPresent()) {
+                    List<Integer> similarProductIds = SimilarityUtil.findSimilarProducts2(product.get().getProductCategory(), allProducts.get());
+                    for (int i = 0; i < count && i < similarProductIds.size(); i++) {
+                        simProds.add(similarProductIds.get(i));
+                    }
+                }
+            }
+        }
+
+        return simProds.stream()
+                .limit(totalProducts)
+                .map(id -> prdshpRepo.findById(id).orElse(null))
+                .collect(Collectors.toList());
     }
 
-
-
-//    public List<Shop_Products> searchProducts(String query) throws IOException, org.apache.lucene.queryparser.classic.ParseException {
-//        Optional <List<Shop_Products>> allProducts =  prdshpRepo.findShop_ProductsByProductProductNameStartingWithAndDeletedFalse(query);
-//        System.out.println(allProducts.toString());
-//        List<Integer> matchingProductIds = SimilarityUtil.findSimilarProducts2(query, allProducts.get());
-//        return matchingProductIds.stream()
-//                .map(id -> prdshpRepo.findById(id).orElse(null))
-//                .collect(Collectors.toList());
-//
-//    }
 
 
 

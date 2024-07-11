@@ -145,7 +145,7 @@ public class orderItemService {
         return item.get();
     }
 
-    public List<Sales> getMonthlySales(int userID, String month) {
+    public List<Sales> getMonthlySalesForShop(int userID, String month) {
         Optional<User> user = userRepo.findById(userID);
             if(user.isPresent() && user.get().getStatus()==1) {
                 Optional<ShopOwner> shop = shopRepo.findById(user.get().getShopowner().getShopID());
@@ -160,11 +160,15 @@ public class orderItemService {
                             Optional<Order> order = ordRepo.findById(items.get().get(i).getOrder().getOrderID());
 
                             LocalDate orderDate = LocalDate.parse(order.get().getOrderDate());
-
-                            if (!sales.isEmpty() && MonthDay.from(orderDate).getDayOfMonth() == sales.get(sales.size() - 1).getDay()) {
-                                double x = sales.get(sales.size() - 1).getTotalPrice() + items.get().get(i).getProduct().getProductPrice();
-                                sales.get(sales.size() - 1).setTotalPrice(x);
-                            } else {
+                            int flag=0;
+                            for (Sales sale : sales) {
+                                if (MonthDay.from(orderDate).getDayOfMonth() == sale.getDay()) {
+                                    double x = sale.getTotalPrice() + items.get().get(i).getProduct().getProductPrice();
+                                    sale.setTotalPrice(x);
+                                    flag = 1;
+                                }
+                            }
+                            if(flag==0) {
                                 Sales s = new Sales();
                                 s.setDay(MonthDay.from(orderDate).getDayOfMonth());
                                 s.setTotalPrice(items.get().get(i).getProduct().getProductPrice());
@@ -180,6 +184,57 @@ public class orderItemService {
             return null;
 
     }
+
+    public List<Sales> getMonthlySalesForAdmin(String month) {
+            List<Sales> sales = new ArrayList<>();
+            for (int j = 1; j < 30; j++) {
+                String date = "";
+                if(j<10) date = "2024-"+month+"-"+"0"+j;
+                else date = "2024-"+month+"-"+j;
+                Optional<List<orderItems>> items = ordItmRepo.findByOrderOrderDate(date);
+                if(!items.get().isEmpty()) {
+                    for (int i = 0; i < items.get().size(); i++) {
+                        Optional<Order> order = ordRepo.findById(items.get().get(i).getOrder().getOrderID());
+
+                        LocalDate orderDate = LocalDate.parse(order.get().getOrderDate());
+                        int flag=0;
+                        for (Sales sale : sales) {
+                            if (MonthDay.from(orderDate).getDayOfMonth() == sale.getDay()) {
+                                double x = sale.getTotalPrice() + items.get().get(i).getProduct().getProductPrice();
+                                sale.setTotalPrice(x);
+                                flag = 1;
+                            }
+                        }
+                        if(flag==0) {
+                            Sales s = new Sales();
+                            s.setDay(MonthDay.from(orderDate).getDayOfMonth());
+                            s.setTotalPrice(items.get().get(i).getProduct().getProductPrice());
+                            sales.add(s);
+                        }
+
+                    }
+
+                }
+            }
+            return sales;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //    public Order MakeNewOrder(int custID, String shopName, String prodBarcode, Order order) {
 //        List<>

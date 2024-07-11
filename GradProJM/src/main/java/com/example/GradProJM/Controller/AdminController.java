@@ -91,4 +91,20 @@ public class AdminController {
 
 
 
+    @GetMapping("getNewUsers/{month}")
+    public ResponseEntity<List<Sales>> getNewUsers(@PathVariable("month") String month){
+        Optional<List<Sales>> sales= Optional.ofNullable(adminsrv.getNewUsers(month));
+        return sales.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @PostMapping("create")
+    public ResponseEntity<User> getNewUsers(@RequestBody User user){
+        Optional<User> admin= Optional.ofNullable(adminsrv.CreateNewAdmin(user));
+        return admin.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
 }

@@ -41,12 +41,20 @@ public class orderItemController {
 
 
     @GetMapping("getMonthlySales/{userID}/{month}")
-    public ResponseEntity<List<Sales>> getMonthlySales(@PathVariable("userID") int userID
+    public ResponseEntity<List<Sales>> getMonthlySalesForShop(@PathVariable("userID") int userID
             , @PathVariable("month") String month){
-        Optional<List<Sales>> sales= Optional.ofNullable(ordItmSrv.getMonthlySales(userID, month));
+        Optional<List<Sales>> sales= Optional.ofNullable(ordItmSrv.getMonthlySalesForShop(userID, month));
         return sales.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
     }
 
+
+    @GetMapping("getMonthlySales/{month}")
+    public ResponseEntity<List<Sales>> getMonthlySalesForAdmin(@PathVariable("month") String month){
+        Optional<List<Sales>> sales= Optional.ofNullable(ordItmSrv.getMonthlySalesForAdmin(month));
+        return sales.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
 }

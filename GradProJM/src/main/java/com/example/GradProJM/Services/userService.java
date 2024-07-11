@@ -600,6 +600,7 @@ public class userService {
         Optional<User> user = userRepo.findByuserEmail(login.getUserNameOrEmail());
         if(user.isPresent()){
             if(bCryptPasswordEncoder.matches(login.getPassword(), user.get().getUserPass())){
+                //todo: make the token generation .. .. ..
                 return user.get();
             }
             return null;
@@ -607,14 +608,19 @@ public class userService {
         return null;
     }
 
-    public User changePassword(User us, int userID) {
+    public User changePassword(PasswordChangeChecking us, int userID) {
         Optional<User> user = userRepo.findByuserid(userID);
-        if(user.isPresent()){
+        if(user.isPresent()) {
+
             BCryptPasswordEncoder encrypter = new BCryptPasswordEncoder();
-            String x = encrypter.encode(us.getUserPass());
-            user.get().setUserPass(x);
-            userRepo.save(user.get());
-            return user.get();
+            if (encrypter.matches(us.getOldPass(), user.get().getUserPass())) {
+                if (us.getNewPass().equals(us.getNewPass2())) {
+                    String x = encrypter.encode(us.getNewPass());
+                    user.get().setUserPass(x);
+                    userRepo.save(user.get());
+                    return user.get();
+                }
+            }
         }
         return null;
     }

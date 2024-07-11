@@ -324,9 +324,9 @@ public class ProductShopController {
 //        return prdShopService.getRelatedProducts(custID, productId);
 //    }
 
-    @GetMapping("/getRelatedProds/{custID}")
-    public ResponseEntity<List<Shop_Products>> getRelatedProds(@PathVariable("custID") int custID) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
-        Optional<List<Shop_Products>> recommendedProducts = Optional.ofNullable(prdShopService.getRecommendationsBasedOnRecentSearches(custID));
+    @GetMapping("/getRelatedProds/{userID}")
+    public ResponseEntity<List<Shop_Products>> getRelatedProds(@PathVariable("userID") int userID) throws IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
+        Optional<List<Shop_Products>> recommendedProducts = Optional.ofNullable(prdShopService.getRecommendationsBasedOnRecentSearches(userID));
 
         return recommendedProducts.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -2,8 +2,12 @@ package com.example.GradProJM.Services;
 
 import com.example.GradProJM.Model.*;
 import com.example.GradProJM.Repos.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,6 +117,61 @@ public class AdminService
             }
         }
         return null;
+    }
+
+    public List<Sales> getNewUsers(String month) {
+        String x = "2024-"+month;
+        Optional<List<User>> users = userRepo.findByJoinDateStartingWith(x);
+        List<Sales> usercount = new ArrayList<>();
+        for(int i = 0 ; i < users.get().size();i++){
+            LocalDateTime time = LocalDateTime.parse(users.get().get(i).getJoinDate());
+            Sales ss = new Sales();
+            ss.setDay(time.getDayOfMonth());
+            if(usercount.isEmpty()){
+                ss.setTotalPrice(1);
+                usercount.add(ss);
+            }
+            else{
+                int flag=0;
+                for(int j = 0; j < usercount.size();j++){
+                    if(usercount.get(j).getDay()==time.getDayOfMonth()){
+                        usercount.get(j).setTotalPrice(usercount.get(j).getTotalPrice()+1);
+                        flag=1;
+                    }
+                }
+                if(flag==0){
+                    ss.setTotalPrice(1);
+                    usercount.add(ss);
+                }
+            }
+//            usercount.add(users.get().get(i).get);
+//            System.out.println(users.get().get(i).getUserName()+"\n\n");
+//            System.out.println("/////////////////////////");
+//            System.out.println("/////////////////////////");
+//            System.out.println("/////////////////////////");
+
+        }
+        return usercount;
+    }
+
+    public User CreateNewAdmin(User user) {
+        Optional<User> user1 = userRepo.findByuserEmail(user.getUserEmail());
+        if(user1.isPresent()){
+            return null;
+        }
+        BCryptPasswordEncoder bcr = new BCryptPasswordEncoder();
+        user.setUserPass(bcr.encode(user.getUserPass()));
+        user.setRole(Role.ADMIN);
+        user.setStatus(2);
+        user.setJoinDate(String.valueOf(LocalDateTime.now()));
+        Admin ad = new Admin();
+        ad.setAdminName(user.getAdmin().getAdminName());
+        ad.setUser(user);
+        user.setAdmin(ad);
+        user.setVerified(true);
+        userRepo.save(user);
+        return user;
+
     }
 
 
