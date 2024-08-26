@@ -21,6 +21,6 @@ public class ProductImageData {
     private Shop_Products product;
     private String contentType;
     @Lob()
-    @Column(length = 100000000)
+    @Column(length = 1000000000)
     private String base64;
 }

@@ -89,7 +89,7 @@ public class ShoppingCartService {
 
 
     public ShoppingCart AddProductToCart(int custID, String shopName, String prodBarcode) {
-        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
+        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndDeletedFalse(shopName, prodBarcode);
         return AddProductToCart(custID, product.get().getId());
     }
 
@@ -125,7 +125,7 @@ public class ShoppingCartService {
         return null;
     }
     public ShoppingCart DeleteProductFromCart(int custID, String shopName, String prodBarcode) {
-        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName, prodBarcode);
+        Optional<Shop_Products> product = prodshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndDeletedFalse(shopName, prodBarcode);
         return DeleteProductFromCart(custID, product.get().getId());
     }
 }

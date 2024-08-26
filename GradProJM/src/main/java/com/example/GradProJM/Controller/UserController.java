@@ -128,12 +128,12 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User Wasn't Found!");
     }
-    @GetMapping("loginUser")
+    @PostMapping("loginUser")
     public ResponseEntity<String> Login(@RequestBody LoginRequest loginreq){
         Optional<String> LoginUser= Optional.ofNullable(userService.Login(loginreq));
         return LoginUser.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(""));
+                        .body(null));
     }
     @DeleteMapping("deleteuser/{userID}")
     public ResponseEntity<User> deleteUser(@PathVariable("userID") int userID){

@@ -83,7 +83,7 @@ public class wishListService {
     }
 
     public wishList addProductToWishList(int userID, String shopName, String prodBarcode) {
-        Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(shopName,prodBarcode);
+        Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndDeletedFalse(shopName,prodBarcode);
         return addProductToWishList(userID,prod.get().getId());
     }
 }

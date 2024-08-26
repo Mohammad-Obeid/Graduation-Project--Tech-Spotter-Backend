@@ -1,5 +1,6 @@
 package com.example.GradProJM.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -16,7 +17,7 @@ public class orderItems {
     private Shop_Products product;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonBackReference
     private Order order;
 
     private int itemQuantity;

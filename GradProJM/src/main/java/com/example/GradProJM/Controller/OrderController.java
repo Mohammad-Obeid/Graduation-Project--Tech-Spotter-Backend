@@ -81,7 +81,13 @@ public class OrderController {
         return num;
     }
 
-
+    @GetMapping("getorderIDForOrderItem/{orderItemID}")
+    public ResponseEntity<Integer> getPendingOrdersForAShop(@PathVariable("orderItemID") int orderItemID){
+        Optional<Integer> id= Optional.ofNullable(orderService.getorderID(orderItemID));
+        return id.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
 
 
     @GetMapping("getPendingordersforShop/{shopID}/{pageNum}")

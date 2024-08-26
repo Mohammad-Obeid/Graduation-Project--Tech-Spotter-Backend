@@ -29,7 +29,7 @@ public class ProductReportService {
         if(user.isPresent() && user.get().getStatus()==0) {
             Optional<Customer> cust = custRepo.findCustomerByCustID(user.get().getCustomer().getCustID());
             if (cust.isPresent()) {
-                Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(
+                Optional<Shop_Products> prod = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndDeletedFalse(
                         rep.getProduct().getShop().getShopName(),
                         rep.getProduct().getProduct().getProductBarcode()
                 );

@@ -72,7 +72,7 @@ public class orderItemService {
         double totprice=0;
         for(int i=0;i<order.getOrderItem().size();i++){
 
-            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndAndDeletedFalse(
+            Optional<Shop_Products> shopProduct = prdshpRepo.findShop_ProductsByShop_ShopNameAndProduct_ProductBarcodeAndDeletedFalse(
                     order.getOrderItem().get(i).getProduct().getShop().getShopName(),
                     order.getOrderItem().get(i).getProduct().getProduct().getProductBarcode());
             if(shopProduct.isPresent() && shopProduct.get().getQuantity()>=order.getOrderItem().get(i).getItemQuantity()){

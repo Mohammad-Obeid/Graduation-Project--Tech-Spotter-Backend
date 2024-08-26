@@ -61,6 +61,9 @@ public class ProductShopController {
     }
 
 
+
+
+
     @GetMapping("getAllProductsNumOfPages/{shopID}")
     public int getNumOfPagesForaCategory(
                                          @PathVariable("shopID") int shopID
@@ -162,6 +165,15 @@ public class ProductShopController {
     @PatchMapping("updateProduct/{shopName}/{prodBarcode}")
     public ResponseEntity<Shop_Products> updateProduct(@RequestBody Shop_Products prod, @PathVariable("shopName") String shopName,@PathVariable("prodBarcode") String prodBarcode){
         Optional<Shop_Products> product= Optional.ofNullable(prdShopService.updateProduct(prod, shopName,prodBarcode));
+        return product.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null));
+    }
+
+    @GetMapping("getFeedback/{shopName}/{prodBarcode}/{userID}")
+    public ResponseEntity<List<customerRates>> getFeedback(@PathVariable("shopName") String shopName,@PathVariable("prodBarcode") String prodBarcode,
+                                                     @PathVariable("userID") int userID){
+        Optional<List<customerRates>> product= Optional.ofNullable(prdShopService.getFeedback(shopName,prodBarcode, userID));
         return product.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(null));
@@ -342,7 +354,7 @@ public class ProductShopController {
                         .body(null));
     }
 
-    @GetMapping("/search/numOfPages")
+    @PostMapping("/search/numOfPages")
     public Integer NumOfPage(@RequestBody SearchAlgo search) {
         Integer products = prdShopService.NumOfPage(search);
         return products;

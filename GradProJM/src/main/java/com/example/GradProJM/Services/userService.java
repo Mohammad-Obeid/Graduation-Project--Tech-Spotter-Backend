@@ -386,7 +386,8 @@ public class userService {
             } else {
                 user.get().setUserEmail(userr.getUserEmail());
             }
-            user.get().setUserPass(userr.getUserPass());
+            BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+//            user.get().setUserPass(bc.encode(userr.getUserPass()));
             user.get().setUserName(userr.getUserName());
             user.get().setUserPNum(userr.getUserPNum());
             userRepo.save(user.get());
@@ -410,7 +411,8 @@ public class userService {
             } else {
                 user.get().setUserEmail(userr.getUserEmail());
             }
-            user.get().setUserPass(userr.getUserPass());
+            BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+//            user.get().setUserPass(bc.encode(userr.getUserPass()));
             user.get().setUserName(userr.getUserName());
             user.get().setUserPNum(userr.getUserPNum());
             userRepo.save(user.get());
@@ -588,11 +590,11 @@ public class userService {
                     String x = (authserv.authenticate(loginreq).getAccessToken());
                     return x;
                 }
-                return "Check Email or Password";
+                return null;
             }
-            return "Check Email or Password";
+            return null;
         }
-        return "Check Email or Password";
+        return null;
     }
 
     public User getUserByEmaill(LoginRequest login) {

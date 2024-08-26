@@ -16,6 +16,7 @@ public class Order {
 //    private List<Shop_Products> products;
 
     @OneToMany(mappedBy = "order",cascade=CascadeType.ALL)
+
     private List<orderItems> orderItem;
 
 

@@ -136,5 +136,10 @@ public class OrderService {
     }
 
 
+    public Integer getorderID(int orderItemID) {
+        Optional<orderItems> ordd = ordItmRepo.findById(orderItemID);
+        Optional<Order> order = orderRepo.findById(ordd.get().getOrder().getOrderID());
+        return order.get().getOrderID();
 
+    }
 }
